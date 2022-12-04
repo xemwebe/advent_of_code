@@ -7,7 +7,7 @@ use std::path::Path;
 pub mod day1;
 pub mod day2;
 pub mod day3;
-// pub mod day4;
+pub mod day4;
 // pub mod day5;
 // pub mod day6;
 // pub mod day7;
@@ -33,7 +33,7 @@ pub mod day3;
 use day1::*;
 use day2::*;
 use day3::*;
-// use day4::*;
+use day4::*;
 // use day5::*;
 // use day6::*;
 // use day7::*;
@@ -59,7 +59,7 @@ use day3::*;
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
-        println!("I expect exactly one argument (the number of the riddle, eg. 1_2 for the first days second puzzle");
+        eprintln!("I expect exactly one argument (the number of the riddle, eg. 1_2 for the first days second puzzle");
         return;
     }
     let riddle = &args[1];
@@ -71,8 +71,8 @@ fn main() {
             "2_2" => riddle_2_2(lines),
             "3_1" => riddle_3_1(lines),
             "3_2" => riddle_3_2(lines),
-            // "4_1" => riddle_4_1(lines),
-            // "4_2" => riddle_4_2(lines),
+            "4_1" => riddle_4_1(lines),
+            "4_2" => riddle_4_2(lines),
             // "5_1" => riddle_5_1(lines),
             // "5_2" => riddle_5_2(lines),
             // "6_1" => riddle_6_1(lines),
@@ -116,7 +116,9 @@ fn main() {
             // "25_1" => riddle_25_1(lines),
             // "25_2" => riddle_25_2(lines),
             _ => println!("Invalid riddle"),
-        }
+        } 
+    } else {
+        eprintln!("Couldn't read input file data/input_{riddle}.txt");
     }
     
 }
