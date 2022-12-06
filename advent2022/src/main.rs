@@ -11,7 +11,7 @@ pub mod day2;
 pub mod day3;
 pub mod day4;
 pub mod day5;
-// pub mod day6;
+pub mod day6;
 // pub mod day7;
 // pub mod day8;
 // pub mod day9;
@@ -37,7 +37,7 @@ use day2::*;
 use day3::*;
 use day4::*;
 use day5::*;
-// use day6::*;
+use day6::*;
 // use day7::*;
 // use day8::*;
 // use day9::*;
@@ -77,8 +77,8 @@ fn main() {
             "4_2" => riddle_4_2(lines),
             "5_1" => riddle_5_1(lines),
             "5_2" => riddle_5_2(lines),
-            // "6_1" => riddle_6_1(lines),
-            // "6_2" => riddle_6_2(lines),
+            "6_1" => riddle_6_1(lines),
+            "6_2" => riddle_6_2(lines),
             // "7_1" => riddle_7_1(lines),
             // "7_2" => riddle_7_2(lines),
             // "8_1" => riddle_8_1(lines),
