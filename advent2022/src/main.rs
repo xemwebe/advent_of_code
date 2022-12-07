@@ -12,7 +12,7 @@ pub mod day3;
 pub mod day4;
 pub mod day5;
 pub mod day6;
-// pub mod day7;
+pub mod day7;
 // pub mod day8;
 // pub mod day9;
 // pub mod day10;
@@ -38,7 +38,7 @@ use day3::*;
 use day4::*;
 use day5::*;
 use day6::*;
-// use day7::*;
+use day7::*;
 // use day8::*;
 // use day9::*;
 // use day10::*;
@@ -79,8 +79,8 @@ fn main() {
             "5_2" => riddle_5_2(lines),
             "6_1" => riddle_6_1(lines),
             "6_2" => riddle_6_2(lines),
-            // "7_1" => riddle_7_1(lines),
-            // "7_2" => riddle_7_2(lines),
+            "7_1" => riddle_7_1(lines),
+            "7_2" => riddle_7_2(lines),
             // "8_1" => riddle_8_1(lines),
             // "8_2" => riddle_8_2(lines),
             // "9_1" => riddle_9_1(lines),
@@ -117,16 +117,17 @@ fn main() {
             // "24_2" => riddle_24_2(lines),
             // "25_1" => riddle_25_1(lines),
             // "25_2" => riddle_25_2(lines),
-            _ => println!("Invalid riddle"),
-        } 
+            _ => println!("Solution to this riddle is not yet implemented"),
+        }
     } else {
         eprintln!("Couldn't read input file data/input_{riddle}.txt");
     }
-    
 }
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where P: AsRef<Path>, {
+where
+    P: AsRef<Path>,
+{
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
 }

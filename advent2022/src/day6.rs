@@ -2,8 +2,8 @@ use super::*;
 
 fn is_valid(i: usize, v: &[u8], count: usize) -> bool {
     for j in 0..count {
-        for k in j+1..count {
-            if v[i-j] == v[i-k] {
+        for k in j + 1..count {
+            if v[i - j] == v[i - k] {
                 return false;
             }
         }
@@ -15,7 +15,7 @@ fn find_start(s: &str, count: usize) -> usize {
     let v = s.as_bytes();
     for i in count..v.len() {
         if is_valid(i, v, count) {
-            return i+1;
+            return i + 1;
         }
     }
     return 0;

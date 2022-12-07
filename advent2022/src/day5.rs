@@ -4,10 +4,10 @@ fn parse_init_stack(lines: Vec<String>) -> Vec<Vec<u8>> {
     let mut stacks = Vec::new();
     for i in 0..9 {
         let mut stack = Vec::new();
-        let len=lines.len();
-        let idx = i*4+1;
+        let len = lines.len();
+        let idx = i * 4 + 1;
         for j in 0..len {
-            let bytes=lines[len-j-1].as_bytes();
+            let bytes = lines[len - j - 1].as_bytes();
             if bytes[idx] != 32 {
                 stack.push(bytes[idx]);
             }
@@ -31,21 +31,21 @@ fn parse_move(s: String) -> (usize, usize, usize) {
 fn make_move(stacks: Vec<Vec<u8>>, m: (usize, usize, usize)) -> Vec<Vec<u8>> {
     let mut stacks = stacks;
     for _ in 0..m.0 {
-        let c = stacks[m.1-1].pop().unwrap();
-        stacks[m.2-1].push(c);
+        let c = stacks[m.1 - 1].pop().unwrap();
+        stacks[m.2 - 1].push(c);
     }
     stacks
 }
 
 fn make_move_9001(stacks: Vec<Vec<u8>>, m: (usize, usize, usize)) -> Vec<Vec<u8>> {
     let mut stacks = stacks;
-    let len = stacks[m.1-1].len();
-    for i in len-m.0..len {
-        let c = stacks[m.1-1][i].clone();
-        stacks[m.2-1].push(c);
+    let len = stacks[m.1 - 1].len();
+    for i in len - m.0..len {
+        let c = stacks[m.1 - 1][i].clone();
+        stacks[m.2 - 1].push(c);
     }
     for _ in 0..m.0 {
-        stacks[m.1-1].pop();
+        stacks[m.1 - 1].pop();
     }
     stacks
 }
@@ -71,10 +71,10 @@ pub fn riddle_5_1(lines: io::Lines<io::BufReader<File>>) {
 
     let mut stacks = lines_iter
         .map(|x| parse_move(x.unwrap()))
-        .fold(stacks,  make_move);
+        .fold(stacks, make_move);
 
     let top_crates = get_tops(&mut stacks);
-    println!("{}", top_crates);    
+    println!("{}", top_crates);
 }
 
 pub fn riddle_5_2(lines: io::Lines<io::BufReader<File>>) {
@@ -89,9 +89,8 @@ pub fn riddle_5_2(lines: io::Lines<io::BufReader<File>>) {
 
     let mut stacks = lines_iter
         .map(|x| parse_move(x.unwrap()))
-        .fold(stacks,  make_move_9001);
+        .fold(stacks, make_move_9001);
 
     let top_crates = get_tops(&mut stacks);
-    println!("{}", top_crates);    
+    println!("{}", top_crates);
 }
-
