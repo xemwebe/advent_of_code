@@ -113,7 +113,6 @@ fn process_monkeys(m: &mut Vec<Monkey>) -> usize {
             }
             m[i].examined_items += m[i].items.len();
             m[i].items = Vec::new();
-//            println!("monkeys: {m:#?}")
         }
     }
     let mut max = 0;
@@ -149,7 +148,6 @@ fn process_monkeys_rule2(m: &mut Vec<Monkey>) -> usize {
             }
             m[i].examined_items += m[i].items.len();
             m[i].items = Vec::new();
-//            println!("monkeys: {m:#?}")
         }
     }
     let mut max = 0;
