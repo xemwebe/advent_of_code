@@ -20,18 +20,6 @@ fn find_position(v: u8, m: &Vec<Vec<u8>>) -> (usize, usize) {
     (0,0)
 }
 
-fn find_all_positions(v: u8, m: &Vec<Vec<u8>>) -> Vec<(usize, usize)> {
-    let mut positions = Vec::new();
-    for y in 0..m.len() {
-        for x in 0..m[y].len() {
-            if m[y][x] == v {
-                positions.push((x,y));
-            }
-        }
-    }
-    positions
-}
-
 fn find_path(map: &mut Vec<Vec<u8>>, start: (usize, usize), end: (usize, usize)) -> i32 {
     let mut last_positions = vec![start];
     let xdim = map[0].len();

@@ -4,8 +4,8 @@ use std::env;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
-//use anyhow::{anyhow, Result};
 
+pub mod list;
 pub mod day1;
 pub mod day2;
 pub mod day3;
@@ -18,7 +18,7 @@ pub mod day9;
 pub mod day10;
 pub mod day11;
 pub mod day12;
-// pub mod day13;
+pub mod day13;
 // pub mod day14;
 // pub mod day15;
 // pub mod day16;
@@ -44,7 +44,7 @@ use day9::*;
 use day10::*;
 use day11::*;
 use day12::*;
-// use day13::*;
+use day13::*;
 // use day14::*;
 // use day15::*;
 // use day16::*;
@@ -91,8 +91,8 @@ fn main() {
             "11_2" => riddle_11_2(lines),
             "12_1" => riddle_12_1(lines),
             "12_2" => riddle_12_2(lines),
-            // "13_1" => riddle_13_1(lines),
-            // "13_2" => riddle_13_2(lines),
+            "13_1" => riddle_13_1(lines),
+            "13_2" => riddle_13_2(lines),
             // "14_1" => riddle_14_1(lines),
             // "14_2" => riddle_14_2(lines),
             // "15_1" => riddle_15_1(lines),
