@@ -23,6 +23,7 @@ dependencies = [
  "cfgrammar",
  "lrlex",
  "lrpar",
+ "regex",
 ]
 
 [[package]]

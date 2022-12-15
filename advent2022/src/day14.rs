@@ -76,9 +76,7 @@ fn simulate_sand(map: &mut Vec<Vec<u8>>, sand: usize) -> i32 {
     let mut sand_point = (sand, 0);
     let maxy = map.len()-1;
     let mut count = 0;
-    let mut ticker = 0;
     loop {
-        ticker += 1;
         if sand_point.1 == maxy || map[0][sand]!=1 {
             break;
         }
@@ -97,7 +95,6 @@ fn simulate_sand(map: &mut Vec<Vec<u8>>, sand: usize) -> i32 {
             }
             _ => {}
         }
-//        println!("Ticks: {ticker}");
     }
     map[sand_point.1][sand_point.0] = 2;
     count
