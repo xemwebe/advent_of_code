@@ -10,6 +10,7 @@ lrpar = "0.12"
 lrlex = "0.12"
 cfgrammar = "0.12"
 regex = "1.7"
+bitfield = "0.14"
 
 [build-dependencies]
 lrlex = "0.12"
