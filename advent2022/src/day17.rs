@@ -1,3 +1,10 @@
+/// The solution here is overly complex.
+/// A much simple and less error-prone solution would use a fixed set of block pattern maps
+/// instead of hardcoding each block as a separate struct. I was just in the mood to use traits instead.
+/// However, it took far to long to implement the structs and code the methods.
+/// Still, I was very surprised that my rank wasn't that bad...
+/// 
+
 use super::*;
 use std::{collections::{HashMap,HashSet}};
 
@@ -386,10 +393,6 @@ fn top_of_floor(floor: &Floor) -> Floor {
 }
 
 fn floor_equal(floor1: &Floor, floor2: &Floor) -> bool {
-    // println!("Floor1");
-    // print_floor(&floor1);
-    // println!("Floor2");
-    // print_floor(&floor2);
     if floor1.len() != floor2.len()  {
         return false;
     }
@@ -433,7 +436,6 @@ pub fn riddle_17_2(mut lines: io::Lines<io::BufReader<File>>) {
                     let blocks_to_skip = (total_block_num - block_counter) / delta_block_num;
                     skipped_height = blocks_to_skip * delta_height;
                     block_stopper = block_counter + (total_block_num - block_counter) % delta_block_num;
-//                    println!("Found double: {:?} {}:{block_counter} {}:{}", sample, combinations[&sample].block_number, combinations[&sample].height, floor.len());
                 }
             } else {
                 combinations.insert(sample, State {

@@ -96,7 +96,6 @@ pub fn mark_outside(map: &mut Vec<Vec<Vec<u8>>>, points: Vec<(i64, i64, i64)>) {
         for p in points {
             for s in &surfaces {
                 let sp = (p.0+s.0,p.1+s.1,p.2+s.2);
-                // println!("sp: {sp:?}");
                 if map[sp.0 as usize][sp.1 as usize][sp.2 as usize] == 1 {
                     map[sp.0 as usize][sp.1 as usize][sp.2 as usize] = 2;
                     new_points.push(sp);
