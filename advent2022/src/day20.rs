@@ -1,20 +1,20 @@
 use super::*;
 
-fn read_values(lines: io::Lines<io::BufReader<File>>) -> Vec<(i32,i32)> {
+fn read_values(lines: io::Lines<io::BufReader<File>>) -> Vec<(i64,i64)> {
     let mut idx = 0;
     lines
         .into_iter()
         .filter_map(|x| x.ok())
         .map(|s| {
-            let value = (s.parse::<i32>().unwrap(), idx);
+            let value = (s.parse::<i64>().unwrap(), idx);
             idx += 1;
             value
         })
         .collect()
 }
 
-fn scrampble(vals: &mut Vec<(i32, i32)>) {
-    let len = vals.len() as i32;
+fn scramble(vals: &mut Vec<(i64, i64)>) {
+    let len = vals.len() as i64;
     for i in 0..len {
         let mut old_idx = 0;
         for j in 0..vals.len() {
@@ -24,12 +24,20 @@ fn scrampble(vals: &mut Vec<(i32, i32)>) {
             }
         }
         let v = vals[old_idx];
-        let mut new_idx = (old_idx as i32) + v.0;
-        while new_idx<0 {
-            new_idx += len-1;
+        let mut new_idx = (old_idx as i64) + v.0;
+        if new_idx<0 {
+            let factor = new_idx/(len-1);
+            new_idx -= factor*(len-1);
+            if new_idx < 0 {
+                new_idx += len-1;
+            }
         }
-        while new_idx>=len {
-            new_idx -= len-1;
+        if new_idx>=len {
+            let factor = new_idx/(len-1);
+            new_idx -= factor*(len-1);
+            if new_idx>=len {
+                new_idx -= len-1;
+            }
         }
         let new_idx = new_idx as usize;
         if new_idx < old_idx {
@@ -42,11 +50,10 @@ fn scrampble(vals: &mut Vec<(i32, i32)>) {
             }
         }
         vals[new_idx] = v;
-//        println!("vals: {vals:?}");
     }
 }
 
-fn get_coordinate(vals: &Vec<(i32, i32)>) -> i32 {
+fn get_coordinate(vals: &Vec<(i64, i64)>) -> i64 {
     let mut zero_idx = 0;
     for i in 0..vals.len() {
         if vals[i].0 == 0 {
@@ -61,6 +68,22 @@ fn get_coordinate(vals: &Vec<(i32, i32)>) -> i32 {
 
 pub fn riddle_20_1(lines: io::Lines<io::BufReader<File>>) {
     let mut values = read_values(lines);
-    scrampble(&mut values);
+    scramble(&mut values);
+    println!("The solution is: {:?}", get_coordinate(&values));
+}
+
+pub fn multiply_with_key(vals: &mut Vec<(i64,i64)>, key: i64) {
+    for mut v in vals {
+        v.0 *= key;
+    }
+}
+
+pub fn riddle_20_2(lines: io::Lines<io::BufReader<File>>) {
+    let mut values = read_values(lines);
+    let key = 811589153_i64;
+    multiply_with_key(&mut values, key);
+    for _ in 0..10 {
+        scramble(&mut values);
+    }
     println!("The solution is: {:?}", get_coordinate(&values));
 }
