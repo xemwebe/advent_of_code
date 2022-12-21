@@ -108,7 +108,7 @@ fn main() {
             "20_1" => riddle_20_1(lines),
             "20_2" => riddle_20_2(lines),
             "21_1" => riddle_21_1(lines),
-            // "21_2" => riddle_21_2(lines),
+            "21_2" => riddle_21_2(lines),
             // "22_1" => riddle_22_1(lines),
             // "22_2" => riddle_22_2(lines),
             // "23_1" => riddle_23_1(lines),
