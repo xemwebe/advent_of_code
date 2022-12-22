@@ -116,8 +116,8 @@ pub fn riddle_21_2(lines: io::Lines<io::BufReader<File>>) {
     
     let mut lower = 1;
     let mut upper = 10;
-    let mut lr = (0,0);
-    let mut ur = (0,0);
+    let mut lr;
+    let mut ur;
     loop {
         ops.insert("humn".to_owned(), Operation::Number(lower));
         lr = roots_judgement(&ops);
