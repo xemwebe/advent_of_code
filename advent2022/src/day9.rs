@@ -17,24 +17,21 @@ struct Rope {
 impl Rope {
     fn new(length: usize) -> Self {
         let mut visited = HashSet::new();
-        visited.insert((0,0));
+        visited.insert((0, 0));
         let mut knots = Vec::new();
         for _ in 0..length {
-            knots.push((0,0));
+            knots.push((0, 0));
         }
-        Self {
-            knots,
-            visited,
-        }
+        Self { knots, visited }
     }
 
     fn make_move(&mut self, m: &(String, i32)) {
         let step = match m.0.as_str() {
-            "R" => (1,0),
-            "L" => (-1,0),
-            "D" => (0,-1),
-            "U" => (0,1),
-            _ => panic!("invalid move")
+            "R" => (1, 0),
+            "L" => (-1, 0),
+            "D" => (0, -1),
+            "U" => (0, 1),
+            _ => panic!("invalid move"),
         };
         for _ in 0..m.1 {
             self.knots[0].0 += step.0;
@@ -45,10 +42,11 @@ impl Rope {
 
     fn move_tail(&mut self) {
         for i in 1..self.knots.len() {
-            let mut dist = 
-            (self.knots[i-1].0-self.knots[i].0, self.knots[i-1].1-self.knots[i].1);
-            if (dist.0.abs() + dist.1.abs() <= 1) 
-            || (dist.0.abs()==1 && dist.1.abs() == 1) {
+            let mut dist = (
+                self.knots[i - 1].0 - self.knots[i].0,
+                self.knots[i - 1].1 - self.knots[i].1,
+            );
+            if (dist.0.abs() + dist.1.abs() <= 1) || (dist.0.abs() == 1 && dist.1.abs() == 1) {
                 return;
             }
             if dist.0.abs() == 2 {

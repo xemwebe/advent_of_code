@@ -24,7 +24,7 @@ impl Sensor {
 
     fn no_beacon_on_row_distance(&self, row: i64, cols: &mut HashSet<i64>) {
         if let Some(col_range) = self.beacon_distance_to_row_range(row) {
-            for c in col_range.0..=col_range.1 { 
+            for c in col_range.0..=col_range.1 {
                 cols.insert(c);
             }
         }
@@ -70,9 +70,9 @@ pub fn riddle_15_1(lines: io::Lines<io::BufReader<File>>) {
 }
 
 struct ColRange {
-    ranges: HashSet<(i64,i64)>,
+    ranges: HashSet<(i64, i64)>,
     min: Option<i64>,
-    max: Option<i64>
+    max: Option<i64>,
 }
 
 impl ColRange {
@@ -91,13 +91,14 @@ impl ColRange {
         // println!("insert range {range:?}");
         let mut drop = None;
         for r in &self.ranges {
-            if range.0>=r.0 && range.1<=r.1 {
+            if range.0 >= r.0 && range.1 <= r.1 {
                 return;
             }
-            if (range.0>=r.0 && range.0<=r.1) 
-            || (range.1>=r.0 && range.1<=r.1)
-            || (range.0<=r.0 && range.1>=r.1) {
-                drop = Some((r.0,r.1));
+            if (range.0 >= r.0 && range.0 <= r.1)
+                || (range.1 >= r.0 && range.1 <= r.1)
+                || (range.0 <= r.0 && range.1 >= r.1)
+            {
+                drop = Some((r.0, r.1));
                 break;
             }
         }
@@ -113,17 +114,17 @@ impl ColRange {
     fn total_size(&self) -> i64 {
         let mut sum = 0;
         for r in &self.ranges {
-            sum += r.1-r.0+1;
+            sum += r.1 - r.0 + 1;
         }
         sum
     }
 
     fn get_beacon(&self) -> i64 {
         let r = self.ranges.iter().next().unwrap();
-        if r.0>0 {
-            r.0-1
+        if r.0 > 0 {
+            r.0 - 1
         } else {
-            r.1+1
+            r.1 + 1
         }
     }
 }
@@ -133,7 +134,11 @@ pub fn riddle_15_2(lines: io::Lines<io::BufReader<File>>) {
     let max = 4000000;
     for row in 0..=max {
         // println!("row: {row}");
-        let mut cols = ColRange{ ranges: HashSet::new(), min: Some(0), max: Some(max) };
+        let mut cols = ColRange {
+            ranges: HashSet::new(),
+            min: Some(0),
+            max: Some(max),
+        };
         for sensor in &sensors {
             if let Some(range) = sensor.beacon_distance_to_row_range(row) {
                 // println!("Found {range:?}");
@@ -141,10 +146,10 @@ pub fn riddle_15_2(lines: io::Lines<io::BufReader<File>>) {
             }
         }
         // println!("all ranges {:?}", cols.ranges);
-        if cols.total_size() < max+1 {
+        if cols.total_size() < max + 1 {
             let y = row;
             let x = cols.get_beacon();
-            println!("Solution: {} (x={x}, y={y})", x*max+y);
+            println!("Solution: {} (x={x}, y={y})", x * max + y);
             break;
         }
     }

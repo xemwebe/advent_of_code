@@ -54,8 +54,8 @@ impl State {
                     || self.elves.contains(&(e.0, e.1 + 1))
                     || self.elves.contains(&(e.0 + 1, e.1 - 1))
                     || self.elves.contains(&(e.0 + 1, e.1))
-                    || self.elves.contains(&(e.0 + 1, e.1 + 1))
-                ) {
+                    || self.elves.contains(&(e.0 + 1, e.1 + 1)))
+                {
                     break;
                 }
 
@@ -85,11 +85,11 @@ impl State {
 
                     Direction::West => {
                         if !(self.elves.contains(&(e.0 - 1, e.1 - 1))
-                            || self.elves.contains(&(e.0, e.1-1))
+                            || self.elves.contains(&(e.0, e.1 - 1))
                             || self.elves.contains(&(e.0 + 1, e.1 - 1)))
                         {
-                            if let Some(_) = moves.insert( (e.0, e.1-1), *e) {
-                                moves.remove(&(e.0, e.1-1));
+                            if let Some(_) = moves.insert((e.0, e.1 - 1), *e) {
+                                moves.remove(&(e.0, e.1 - 1));
                             }
                             break;
                         }
@@ -99,8 +99,8 @@ impl State {
                             || self.elves.contains(&(e.0, e.1 + 1))
                             || self.elves.contains(&(e.0 + 1, e.1 + 1)))
                         {
-                            if let Some(_) = moves.insert((e.0, e.1+1), *e) {
-                                moves.remove(&(e.0, e.1+1));
+                            if let Some(_) = moves.insert((e.0, e.1 + 1), *e) {
+                                moves.remove(&(e.0, e.1 + 1));
                             }
                             break;
                         }
@@ -116,7 +116,7 @@ impl State {
         moves
     }
 
-    fn move_elves(&mut self, moves: &HashMap<(i64,i64), (i64,i64)>) {
+    fn move_elves(&mut self, moves: &HashMap<(i64, i64), (i64, i64)>) {
         for m in moves {
             self.elves.remove(m.1);
             self.elves.insert(*m.0);
@@ -125,7 +125,7 @@ impl State {
 
     fn count_space(&self) -> i64 {
         let (xmin, xmax, ymin, ymax) = self.min_max();
-        (xmax-xmin+1)*(ymax-ymin+1)-self.elves.len() as i64
+        (xmax - xmin + 1) * (ymax - ymin + 1) - self.elves.len() as i64
     }
 
     fn min_max(&self) -> (i64, i64, i64, i64) {

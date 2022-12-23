@@ -1,7 +1,7 @@
 use super::*;
 use bitfield::{bitfield_bitrange, Bit, BitMut};
 use regex::Regex;
-use std::collections::{HashMap, BTreeMap};
+use std::collections::{BTreeMap, HashMap};
 
 #[derive(Debug, Clone)]
 struct Valve {
@@ -96,20 +96,22 @@ fn calc_weights(state: &State, valves: &HashMap<String, Valve>) -> BTreeMap<i32,
 fn max_pressure(valves: &HashMap<String, Valve>, state: State) -> i32 {
     let prio_map = calc_weights(&state, valves);
 
-    let mut max_released  = 0;
+    let mut max_released = 0;
     for p in prio_map.iter().rev() {
         let mut open = state.open.clone();
         open.set_bit(valves[p.1].id, true);
-        max_released = max_released.max(*p.0 + max_pressure(
-            valves,
-            State {
-                open,
-                ticker: state.ticker + 1 + valves[&state.node].next[p.1],
-                node: p.1.to_owned()
-            }
-        ))
+        max_released = max_released.max(
+            *p.0 + max_pressure(
+                valves,
+                State {
+                    open,
+                    ticker: state.ticker + 1 + valves[&state.node].next[p.1],
+                    node: p.1.to_owned(),
+                },
+            ),
+        )
     }
-    
+
     max_released
 }
 
@@ -119,12 +121,11 @@ pub fn riddle_16_1(lines: io::Lines<io::BufReader<File>>) {
     let state = State {
         open: OpenStat(0),
         ticker: 0,
-        node: "AA".to_owned()
+        node: "AA".to_owned(),
     };
     let max_released = max_pressure(&valves, state);
     println!("The solution is: {:?}", max_released);
 }
-
 
 #[derive(Debug, Clone)]
 struct State2 {
@@ -133,8 +134,10 @@ struct State2 {
     node: (Option<String>, Option<String>),
 }
 
-
-fn calc_weights2(state: &State2, valves: &HashMap<String, Valve>) -> BTreeMap<i32, (Option<String>, Option<String>)> {
+fn calc_weights2(
+    state: &State2,
+    valves: &HashMap<String, Valve>,
+) -> BTreeMap<i32, (Option<String>, Option<String>)> {
     let mut weights1 = BTreeMap::new();
     if let Some(node0) = &state.node.0 {
         for v in &valves[node0].next {
@@ -168,42 +171,46 @@ fn calc_weights2(state: &State2, valves: &HashMap<String, Valve>) -> BTreeMap<i3
         }
         for w1 in &weights1 {
             for w2 in &weights2 {
-                if w2.1!=w1.1 {
-                    double_weights.insert(*w1.0+*w2.0, (Some(w1.1.to_owned()), Some(w2.1.to_owned())));
+                if w2.1 != w1.1 {
+                    double_weights.insert(
+                        *w1.0 + *w2.0,
+                        (Some(w1.1.to_owned()), Some(w2.1.to_owned())),
+                    );
                 }
             }
-        }    
+        }
     }
     double_weights
 }
 
-
 fn max_pressure2(valves: &HashMap<String, Valve>, state: State2) -> i32 {
     let prio_map = calc_weights2(&state, valves);
 
-    let mut max_released  = 0;
+    let mut max_released = 0;
     for p in prio_map.iter().rev() {
         let mut open = state.open.clone();
-        let mut new_ticker = (state.ticker.0,state.ticker.1);
+        let mut new_ticker = (state.ticker.0, state.ticker.1);
         let nodes = state.node.clone();
-        if let Some(node0) = &p.1.0 {
+        if let Some(node0) = &p.1 .0 {
             open.set_bit(valves[node0].id, true);
-            new_ticker.0 += 1 +  valves[&nodes.0.unwrap()].next[node0]
+            new_ticker.0 += 1 + valves[&nodes.0.unwrap()].next[node0]
         }
-        if let Some(node1) = &p.1.1 {
+        if let Some(node1) = &p.1 .1 {
             open.set_bit(valves[node1].id, true);
-            new_ticker.1 += 1 +  valves[&nodes.1.unwrap()].next[node1]
+            new_ticker.1 += 1 + valves[&nodes.1.unwrap()].next[node1]
         }
-        max_released = max_released.max(*p.0 + max_pressure2(
-            valves,
-            State2 {
-                open,
-                ticker: new_ticker,
-                node: (p.1.0.to_owned(), p.1.1.to_owned())
-            }
-        ));
+        max_released = max_released.max(
+            *p.0 + max_pressure2(
+                valves,
+                State2 {
+                    open,
+                    ticker: new_ticker,
+                    node: (p.1 .0.to_owned(), p.1 .1.to_owned()),
+                },
+            ),
+        );
     }
-    
+
     max_released
 }
 
@@ -212,8 +219,8 @@ pub fn riddle_16_2(lines: io::Lines<io::BufReader<File>>) {
     let valves = calc_distances(&valves);
     let state = State2 {
         open: OpenStat(0),
-        ticker: (0,0),
-        node: (Some("AA".to_owned()), Some("AA".to_owned()))
+        ticker: (0, 0),
+        node: (Some("AA".to_owned()), Some("AA".to_owned())),
     };
     let max_released = max_pressure2(&valves, state);
     println!("The solution is: {:?}", max_released);

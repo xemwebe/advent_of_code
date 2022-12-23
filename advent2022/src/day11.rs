@@ -16,7 +16,7 @@ struct Monkey {
 fn init_monkeys() -> Vec<Monkey> {
     vec![
         Monkey {
-            items: vec![93,98],
+            items: vec![93, 98],
             a0: 0,
             a1: 17,
             a2: 0,
@@ -26,7 +26,7 @@ fn init_monkeys() -> Vec<Monkey> {
             examined_items: 0,
         },
         Monkey {
-            items: vec![95,72,98,82,86],
+            items: vec![95, 72, 98, 82, 86],
             a0: 5,
             a1: 1,
             a2: 0,
@@ -104,8 +104,8 @@ fn process_monkeys(m: &mut Vec<Monkey>) -> usize {
             let iftrue = m[i].true_monkey;
             let iffalse = m[i].false_monkey;
             for item in m[i].items.clone() {
-                let op = ((m[i].a2*item + m[i].a1)*item + m[i].a0)/3;
-                if op%m[i].divisible == 0 {
+                let op = ((m[i].a2 * item + m[i].a1) * item + m[i].a0) / 3;
+                if op % m[i].divisible == 0 {
                     m[iftrue].items.push(op);
                 } else {
                     m[iffalse].items.push(op);
@@ -125,9 +125,8 @@ fn process_monkeys(m: &mut Vec<Monkey>) -> usize {
             max2 = mm.examined_items
         }
     }
-    max*max2
+    max * max2
 }
-
 
 fn process_monkeys_rule2(m: &mut Vec<Monkey>) -> usize {
     let mut total_divisibility = 1;
@@ -139,8 +138,8 @@ fn process_monkeys_rule2(m: &mut Vec<Monkey>) -> usize {
             let iftrue = m[i].true_monkey;
             let iffalse = m[i].false_monkey;
             for item in m[i].items.clone() {
-                let op = ((m[i].a2*item + m[i].a1)*item + m[i].a0)%total_divisibility;
-                if op%m[i].divisible == 0 {
+                let op = ((m[i].a2 * item + m[i].a1) * item + m[i].a0) % total_divisibility;
+                if op % m[i].divisible == 0 {
                     m[iftrue].items.push(op);
                 } else {
                     m[iffalse].items.push(op);
@@ -160,7 +159,7 @@ fn process_monkeys_rule2(m: &mut Vec<Monkey>) -> usize {
             max2 = mm.examined_items
         }
     }
-    max*max2
+    max * max2
 }
 
 pub fn riddle_11_1(_lines: io::Lines<io::BufReader<File>>) {

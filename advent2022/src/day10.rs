@@ -3,11 +3,11 @@ use super::*;
 #[derive(Debug)]
 enum Command {
     Noop,
-    Addx(i32)
+    Addx(i32),
 }
 
 impl Command {
-    fn parse(s:  String) -> Self {
+    fn parse(s: String) -> Self {
         let mut parts = s.split(" ");
         if parts.next().unwrap() == "noop" {
             Command::Noop
@@ -26,7 +26,7 @@ impl Command {
     fn add_on(&self) -> i32 {
         match &self {
             Command::Noop => 0,
-            Command::Addx(x) => *x
+            Command::Addx(x) => *x,
         }
     }
 }
@@ -38,8 +38,8 @@ fn process(vc: &Vec<Command>, sc: Vec<i32>) -> i32 {
     let mut sc_idx = 0;
     for c in vc {
         let duration = c.cycles();
-        if cycle+duration >= sc[sc_idx] {
-            sum += sc[sc_idx]*x;
+        if cycle + duration >= sc[sc_idx] {
+            sum += sc[sc_idx] * x;
             sc_idx += 1;
             if sc_idx >= sc.len() {
                 break;
@@ -53,7 +53,7 @@ fn process(vc: &Vec<Command>, sc: Vec<i32>) -> i32 {
 
 fn draw_pixel(cycle: i32, x: i32) {
     let pos = cycle % 40;
-    if pos-1<=x && pos+1>=x {
+    if pos - 1 <= x && pos + 1 >= x {
         print!("#");
     } else {
         print!(".");
@@ -90,7 +90,7 @@ fn parse_commands(lines: io::Lines<io::BufReader<File>>) -> Vec<Command> {
 
 pub fn riddle_10_1(lines: io::Lines<io::BufReader<File>>) {
     let commands = parse_commands(lines);
-    let signal = process(&commands, vec![20,60,100,140,180,220]);
+    let signal = process(&commands, vec![20, 60, 100, 140, 180, 220]);
     println!("{:?}", signal);
 }
 

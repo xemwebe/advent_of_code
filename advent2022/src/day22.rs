@@ -1,7 +1,7 @@
 use super::*;
 use regex::Regex;
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 enum Move {
     TurnRight,
     TurnLeft,
@@ -22,16 +22,16 @@ impl Orientation {
             Orientation::Right => 0,
             Orientation::Down => 1,
             Orientation::Left => 2,
-            Orientation::Up => 3
+            Orientation::Up => 3,
         }
     }
 
-    fn get_offset(&self) -> (i64,i64) {
+    fn get_offset(&self) -> (i64, i64) {
         match self {
-            Orientation::Right => (1,0),
-            Orientation::Left => (-1,0),
-            Orientation::Up => (0,-1),
-            Orientation::Down => (0,1)
+            Orientation::Right => (1, 0),
+            Orientation::Left => (-1, 0),
+            Orientation::Up => (0, -1),
+            Orientation::Down => (0, 1),
         }
     }
 }
@@ -45,32 +45,44 @@ struct State {
 
 impl State {
     fn calc_password(&self) -> usize {
-        1000*(self.row+1) + 4*(self.col+1) + self.dir.as_num()
+        1000 * (self.row + 1) + 4 * (self.col + 1) + self.dir.as_num()
     }
 
     fn go_steps(&mut self, map: &Map, steps: i32) {
         let offset = self.dir.get_offset();
         for _ in 0..steps {
             let mut c = (self.col as i64) + offset.0;
-            if c < 0 { c = map[self.row].len() as i64 - 1; }
+            if c < 0 {
+                c = map[self.row].len() as i64 - 1;
+            }
             if c >= map[self.row].len() as i64 {
                 c = 0;
             }
             while map[self.row][c as usize] == VOID {
                 c += offset.0;
-                if c < 0 { c = map[self.row].len() as i64 - 1; }
+                if c < 0 {
+                    c = map[self.row].len() as i64 - 1;
+                }
                 if c >= map[self.row].len() as i64 {
                     c = 0;
                 }
             }
             let c = c as usize;
             let mut r = (self.row as i64) + offset.1;
-            if r<0 { r = map.len() as i64 - 1; }
-            if r>=map.len() as i64 { r = 0; }
-            while c>=map[r as usize].len() || map[r as usize][c] == VOID {
+            if r < 0 {
+                r = map.len() as i64 - 1;
+            }
+            if r >= map.len() as i64 {
+                r = 0;
+            }
+            while c >= map[r as usize].len() || map[r as usize][c] == VOID {
                 r += offset.1;
-                if r<0 { r = map.len() as i64 - 1; }
-                if r>=map.len() as i64 { r = 0; }
+                if r < 0 {
+                    r = map.len() as i64 - 1;
+                }
+                if r >= map.len() as i64 {
+                    r = 0;
+                }
             }
             if map[r as usize][c] == WALL {
                 return;
@@ -82,14 +94,14 @@ impl State {
 
     // Hard-coded for my specific map layout
     fn cubic_wrap(r: &mut i64, c: &mut i64, dir: &mut Orientation) {
-        if *c < 0 && *r >=100 {
-            if *r >=150 {
-                *c = *r-100;
+        if *c < 0 && *r >= 100 {
+            if *r >= 150 {
+                *c = *r - 100;
                 *r = 0;
                 *dir = Orientation::Down;
             } else {
-                *c=50;
-                *r=149 - *r;
+                *c = 50;
+                *r = 149 - *r;
                 *dir = Orientation::Right;
             }
         } else if *c == 49 && *r < 100 {
@@ -98,16 +110,16 @@ impl State {
                 *r = 149 - *r;
                 *dir = Orientation::Right;
             } else {
-                *c = *r-50;
+                *c = *r - 50;
                 *r = 100;
                 *dir = Orientation::Down;
             }
-        } else if *c==150 {
+        } else if *c == 150 {
             *c = 99;
             *r = 149 - *r;
             *dir = Orientation::Left;
-        } else if *c==100 && *r>=50 && *r<150 {
-            if *r>=100 {
+        } else if *c == 100 && *r >= 50 && *r < 150 {
+            if *r >= 100 {
                 *c = 149;
                 *r = 149 - *r;
                 *dir = Orientation::Left;
@@ -116,7 +128,7 @@ impl State {
                 *r = 49;
                 *dir = Orientation::Up;
             }
-        } else if *c==50 && *r>=150 {
+        } else if *c == 50 && *r >= 150 {
             *c = *r - 100;
             *r = 149;
             *dir = Orientation::Up;
@@ -133,19 +145,18 @@ impl State {
             *r = *c + 50;
             *c = 50;
             *dir = Orientation::Right;
-        } else if *r ==200 {
+        } else if *r == 200 {
             *c += 100;
             *r = 0;
         } else if *r == 150 && *c >= 50 {
             *r = *c + 100;
             *c = 49;
             *dir = Orientation::Left;
-        } else if *r == 50 && *c >=100 {
+        } else if *r == 50 && *c >= 100 {
             *r = *c - 50;
             *c = 99;
             *dir = Orientation::Left
-        } 
-
+        }
     }
 
     fn go_cubic_steps(&mut self, map: &Map, steps: i32) {
@@ -186,9 +197,15 @@ impl State {
     fn walk(&mut self, map: &Map, moves: &[Move]) {
         for m in moves {
             match m {
-                Move::TurnLeft => { self.turn_left(); },
-                Move::TurnRight => { self.turn_right(); },
-                Move::Forward(x) => { self.go_steps(map, *x); }
+                Move::TurnLeft => {
+                    self.turn_left();
+                }
+                Move::TurnRight => {
+                    self.turn_right();
+                }
+                Move::Forward(x) => {
+                    self.go_steps(map, *x);
+                }
             }
         }
     }
@@ -196,9 +213,15 @@ impl State {
     fn cubic_walk(&mut self, map: &Map, moves: &[Move]) {
         for m in moves {
             match m {
-                Move::TurnLeft => { self.turn_left(); },
-                Move::TurnRight => { self.turn_right(); },
-                Move::Forward(x) => { self.go_cubic_steps(map, *x); }
+                Move::TurnLeft => {
+                    self.turn_left();
+                }
+                Move::TurnRight => {
+                    self.turn_right();
+                }
+                Move::Forward(x) => {
+                    self.go_cubic_steps(map, *x);
+                }
             }
         }
     }
@@ -224,13 +247,12 @@ fn read_map_and_moves(lines: io::Lines<io::BufReader<File>>) -> (Map, Vec<Move>)
             map.push(line.as_bytes().to_owned());
         } else {
             for cap in re.captures_iter(&line) {
-                moves.push(
-                    match &cap[0] {
-                        "R" => Move::TurnRight,
-                        "L" => Move::TurnLeft,
-                        num => Move::Forward(num.parse::<i32>().unwrap())
+                moves.push(match &cap[0] {
+                    "R" => Move::TurnRight,
+                    "L" => Move::TurnLeft,
+                    num => Move::Forward(num.parse::<i32>().unwrap()),
                 });
-            }    
+            }
         }
     }
     (map, moves)
@@ -240,10 +262,10 @@ fn find_start(map: &Map) -> State {
     for row in 0..map.len() {
         for col in 0..map[row].len() {
             if map[row][col] == EMPTY {
-                return State{
+                return State {
                     row,
                     col,
-                    dir: Orientation::Right
+                    dir: Orientation::Right,
                 };
             }
         }
@@ -266,4 +288,3 @@ pub fn riddle_22_2(lines: io::Lines<io::BufReader<File>>) {
     let password = state.calc_password();
     println!("Solution: {:?}", password);
 }
-

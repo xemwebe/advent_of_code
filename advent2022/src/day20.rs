@@ -1,6 +1,6 @@
 use super::*;
 
-fn read_values(lines: io::Lines<io::BufReader<File>>) -> Vec<(i64,i64)> {
+fn read_values(lines: io::Lines<io::BufReader<File>>) -> Vec<(i64, i64)> {
     let mut idx = 0;
     lines
         .into_iter()
@@ -25,28 +25,28 @@ fn scramble(vals: &mut Vec<(i64, i64)>) {
         }
         let v = vals[old_idx];
         let mut new_idx = (old_idx as i64) + v.0;
-        if new_idx<0 {
-            let factor = new_idx/(len-1);
-            new_idx -= factor*(len-1);
+        if new_idx < 0 {
+            let factor = new_idx / (len - 1);
+            new_idx -= factor * (len - 1);
             if new_idx < 0 {
-                new_idx += len-1;
+                new_idx += len - 1;
             }
         }
-        if new_idx>=len {
-            let factor = new_idx/(len-1);
-            new_idx -= factor*(len-1);
-            if new_idx>=len {
-                new_idx -= len-1;
+        if new_idx >= len {
+            let factor = new_idx / (len - 1);
+            new_idx -= factor * (len - 1);
+            if new_idx >= len {
+                new_idx -= len - 1;
             }
         }
         let new_idx = new_idx as usize;
         if new_idx < old_idx {
             for k in (new_idx..old_idx).rev() {
-                vals[k+1] = vals[k]
+                vals[k + 1] = vals[k]
             }
         } else if new_idx > old_idx {
             for k in old_idx..new_idx {
-                vals[k] = vals[k+1]
+                vals[k] = vals[k + 1]
             }
         }
         vals[new_idx] = v;
@@ -63,7 +63,7 @@ fn get_coordinate(vals: &Vec<(i64, i64)>) -> i64 {
     let first = (zero_idx + 1000) % vals.len();
     let second = (first + 1000) % vals.len();
     let third = (second + 1000) % vals.len();
-    vals[first].0+vals[second].0+vals[third].0
+    vals[first].0 + vals[second].0 + vals[third].0
 }
 
 pub fn riddle_20_1(lines: io::Lines<io::BufReader<File>>) {
@@ -72,7 +72,7 @@ pub fn riddle_20_1(lines: io::Lines<io::BufReader<File>>) {
     println!("The solution is: {:?}", get_coordinate(&values));
 }
 
-pub fn multiply_with_key(vals: &mut Vec<(i64,i64)>, key: i64) {
+pub fn multiply_with_key(vals: &mut Vec<(i64, i64)>, key: i64) {
     for mut v in vals {
         v.0 *= key;
     }

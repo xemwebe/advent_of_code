@@ -6,18 +6,17 @@ pub fn read_map(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<u8>> {
         .filter_map(|s| s.ok())
         .map(|s| s.into_bytes())
         .collect()
-
 }
 
 fn find_position(v: u8, m: &Vec<Vec<u8>>) -> (usize, usize) {
     for y in 0..m.len() {
         for x in 0..m[y].len() {
             if m[y][x] == v {
-                return (x,y)
+                return (x, y);
             }
         }
     }
-    (0,0)
+    (0, 0)
 }
 
 fn find_path(map: &mut Vec<Vec<u8>>, start: (usize, usize), end: (usize, usize)) -> i32 {
@@ -33,38 +32,37 @@ fn find_path(map: &mut Vec<Vec<u8>>, start: (usize, usize), end: (usize, usize))
     loop {
         let mut new_positions = Vec::new();
         for p in last_positions {
-            let v = map[p.1][p.0]+1;
-            if p.1>0 && dijtra[p.1-1][p.0] == -1 {
-                if map[p.1-1][p.0] <= v {
-                    dijtra[p.1-1][p.0] = step;
-                    new_positions.push((p.0, p.1-1))
+            let v = map[p.1][p.0] + 1;
+            if p.1 > 0 && dijtra[p.1 - 1][p.0] == -1 {
+                if map[p.1 - 1][p.0] <= v {
+                    dijtra[p.1 - 1][p.0] = step;
+                    new_positions.push((p.0, p.1 - 1))
                 }
             }
-            if p.1<ydim-1 && dijtra[p.1+1][p.0] == -1 {
-                if map[p.1+1][p.0] <= v {
-                    dijtra[p.1+1][p.0] = step;
-                    new_positions.push((p.0, p.1+1))
+            if p.1 < ydim - 1 && dijtra[p.1 + 1][p.0] == -1 {
+                if map[p.1 + 1][p.0] <= v {
+                    dijtra[p.1 + 1][p.0] = step;
+                    new_positions.push((p.0, p.1 + 1))
                 }
             }
-            if p.0>0 && dijtra[p.1][p.0-1] == -1 {
-                if map[p.1][p.0-1] <= v {
-                    dijtra[p.1][p.0-1] = step;
-                    new_positions.push((p.0-1, p.1))
+            if p.0 > 0 && dijtra[p.1][p.0 - 1] == -1 {
+                if map[p.1][p.0 - 1] <= v {
+                    dijtra[p.1][p.0 - 1] = step;
+                    new_positions.push((p.0 - 1, p.1))
                 }
             }
-            if p.0<xdim-1 && dijtra[p.1][p.0+1] == -1 {
-                if map[p.1][p.0+1] <= v {
-                    dijtra[p.1][p.0+1] = step;
-                    new_positions.push((p.0+1, p.1))
+            if p.0 < xdim - 1 && dijtra[p.1][p.0 + 1] == -1 {
+                if map[p.1][p.0 + 1] <= v {
+                    dijtra[p.1][p.0 + 1] = step;
+                    new_positions.push((p.0 + 1, p.1))
                 }
             }
         }
-        if dijtra[end.1][end.0]>=0 {
+        if dijtra[end.1][end.0] >= 0 {
             return step;
         }
         step += 1;
         last_positions = new_positions;
-
     }
 }
 
@@ -92,47 +90,46 @@ fn shortest_path(map: &mut Vec<Vec<u8>>, start: (usize, usize)) -> i32 {
     loop {
         let mut new_positions = Vec::new();
         for p in last_positions {
-            let v = map[p.1][p.0]-1;
-            if p.1>0 && dijtra[p.1-1][p.0] == -1 {
-                if map[p.1-1][p.0] >= v {
-                    if map[p.1-1][p.0] == 97 {
+            let v = map[p.1][p.0] - 1;
+            if p.1 > 0 && dijtra[p.1 - 1][p.0] == -1 {
+                if map[p.1 - 1][p.0] >= v {
+                    if map[p.1 - 1][p.0] == 97 {
                         return step;
                     }
-                    dijtra[p.1-1][p.0] = step;
-                    new_positions.push((p.0, p.1-1))
+                    dijtra[p.1 - 1][p.0] = step;
+                    new_positions.push((p.0, p.1 - 1))
                 }
             }
-            if p.1<ydim-1 && dijtra[p.1+1][p.0] == -1 {
-                if map[p.1+1][p.0] >= v {
-                    if map[p.1+1][p.0] == 97 {
+            if p.1 < ydim - 1 && dijtra[p.1 + 1][p.0] == -1 {
+                if map[p.1 + 1][p.0] >= v {
+                    if map[p.1 + 1][p.0] == 97 {
                         return step;
                     }
-                    dijtra[p.1+1][p.0] = step;
-                    new_positions.push((p.0, p.1+1))
+                    dijtra[p.1 + 1][p.0] = step;
+                    new_positions.push((p.0, p.1 + 1))
                 }
             }
-            if p.0>0 && dijtra[p.1][p.0-1] == -1 {
-                if map[p.1][p.0-1] >= v {
-                    if map[p.1][p.0-1] == 97 {
+            if p.0 > 0 && dijtra[p.1][p.0 - 1] == -1 {
+                if map[p.1][p.0 - 1] >= v {
+                    if map[p.1][p.0 - 1] == 97 {
                         return step;
                     }
-                    dijtra[p.1][p.0-1] = step;
-                    new_positions.push((p.0-1, p.1))
+                    dijtra[p.1][p.0 - 1] = step;
+                    new_positions.push((p.0 - 1, p.1))
                 }
             }
-            if p.0<xdim-1 && dijtra[p.1][p.0+1] == -1 {
-                if map[p.1][p.0+1] >= v {
-                    if map[p.1][p.0+1] == 97 {
+            if p.0 < xdim - 1 && dijtra[p.1][p.0 + 1] == -1 {
+                if map[p.1][p.0 + 1] >= v {
+                    if map[p.1][p.0 + 1] == 97 {
                         return step;
                     }
-                    dijtra[p.1][p.0+1] = step;
-                    new_positions.push((p.0+1, p.1))
+                    dijtra[p.1][p.0 + 1] = step;
+                    new_positions.push((p.0 + 1, p.1))
                 }
             }
         }
         step += 1;
         last_positions = new_positions;
-
     }
 }
 

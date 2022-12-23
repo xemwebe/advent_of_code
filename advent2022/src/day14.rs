@@ -1,6 +1,9 @@
 use super::*;
 
-pub fn read_map(mut lines: io::Lines<io::BufReader<File>>, variant2: bool) -> (Vec<Vec<u8>>, usize) {
+pub fn read_map(
+    mut lines: io::Lines<io::BufReader<File>>,
+    variant2: bool,
+) -> (Vec<Vec<u8>>, usize) {
     let mut rocks = Vec::new();
     let mut minx = u16::MAX;
     let mut maxx = 0;
@@ -21,11 +24,7 @@ pub fn read_map(mut lines: io::Lines<io::BufReader<File>>, variant2: bool) -> (V
         }
         rocks.push(points);
     }
-    let offset = if variant2 {
-        0
-    } else {
-        minx - 1
-    };
+    let offset = if variant2 { 0 } else { minx - 1 };
     let sand = (500 - offset) as usize;
     let lenx = if variant2 {
         1000
@@ -74,15 +73,15 @@ fn print_map(m: &Vec<Vec<u8>>) {
 
 fn simulate_sand(map: &mut Vec<Vec<u8>>, sand: usize) -> i32 {
     let mut sand_point = (sand, 0);
-    let maxy = map.len()-1;
+    let maxy = map.len() - 1;
     let mut count = 0;
     loop {
-        if sand_point.1 == maxy || map[0][sand]!=1 {
+        if sand_point.1 == maxy || map[0][sand] != 1 {
             break;
         }
         match map[sand_point.1 + 1][sand_point.0] {
             0 => sand_point.1 += 1,
-            2|8 => {
+            2 | 8 => {
                 if map[sand_point.1 + 1][sand_point.0 - 1] == 0 {
                     sand_point = (sand_point.0 - 1, sand_point.1 + 1);
                 } else if map[sand_point.1 + 1][sand_point.0 + 1] == 0 {
