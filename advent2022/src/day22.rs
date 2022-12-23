@@ -155,9 +155,6 @@ impl State {
             let mut dir = self.dir.clone();
             let mut c = (self.col as i64) + offset.0;
             let mut r = (self.row as i64) + offset.1;
-            let cold = c;
-            let rold = r;
-            let dold = dir.clone();
             Self::cubic_wrap(&mut r, &mut c, &mut dir);
             if map[r as usize][c as usize] == WALL {
                 return;
