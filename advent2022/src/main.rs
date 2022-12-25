@@ -30,7 +30,7 @@ pub mod day8;
 pub mod day9;
 pub mod list;
 pub mod day24;
-// pub mod day25;
+pub mod day25;
 
 use day1::*;
 use day10::*;
@@ -56,7 +56,7 @@ use day7::*;
 use day8::*;
 use day9::*;
 use day24::*;
-// use day25::*;
+use day25::*;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -115,7 +115,7 @@ fn main() {
             "23_2" => riddle_23_2(lines),
             "24_1" => riddle_24_1(lines),
             "24_2" => riddle_24_2(lines),
-            // "25_1" => riddle_25_1(lines),
+            "25_1" => riddle_25_1(lines),
             // "25_2" => riddle_25_2(lines),
             _ => println!("Solution to this riddle is not yet implemented"),
         }
