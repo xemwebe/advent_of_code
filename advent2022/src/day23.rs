@@ -149,7 +149,7 @@ pub fn riddle_23_1(lines: io::Lines<io::BufReader<File>>) {
         direction: Direction::North,
     };
 
-    for i in 0..10 {
+    for _ in 0..10 {
         let moves = state.calc_moves();
         state.move_elves(&moves);
     }

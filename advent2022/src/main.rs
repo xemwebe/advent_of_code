@@ -29,7 +29,7 @@ pub mod day7;
 pub mod day8;
 pub mod day9;
 pub mod list;
-// pub mod day24;
+pub mod day24;
 // pub mod day25;
 
 use day1::*;
@@ -55,7 +55,7 @@ use day6::*;
 use day7::*;
 use day8::*;
 use day9::*;
-// use day24::*;
+use day24::*;
 // use day25::*;
 
 fn main() {
@@ -113,8 +113,8 @@ fn main() {
             "22_2" => riddle_22_2(lines),
             "23_1" => riddle_23_1(lines),
             "23_2" => riddle_23_2(lines),
-            // "24_1" => riddle_24_1(lines),
-            // "24_2" => riddle_24_2(lines),
+            "24_1" => riddle_24_1(lines),
+            "24_2" => riddle_24_2(lines),
             // "25_1" => riddle_25_1(lines),
             // "25_2" => riddle_25_2(lines),
             _ => println!("Solution to this riddle is not yet implemented"),

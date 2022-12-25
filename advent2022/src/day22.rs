@@ -160,9 +160,8 @@ impl State {
     }
 
     fn go_cubic_steps(&mut self, map: &Map, steps: i32) {
-        let mut offset = self.dir.get_offset();
         for _ in 0..steps {
-            offset = self.dir.get_offset();
+            let offset = self.dir.get_offset();
             let mut dir = self.dir.clone();
             let mut c = (self.col as i64) + offset.0;
             let mut r = (self.row as i64) + offset.1;
