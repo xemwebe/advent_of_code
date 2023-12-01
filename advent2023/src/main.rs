@@ -68,7 +68,7 @@ fn main() {
     if let Ok(lines) = read_lines(format!("data/input_{}.txt", riddle)) {
         match riddle.as_str() {
             "1_1" => riddle_1_1(lines),
-//            "1_2" => riddle_1_2(lines),
+            "1_2" => riddle_1_2(lines),
 //            "2_1" => riddle_2_1(lines),
 //            "2_2" => riddle_2_2(lines),
 //            "3_1" => riddle_3_1(lines),
