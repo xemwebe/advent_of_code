@@ -16,7 +16,7 @@ pub mod day1;
 //pub mod day17;
 //pub mod day18;
 //pub mod day19;
-//pub mod day2;
+pub mod day2;
 //pub mod day20;
 //pub mod day21;
 //pub mod day22;
@@ -43,7 +43,7 @@ use day1::*;
 //use day17::*;
 //use day18::*;
 //use day19::*;
-//use day2::*;
+use day2::*;
 //use day20::*;
 //use day21::*;
 //use day22::*;
@@ -69,8 +69,8 @@ fn main() {
         match riddle.as_str() {
             "1_1" => riddle_1_1(lines),
             "1_2" => riddle_1_2(lines),
-//            "2_1" => riddle_2_1(lines),
-//            "2_2" => riddle_2_2(lines),
+            "2_1" => riddle_2_1(lines),
+            "2_2" => riddle_2_2(lines),
 //            "3_1" => riddle_3_1(lines),
 //            "3_2" => riddle_3_2(lines),
 //            "4_1" => riddle_4_1(lines),
