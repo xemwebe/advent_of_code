@@ -74,7 +74,7 @@ fn main() {
             "3_1" => riddle_3_1(lines),
             "3_2" => riddle_3_2(lines),
             "4_1" => riddle_4_1(lines),
-//            "4_2" => riddle_4_2(lines),
+            "4_2" => riddle_4_2(lines),
 //            "5_1" => riddle_5_1(lines),
 //            "5_2" => riddle_5_2(lines),
 //            "6_1" => riddle_6_1(lines),
