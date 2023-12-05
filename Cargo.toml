@@ -1,2 +1,4 @@
 [workspace]
 members = ["advent2020", "advent2021", "advent2022", "advent2023"]
+resolver = "2"
+
