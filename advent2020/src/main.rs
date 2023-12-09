@@ -28,7 +28,7 @@ where P: AsRef<Path>, {
 
 fn riddle_1_1(lines: io::Lines<io::BufReader<File>>) {
     let numbers: Vec<i32> = lines.into_iter()
-    .filter_map(|s| s.ok())
+    .map_while(Result::ok)
     .filter_map(|s| s.parse::<i32>().ok())
     .collect();
 
@@ -44,7 +44,7 @@ fn riddle_1_1(lines: io::Lines<io::BufReader<File>>) {
 
 fn riddle_1_2(lines: io::Lines<io::BufReader<File>>) {
     let numbers: Vec<i32> = lines.into_iter()
-    .filter_map(|s| s.ok())
+    .map_while(Result::ok)
     .filter_map(|s| s.parse::<i32>().ok())
     .collect();
 

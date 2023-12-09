@@ -73,7 +73,7 @@ pub fn riddle_20_1(lines: io::Lines<io::BufReader<File>>) {
 }
 
 pub fn multiply_with_key(vals: &mut Vec<(i64, i64)>, key: i64) {
-    for mut v in vals {
+    for v in vals {
         v.0 *= key;
     }
 }
