@@ -1,28 +1,24 @@
 use super::*;
 
-fn is_digit(c: u8) -> bool {
-    c >= b'0' && c <= b'9'
-}
-
 fn test_num(i: usize, j: usize, chart: &[Vec<u8>]) -> (usize, usize) {
     let mut num = 0;
     let mut k = j;
-    while is_digit(chart[i][k]) {
+    while chart[i][k].is_ascii_digit() {
         num = num * 10 + (chart[i][k] - b'0') as usize;
         k += 1;
     }
     for l in j - 1..=k {
-        if chart[i - 1][l] != b'.' && !is_digit(chart[i - 1][l]) {
+        if chart[i - 1][l] != b'.' && !chart[i - 1][l].is_ascii_digit() {
             return (k, num);
         }
-        if chart[i + 1][l] != b'.' && !is_digit(chart[i + 1][l]) {
+        if chart[i + 1][l] != b'.' && !chart[i + 1][l].is_ascii_digit() {
             return (k, num);
         }
     }
-    if chart[i][j - 1] != b'.' && !is_digit(chart[i][j - 1]) {
+    if chart[i][j - 1] != b'.' && !chart[i][j - 1].is_ascii_digit() {
         return (k, num);
     }
-    if chart[i][k] != b'.' && !is_digit(chart[i][k]) {
+    if chart[i][k] != b'.' && !chart[i][k].is_ascii_digit() {
         return (k, num);
     }
     (k, 0)
@@ -41,7 +37,7 @@ pub fn riddle_3_1(lines: io::Lines<io::BufReader<File>>) {
     for i in 1..chart.len() - 1 {
         let mut j = 1;
         while j < chart[i].len() - 1 {
-            if is_digit(chart[i][j]) {
+            if chart[i][j].is_ascii_digit() {
                 let (k, num) = test_num(i, j, &chart);
                 j = k;
                 sum += num;
@@ -61,13 +57,13 @@ struct NumInfo {
 
 fn read_num(i: usize, j: usize, chart: &[Vec<u8>]) -> NumInfo {
     let mut j_start = j - 1;
-    while is_digit(chart[i][j_start]) {
+    while chart[i][j_start].is_ascii_digit() {
         j_start -= 1;
     }
     j_start += 1;
     let mut k = j_start;
     let mut num = 0;
-    while is_digit(chart[i][k]) {
+    while chart[i][k].is_ascii_digit() {
         num = num * 10 + (chart[i][k] - b'0') as usize;
         k += 1;
     }
@@ -82,8 +78,8 @@ fn get_gear(i: usize, j: usize, chart: &[Vec<u8>]) -> usize {
     let mut gears_found = 0;
     let mut k = j - 1;
     while k <= j + 1 {
-        if is_digit(chart[i - 1][k]) {
-            let info = read_num(i - 1, k, &chart);
+        if chart[i - 1][k].is_ascii_digit() {
+            let info = read_num(i - 1, k, chart);
             gears_found += 1;
             k = info.next;
             gear *= info.num;
@@ -93,8 +89,8 @@ fn get_gear(i: usize, j: usize, chart: &[Vec<u8>]) -> usize {
     }
     let mut k = j - 1;
     while k <= j + 1 {
-        if is_digit(chart[i + 1][k]) {
-            let info = read_num(i + 1, k, &chart);
+        if chart[i + 1][k].is_ascii_digit() {
+            let info = read_num(i + 1, k, chart);
             gears_found += 1;
             k = info.next;
             gear *= info.num;
@@ -102,13 +98,13 @@ fn get_gear(i: usize, j: usize, chart: &[Vec<u8>]) -> usize {
             k += 1;
         }
     }
-    if is_digit(chart[i][j - 1]) {
-        let info = read_num(i, j - 1, &chart);
+    if chart[i][j - 1].is_ascii_digit() {
+        let info = read_num(i, j - 1, chart);
         gears_found += 1;
         gear *= info.num;
     }
-    if is_digit(chart[i][j + 1]) {
-        let info = read_num(i, j + 1, &chart);
+    if chart[i][j + 1].is_ascii_digit() {
+        let info = read_num(i, j + 1, chart);
         gears_found += 1;
         gear *= info.num;
     }

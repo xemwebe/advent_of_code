@@ -64,8 +64,7 @@ fn convert_value_ranges(values: &[ValueRange], map: &[Range]) -> Vec<ValueRange>
     for r in map {
         let dest_end = r.dest + (r.end-r.start);
         let mut extra = None;
-        for i in 0..orig_values.len() {
-            let v = &mut orig_values[i];
+        for v in &mut orig_values {
             let v_len = v.end - v.start;
             if v_len == 0 {
                 continue;
@@ -81,14 +80,14 @@ fn convert_value_ranges(values: &[ValueRange], map: &[Range]) -> Vec<ValueRange>
                 let len = end-start;
                 new_values.push(ValueRange { start, end });
                 if v_len > len {
-                    v.start = v.start+len;
+                    v.start += len;
                 } else {
                     v.start = v.end;
                 }
             } else if v.end>r.start && v.end<=r.end {
                 let len = v.end-r.start;
                 new_values.push(ValueRange { start: r.dest, end: r.dest + len });
-                v.end = v.end-len;
+                v.end -= len;
             }
         }
         if let Some(extra) = extra {

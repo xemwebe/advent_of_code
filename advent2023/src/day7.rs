@@ -7,7 +7,7 @@ struct Hand {
 }
 
 fn calc_frequencies(cards: &[u8; 5]) -> u64 {
-    let mut frequencies = vec![0u8; 15];
+    let mut frequencies = [0u8; 15];
     for c in cards {
         frequencies[*c as usize] += 1;
     }
@@ -16,7 +16,7 @@ fn calc_frequencies(cards: &[u8; 5]) -> u64 {
 }
 
 fn calc_frequencies_with_joker(cards: &[u8; 5]) -> u64 {
-    let mut frequencies = vec![0i32; 15];
+    let mut frequencies = [0i32; 15];
     for c in cards {
         frequencies[*c as usize] += 1;
     }
@@ -33,9 +33,9 @@ fn calc_frequencies_with_joker(cards: &[u8; 5]) -> u64 {
 impl Hand {
     fn new(vals: &[&str]) -> Self {
         let mut cards: [u8; 5] = vals[0].as_bytes()[0..5].try_into().unwrap();
-        for i in 0..5 {
-            cards[i] = match cards[i] {
-                b'2'..=b'9' => cards[i] - b'0',
+        for card in &mut cards {
+            *card = match card {
+                b'2'..=b'9' => *card - b'0',
                 b'T' => 10,
                 b'J' => 11,
                 b'Q' => 12,
@@ -57,9 +57,9 @@ impl Hand {
 
     fn with_joker(vals: &[&str]) -> Self {
         let mut cards: [u8; 5] = vals[0].as_bytes()[0..5].try_into().unwrap();
-        for i in 0..5 {
-            cards[i] = match cards[i] {
-                b'2'..=b'9' => cards[i] - b'0',
+        for card in &mut cards {
+            *card = match card {
+                b'2'..=b'9' => *card - b'0',
                 b'T' => 10,
                 b'J' => 1,
                 b'Q' => 12,
@@ -88,12 +88,9 @@ pub fn riddle_7_1(lines: io::Lines<io::BufReader<File>>) {
         hands.push(Hand::new(&vals));
     }
     hands.sort_by(|a,b| a.score.cmp(&b.score));
-    for hand in &hands {
-        println!("{hand:?}");
-    }
     let mut solution = 0;
-    for i in 0..hands.len() {
-        solution += (i as u32+1)*hands[i].bet;
+    for (i, hand) in hands.iter().enumerate() {
+        solution += (i as u32+1)*hand.bet;
     }
     println!("The solution is: {}", solution);
 }
@@ -107,8 +104,8 @@ pub fn riddle_7_2(lines: io::Lines<io::BufReader<File>>) {
     }
     hands.sort_by(|a,b| a.score.cmp(&b.score));
     let mut solution = 0;
-    for i in 0..hands.len() {
-        solution += (i as u32+1)*hands[i].bet;
+    for (i, hand) in hands.iter().enumerate() {
+        solution += (i as u32+1)*hand.bet;
     }
     println!("The solution is: {}", solution);
 }

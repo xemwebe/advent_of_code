@@ -1,19 +1,15 @@
 use super::*;
 
-fn is_digit(b: u8) -> bool {
-    (b >= b'0') && (b <= b'9')
-}
-
 fn get_num(bytes: &[u8]) -> i32 {
     let mut num = 0;
     for b in bytes {
-        if is_digit(*b) {
+        if (*b).is_ascii_digit() {
             num = 10 * (b - b'0');
             break;
         }
     }
     for i in (0..bytes.len()).rev() {
-        if is_digit(bytes[i]) {
+        if bytes[i].is_ascii_digit() {
             return (num + bytes[i] - b'0').into();
         }
     }
@@ -43,11 +39,11 @@ fn is_digit2(i: usize, b: &[u8]) -> Option<u8> {
         b"nine".to_vec(),
     ];
 
-    if b[i] >= b'0' && b[i] <= b'9' {
+    if b[i].is_ascii_digit() {
         return Some(b[i] - b'0');
     }
-    for j in 0..10 {
-        let di = digits[j].len();
+    for (j, digit) in digits.iter().enumerate().take(10) {
+        let di = digit.len();
         if i+di>b.len() {
             continue;
         }

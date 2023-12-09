@@ -11,8 +11,8 @@ pub fn riddle_4_1(lines: io::Lines<io::BufReader<File>>) {
         let l = line.unwrap().clone();
         let nums: Vec<&str> = l.split(": ").collect();
         let num_halfs: Vec<&str> = nums[1].split(" | ").collect();
-        let winning_nums = get_nums(&num_halfs[0]);
-        let got_nums = get_nums(&num_halfs[1]);
+        let winning_nums = get_nums(num_halfs[0]);
+        let got_nums = get_nums(num_halfs[1]);
         let mut score = 0;
         for got in &got_nums {
             for win in &winning_nums {
@@ -43,8 +43,8 @@ pub fn riddle_4_2(lines: io::Lines<io::BufReader<File>>) {
         let l = line.unwrap().clone();
         let nums: Vec<&str> = l.split(": ").collect();
         let num_halfs: Vec<&str> = nums[1].split(" | ").collect();
-        let winning = get_nums(&num_halfs[0]);
-        let got = get_nums(&num_halfs[1]);
+        let winning = get_nums(num_halfs[0]);
+        let got = get_nums(num_halfs[1]);
         cards.push(Card{
             winning,
             got,
