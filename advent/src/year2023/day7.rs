@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 #[derive(Debug)]
 struct Hand {
@@ -74,7 +82,7 @@ impl Hand {
     }
 }
 
-pub fn riddle_7_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut hands = Vec::new();
     for line in lines {
         let l = line.unwrap().clone();
@@ -86,10 +94,10 @@ pub fn riddle_7_1(lines: io::Lines<io::BufReader<File>>) {
     for (i, hand) in hands.iter().enumerate() {
         solution += (i as u32 + 1) * hand.bet;
     }
-    println!("The solution is: {}", solution);
+    format!("{solution}")
 }
 
-pub fn riddle_7_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut hands = Vec::new();
     for line in lines {
         let l = line.unwrap().clone();
@@ -101,5 +109,5 @@ pub fn riddle_7_2(lines: io::Lines<io::BufReader<File>>) {
     for (i, hand) in hands.iter().enumerate() {
         solution += (i as u32 + 1) * hand.bet;
     }
-    println!("The solution is: {}", solution);
+    format!("{solution}")
 }

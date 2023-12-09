@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 #[derive(Debug)]
 struct Range {
@@ -21,7 +29,7 @@ fn convert_values(values: &[u64], map: &[Range]) -> Vec<u64> {
     new_values
 }
 
-pub fn riddle_5_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut values: Vec<u64> = Vec::new();
     let mut map = Vec::new();
     for line in lines {
@@ -49,7 +57,7 @@ pub fn riddle_5_1(lines: io::Lines<io::BufReader<File>>) {
         values = convert_values(&values, &map);
     }
     let solution = values.iter().min().unwrap();
-    println!("The solution is: {}", solution);
+    format!("{solution}")
 }
 
 #[derive(Clone, Debug)]
@@ -111,7 +119,7 @@ fn convert_value_ranges(values: &[ValueRange], map: &[Range]) -> Vec<ValueRange>
     new_values
 }
 
-pub fn riddle_5_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut values = Vec::new();
     let mut map = Vec::new();
     for line in lines {
@@ -148,5 +156,5 @@ pub fn riddle_5_2(lines: io::Lines<io::BufReader<File>>) {
         values = convert_value_ranges(&values, &map);
     }
     let solution = values.iter().map(|r| r.start).min().unwrap();
-    println!("The solution is: {}", solution);
+    format!("{solution}")
 }

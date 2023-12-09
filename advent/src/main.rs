@@ -21,6 +21,7 @@ struct Args {
 
 mod year2015;
 mod year2020;
+mod year2023;
 
 fn main() {
     let args = Args::parse();
@@ -34,6 +35,7 @@ fn main() {
         let solution = match args.year {
             2015 => year2015::execute(args.day, args.part, lines),
             2020 => year2020::execute(args.day, args.part, lines),
+            2023 => year2023::execute(args.day, args.part, lines),
             _ => format!("Error: solution for year {} not implemented", args.year),
         };
         println!("The solution is: {solution}");

@@ -1,8 +1,16 @@
-use super::*;
+use std::{fs::File, io};
 use num::Integer;
 use std::collections::HashMap;
 
-pub fn riddle_8_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut lines = lines.into_iter();
     let line = lines.next().unwrap().unwrap().clone();
     let directions = line.trim().as_bytes();
@@ -25,7 +33,7 @@ pub fn riddle_8_1(lines: io::Lines<io::BufReader<File>>) {
         };
         solution += 1;
     }
-    println!("The solution is: {}", solution);
+    format!("{solution}")
 }
 
 struct State<'a> {
@@ -56,7 +64,7 @@ fn states_complete(states: &[State]) -> bool {
 // Remark: this could relies on the observation, that at least
 // for my input, a location with 'Z' at the ends coincides
 // always with the maximum index of my directions
-pub fn riddle_8_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut lines = lines.into_iter();
     let line = lines.next().unwrap().unwrap().clone();
     let directions = line.trim().as_bytes();
@@ -100,5 +108,5 @@ pub fn riddle_8_2(lines: io::Lines<io::BufReader<File>>) {
         .map(|s| s.solution)
         .reduce(|acc, e| acc.lcm(&e))
         .unwrap();
-    println!("Solution is {solution}");
+    format!("{solution}")
 }

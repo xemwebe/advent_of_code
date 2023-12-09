@@ -1,6 +1,14 @@
-use super::*;
+use std::{fs::File, io};
 
-pub fn riddle_6_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut lines = lines.into_iter();
     let times: Vec<u64> = lines
         .next()
@@ -24,10 +32,10 @@ pub fn riddle_6_1(lines: io::Lines<io::BufReader<File>>) {
         let count = upper.floor() - lower.ceil() + 1.0;
         solution *= count as u64;
     }
-    println!("The solution is: {}", solution);
+    format!("{solution}")
 }
 
-pub fn riddle_6_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut lines = lines.into_iter();
     let first_line: Vec<String> = lines
         .next()
@@ -50,5 +58,5 @@ pub fn riddle_6_2(lines: io::Lines<io::BufReader<File>>) {
     let lower = t_half - (t_half * t_half - distance as f64).sqrt();
     let upper = t_half + (t_half * t_half - distance as f64).sqrt();
     let solution = upper.floor() - lower.ceil() + 1.0;
-    println!("The solution is: {}", solution);
+    format!("{solution}")
 }

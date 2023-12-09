@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 struct Triangle {
     len: usize,
@@ -82,7 +90,7 @@ impl Triangle {
     }
 }
 
-pub fn riddle_9_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut solution = 0;
     let mut triangle = Triangle::new();
     for line in lines {
@@ -97,10 +105,10 @@ pub fn riddle_9_1(lines: io::Lines<io::BufReader<File>>) {
         }
         solution += triangle.prediction() + sequence.last().unwrap();
     }
-    println!("The solution is: {}", solution);
+    format!("{solution}")
 }
 
-pub fn riddle_9_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut solution = 0;
     let mut triangle = Triangle::new();
     for line in lines {
@@ -115,5 +123,5 @@ pub fn riddle_9_2(lines: io::Lines<io::BufReader<File>>) {
         }
         solution += sequence[0] - triangle.hist_prediction();
     }
-    println!("The solution is: {}", solution);
+    format!("{solution}")
 }

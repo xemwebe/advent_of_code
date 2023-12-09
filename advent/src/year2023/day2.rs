@@ -1,6 +1,14 @@
-use super::*;
+use std::{fs::File, io};
 
-pub fn riddle_2_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut sum = 0;
     let mut idx = 0;
     for line_result in lines {
@@ -39,10 +47,10 @@ pub fn riddle_2_1(lines: io::Lines<io::BufReader<File>>) {
             sum += idx;
         }
     }
-    println!("The solution is: {}", sum);
+    format!("{sum}")
 }
 
-pub fn riddle_2_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut sum = 0;
     let mut idx = 0;
     for line_result in lines {
@@ -79,5 +87,5 @@ pub fn riddle_2_2(lines: io::Lines<io::BufReader<File>>) {
         }
         sum += rbg.0 * rbg.1 * rbg.2;
     }
-    println!("The solution is: {}", sum);
+    format!("{sum}")
 }

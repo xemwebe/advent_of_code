@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn get_num(bytes: &[u8]) -> i32 {
     let mut num = 0;
@@ -16,13 +24,13 @@ fn get_num(bytes: &[u8]) -> i32 {
     0
 }
 
-pub fn riddle_1_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut sum = 0;
     for line in lines {
         let num = get_num(line.unwrap().as_bytes());
         sum += num;
     }
-    println!("The solution is: {}", sum);
+    format!("{sum}")
 }
 
 fn is_digit2(i: usize, b: &[u8]) -> Option<u8> {
@@ -70,11 +78,11 @@ fn get_num2(bytes: &[u8]) -> i32 {
     0
 }
 
-pub fn riddle_1_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut sum = 0;
     for line in lines {
         let num = get_num2(line.unwrap().as_bytes());
         sum += num;
     }
-    println!("The solution is: {}", sum);
+    format!("{sum}")
 }

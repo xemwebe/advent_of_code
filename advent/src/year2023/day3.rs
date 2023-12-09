@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn test_num(i: usize, j: usize, chart: &[Vec<u8>]) -> (usize, usize) {
     let mut num = 0;
@@ -24,7 +32,7 @@ fn test_num(i: usize, j: usize, chart: &[Vec<u8>]) -> (usize, usize) {
     (k, 0)
 }
 
-pub fn riddle_3_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut chart = vec![vec![0u8; 1]];
 
     for line_result in lines {
@@ -46,7 +54,7 @@ pub fn riddle_3_1(lines: io::Lines<io::BufReader<File>>) {
             }
         }
     }
-    println!("The solution is: {}", sum);
+    format!("{sum}")
 }
 
 #[derive(Debug)]
@@ -112,7 +120,7 @@ fn get_gear(i: usize, j: usize, chart: &[Vec<u8>]) -> usize {
     }
 }
 
-pub fn riddle_3_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut chart = vec![vec![0u8; 1]];
 
     for line_result in lines {
@@ -129,5 +137,5 @@ pub fn riddle_3_2(lines: io::Lines<io::BufReader<File>>) {
             }
         }
     }
-    println!("The solution is: {}", sum);
+    format!("{sum}")
 }

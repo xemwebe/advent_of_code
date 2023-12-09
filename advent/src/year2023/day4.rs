@@ -1,11 +1,19 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn get_nums(num_str: &str) -> Vec<i32> {
     let nums: Vec<i32> = num_str.split(' ').filter_map(|s| s.parse().ok()).collect();
     nums
 }
 
-pub fn riddle_4_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut sum = 0;
     for line in lines {
         let l = line.unwrap().clone();
@@ -27,7 +35,7 @@ pub fn riddle_4_1(lines: io::Lines<io::BufReader<File>>) {
         }
         sum += score;
     }
-    println!("The solution is: {}", sum);
+    format!("{sum}")
 }
 
 struct Card {
@@ -36,7 +44,7 @@ struct Card {
     count: usize,
 }
 
-pub fn riddle_4_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String{
     let mut sum = 0;
     let mut cards = Vec::new();
     for line in lines {
@@ -67,5 +75,5 @@ pub fn riddle_4_2(lines: io::Lines<io::BufReader<File>>) {
             cards[j].count += cards[i].count;
         }
     }
-    println!("The solution is: {}", sum);
+    format!("{sum}")
 }
