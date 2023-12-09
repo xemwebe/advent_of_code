@@ -46,7 +46,7 @@ struct SearchStatus {
 
 impl SearchStatus {
     fn new() -> Self {
-        SearchStatus{
+        SearchStatus {
             idx: None,
             left_num: None,
             right_num: None,
@@ -72,7 +72,7 @@ impl SnailFish {
         let mut new_status = status.clone();
         match self.v[idx] {
             SFNumber::Number(_) => {
-                if status.idx.is_some()  { 
+                if status.idx.is_some() {
                     if status.right_num.is_none() {
                         // set index of first right num
                         new_status.right_num = Some(idx);
@@ -90,8 +90,8 @@ impl SnailFish {
                 } else {
                     new_status = self.search_depth4(i, depth + 1, new_status);
                     new_status = self.search_depth4(j, depth + 1, new_status);
-                    }
-                },
+                }
+            }
             SFNumber::Empty => panic!("Tried to access invalid SFNum"),
         }
         new_status
@@ -103,18 +103,18 @@ impl SnailFish {
         if let Some(idx) = status.idx {
             has_changed = true;
             let idx_nums = match self.v[idx] {
-                SFNumber::Pair(i,j) => {
+                SFNumber::Pair(i, j) => {
                     let num1 = match self.v[i] {
                         SFNumber::Number(x) => x,
-                        _ => panic!("Unreachable code")
+                        _ => panic!("Unreachable code"),
                     };
                     let num2 = match self.v[j] {
                         SFNumber::Number(x) => x,
-                        _ => panic!("Unreachable code")
+                        _ => panic!("Unreachable code"),
                     };
                     (num1, num2)
-                },
-                _ => panic!("Could unreachable")
+                }
+                _ => panic!("Could unreachable"),
             };
             if let Some(left_num) = status.left_num {
                 match self.v[left_num] {
@@ -147,21 +147,21 @@ impl SnailFish {
     fn find_splitable(&self, idx: usize) -> Option<usize> {
         match self.v[idx] {
             SFNumber::Number(x) => {
-                if x>9 {
+                if x > 9 {
                     Some(idx)
                 } else {
                     None
                 }
-            },
-            SFNumber::Pair(i,j) => {
+            }
+            SFNumber::Pair(i, j) => {
                 let left_idx = self.find_splitable(i);
                 if left_idx.is_some() {
                     left_idx
                 } else {
                     self.find_splitable(j)
                 }
-            },
-            SFNumber::Empty => panic!("Tried to acces empty node")
+            }
+            SFNumber::Empty => panic!("Tried to acces empty node"),
         }
     }
 
@@ -171,12 +171,12 @@ impl SnailFish {
         if let Some(idx) = idx {
             match self.v[idx] {
                 SFNumber::Number(x) => {
-                    self.v.push(SFNumber::Number(x/2));
-                    self.v.push(SFNumber::Number((x+1)/2));
-                    self.v[idx] = SFNumber::Pair(self.v.len()-2, self.v.len()-1);
+                    self.v.push(SFNumber::Number(x / 2));
+                    self.v.push(SFNumber::Number((x + 1) / 2));
+                    self.v[idx] = SFNumber::Pair(self.v.len() - 2, self.v.len() - 1);
                     has_changed = true;
-                },
-                _ => panic!("Unreachable code")
+                }
+                _ => panic!("Unreachable code"),
             }
         }
         has_changed
@@ -214,10 +214,10 @@ impl SnailFish {
         }
     }
 
-    fn magnitude(&self, idx: usize) -> usize  {
+    fn magnitude(&self, idx: usize) -> usize {
         match self.v[idx] {
             SFNumber::Number(x) => x as usize,
-            SFNumber::Pair(i,j) => 3*self.magnitude(i) + 2*self.magnitude(j),
+            SFNumber::Pair(i, j) => 3 * self.magnitude(i) + 2 * self.magnitude(j),
             SFNumber::Empty => panic!("Tried to acces empty node"),
         }
     }
@@ -275,7 +275,7 @@ pub fn riddle_18_2(lines: io::Lines<io::BufReader<File>>) {
     let mut max_magnitude = 0;
     let n = nums.len();
     for i in 0..n {
-        for j in i+1..n {
+        for j in i + 1..n {
             let mut num1 = nums[i].clone();
             num1.add(&nums[j]);
             num1.reduce();

@@ -1,7 +1,10 @@
 use super::*;
-use std::{collections::HashSet, ops::{Add, Sub}};
 use num::traits::Zero;
 use std::fmt;
+use std::{
+    collections::HashSet,
+    ops::{Add, Sub},
+};
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone)]
 struct Point<T> {
@@ -9,8 +12,10 @@ struct Point<T> {
     y: T,
 }
 
-impl<T> Point<T> 
-where T: Zero+Add+Sub+PartialEq+Eq+Copy {
+impl<T> Point<T>
+where
+    T: Zero + Add + Sub + PartialEq + Eq + Copy,
+{
     fn new() -> Self {
         Self {
             x: T::zero(),
@@ -23,9 +28,9 @@ where T: Zero+Add+Sub+PartialEq+Eq+Copy {
             x: self.x + x,
             y: self.y + y,
         }
-    } 
+    }
 
-    fn set(&mut self, x: T, y:T) {
+    fn set(&mut self, x: T, y: T) {
         self.x = x;
         self.y = y;
     }
@@ -62,23 +67,23 @@ impl Map {
     fn is_free(&self, p: &Point<i32>, time: i32) -> bool {
         let dimx = self.up.len() as i32;
         let dimy = self.up[0].len() as i32;
-        if p.x == 0 || p.y ==0 || p.y > dimy || p.x > dimx {
+        if p.x == 0 || p.y == 0 || p.y > dimy || p.x > dimx {
             // println!("{p} is out of bounds");
-            return *p==self.start || *p==self.end;
+            return *p == self.start || *p == self.end;
         }
-        if self.up[((p.x-1 + time) % dimx) as usize][(p.y-1) as usize] {
+        if self.up[((p.x - 1 + time) % dimx) as usize][(p.y - 1) as usize] {
             // println!("{p} up blocked");
             return false;
         }
-        if self.down[((p.x-1 + dimx - time%dimx) % dimx) as usize][(p.y-1) as usize] {
+        if self.down[((p.x - 1 + dimx - time % dimx) % dimx) as usize][(p.y - 1) as usize] {
             // println!("{p} down blocked");
             return false;
         }
-        if self.left[(p.x-1) as usize][((p.y-1 + time) % dimy) as usize] {
+        if self.left[(p.x - 1) as usize][((p.y - 1 + time) % dimy) as usize] {
             // println!("{p} left blocked");
             return false;
         }
-        if self.right[(p.x-1) as usize][((p.y-1 + dimy - time%dimy) % dimy) as usize] {
+        if self.right[(p.x - 1) as usize][((p.y - 1 + dimy - time % dimy) % dimy) as usize] {
             // println!("{p} right blocked");
             return false;
         }
@@ -96,7 +101,7 @@ fn read_map(mut lines: io::Lines<io::BufReader<File>>) -> Map {
             for col in 1..bytes.len() {
                 if bytes[col] == 46 {
                     map.start.set(row, col as i32);
-                    xdim = bytes.len()-2;
+                    xdim = bytes.len() - 2;
                     break;
                 }
             }
@@ -114,12 +119,12 @@ fn read_map(mut lines: io::Lines<io::BufReader<File>>) -> Map {
             map.right.push(vec![false; xdim]);
             let r = row as usize - 1;
             for col in 0..xdim {
-                match bytes[col+1] {
+                match bytes[col + 1] {
                     94 => map.up[r][col] = true,
                     118 => map.down[r][col] = true,
                     60 => map.left[r][col] = true,
                     62 => map.right[r][col] = true,
-                    _ => {},
+                    _ => {}
                 }
             }
         }
@@ -152,12 +157,12 @@ impl State {
             let mut free = HashSet::new();
             for p in &self.free {
                 // println!("checking {p}");
-                self.add_to_free(&p, &mut free, map); 
-                self.add_to_free(&p.plus(1,0),&mut free, map); 
-                if p.x!=0 { 
-                    self.add_to_free(&p.plus(0, -1), &mut free, map); 
-                    self.add_to_free(&p.plus(-1 ,0), &mut free, map); 
-                    self.add_to_free(&p.plus(0,1), &mut free, map);
+                self.add_to_free(&p, &mut free, map);
+                self.add_to_free(&p.plus(1, 0), &mut free, map);
+                if p.x != 0 {
+                    self.add_to_free(&p.plus(0, -1), &mut free, map);
+                    self.add_to_free(&p.plus(-1, 0), &mut free, map);
+                    self.add_to_free(&p.plus(0, 1), &mut free, map);
                 }
             }
             // println!("time:  {time}, free: {free:?}");

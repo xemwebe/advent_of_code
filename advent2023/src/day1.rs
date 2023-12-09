@@ -44,7 +44,7 @@ fn is_digit2(i: usize, b: &[u8]) -> Option<u8> {
     }
     for (j, digit) in digits.iter().enumerate().take(10) {
         let di = digit.len();
-        if i+di>b.len() {
+        if i + di > b.len() {
             continue;
         }
         if b[i..i + di] == digits[j] {

@@ -6,45 +6,49 @@ struct Node {
     val: u8,
 }
 
-fn read_grid(lines: io::Lines<io::BufReader<File>>) ->Vec<Vec<Node>> {
+fn read_grid(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<Node>> {
     let zero = "0".bytes().next().unwrap();
 
-    lines.into_iter().filter_map(|x| x.ok())
-        .map(|x| x.bytes().map(|x| 
-            Node{ 
-                dist: usize::MAX,
-                val: x-zero
-            }).collect::<Vec<Node>>() )
+    lines
+        .into_iter()
+        .filter_map(|x| x.ok())
+        .map(|x| {
+            x.bytes()
+                .map(|x| Node {
+                    dist: usize::MAX,
+                    val: x - zero,
+                })
+                .collect::<Vec<Node>>()
+        })
         .collect()
-
 }
 
 fn update_cell(grid: &mut Vec<Vec<Node>>, x: usize, y: usize) -> bool {
     let mut has_changed = false;
     let my_dist = grid[y][x].dist;
-    if x>0 {
-        if grid[y][x-1].dist > grid[y][x-1].val as usize + my_dist {
-            grid[y][x-1].dist = grid[y][x-1].val as usize + my_dist;
+    if x > 0 {
+        if grid[y][x - 1].dist > grid[y][x - 1].val as usize + my_dist {
+            grid[y][x - 1].dist = grid[y][x - 1].val as usize + my_dist;
             has_changed = true
-        }   
+        }
     }
-    if x+1<grid[0].len() {
-        if grid[y][x+1].dist > grid[y][x+1].val as usize + my_dist {
-            grid[y][x+1].dist = grid[y][x+1].val as usize + my_dist;
+    if x + 1 < grid[0].len() {
+        if grid[y][x + 1].dist > grid[y][x + 1].val as usize + my_dist {
+            grid[y][x + 1].dist = grid[y][x + 1].val as usize + my_dist;
             has_changed = true
-        }   
+        }
     }
-    if y>0 {
-        if grid[y-1][x].dist > grid[y-1][x].val as usize + my_dist {
-            grid[y-1][x].dist = grid[y-1][x].val as usize + my_dist;
+    if y > 0 {
+        if grid[y - 1][x].dist > grid[y - 1][x].val as usize + my_dist {
+            grid[y - 1][x].dist = grid[y - 1][x].val as usize + my_dist;
             has_changed = true
-        }   
+        }
     }
-    if y+1<grid.len() {
-        if grid[y+1][x].dist > grid[y+1][x].val as usize + my_dist {
-            grid[y+1][x].dist = grid[y+1][x].val as usize + my_dist;
+    if y + 1 < grid.len() {
+        if grid[y + 1][x].dist > grid[y + 1][x].val as usize + my_dist {
+            grid[y + 1][x].dist = grid[y + 1][x].val as usize + my_dist;
             has_changed = true
-        }   
+        }
     }
     has_changed
 }
@@ -87,16 +91,16 @@ fn enlarge_grid(grid: &mut Vec<Vec<Node>>) {
     let ylen = tmp_grid.len();
     for d in 1..=8 {
         increas_val(&mut tmp_grid);
-        let xxmin = if d>4 { d-4 } else { 0 };
+        let xxmin = if d > 4 { d - 4 } else { 0 };
         for xx in xxmin..=d.min(4) {
-            if xx==0 {
+            if xx == 0 {
                 for v in tmp_grid.iter() {
                     grid.push(v.clone())
                 }
             } else {
-                let yy = (d-xx)*ylen;
+                let yy = (d - xx) * ylen;
                 for y in 0..tmp_grid.len() {
-                    grid[y+yy].extend(tmp_grid[y].iter())
+                    grid[y + yy].extend(tmp_grid[y].iter())
                 }
             }
         }

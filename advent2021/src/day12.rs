@@ -53,7 +53,9 @@ fn prepare_nodes(pairs: Vec<(String, String)>) -> (usize, Vec<Node>) {
     let mut start = 0;
     let mut node_map = HashMap::new();
     for (i, n) in nodes.iter().enumerate() {
-        if n.name=="start" { start = i; }
+        if n.name == "start" {
+            start = i;
+        }
         node_map.insert(n.name.clone(), i);
     }
 
@@ -67,8 +69,14 @@ fn prepare_nodes(pairs: Vec<(String, String)>) -> (usize, Vec<Node>) {
     (start, nodes)
 }
 
-fn find_all_paths(current_path: Vec<usize>, double_chance: bool, nodes: &Vec<Node>, visited: HashSet<usize>, paths: &mut Vec<Vec<usize>>) {
-    let idx = current_path[current_path.len()-1];
+fn find_all_paths(
+    current_path: Vec<usize>,
+    double_chance: bool,
+    nodes: &Vec<Node>,
+    visited: HashSet<usize>,
+    paths: &mut Vec<Vec<usize>>,
+) {
+    let idx = current_path[current_path.len() - 1];
 
     // end of path store and return
     if nodes[idx].name == "end" {
@@ -82,9 +90,9 @@ fn find_all_paths(current_path: Vec<usize>, double_chance: bool, nodes: &Vec<Nod
             double_chance = false;
         } else {
             return;
-        } 
+        }
     }
-    
+
     let mut visited = visited.clone();
     // remember small caves
     if nodes[idx].is_small {
@@ -101,7 +109,7 @@ fn find_all_paths(current_path: Vec<usize>, double_chance: bool, nodes: &Vec<Nod
 pub fn riddle_12_1(lines: io::Lines<io::BufReader<File>>) {
     let pairs = read_pairs(lines);
     let (start, nodes) = prepare_nodes(pairs);
-    
+
     let mut paths = Vec::new();
     let visited = HashSet::new();
     let start_path = vec![start];
@@ -113,7 +121,7 @@ pub fn riddle_12_1(lines: io::Lines<io::BufReader<File>>) {
 pub fn riddle_12_2(lines: io::Lines<io::BufReader<File>>) {
     let pairs = read_pairs(lines);
     let (start, nodes) = prepare_nodes(pairs);
-    
+
     let mut paths = Vec::new();
     let visited = HashSet::new();
     let start_path = vec![start];

@@ -2,13 +2,10 @@ use super::*;
 use std::collections::VecDeque;
 
 fn read_algo_and_image(lines: io::Lines<io::BufReader<File>>) -> (String, VecDeque<String>) {
-    let mut line_iter = lines.into_iter()
-        .filter_map(|x| x.ok());   
+    let mut line_iter = lines.into_iter().filter_map(|x| x.ok());
     let algo_string = line_iter.next().unwrap();
-    let image: VecDeque<String> = line_iter
-        .skip(1)
-        .collect();
-    
+    let image: VecDeque<String> = line_iter.skip(1).collect();
+
     (algo_string, image)
 }
 
@@ -23,7 +20,7 @@ fn extend_image(image: &mut VecDeque<String>, outer_space: char) {
 
 fn enhance_image(image: &VecDeque<String>, algo: &str) -> VecDeque<String> {
     let mut new_image = VecDeque::new();
-    let outer_space = if &image[0][0..=0]=="." {
+    let outer_space = if &image[0][0..=0] == "." {
         &algo[0..=0]
     } else {
         &algo[511..=511]
@@ -31,14 +28,14 @@ fn enhance_image(image: &VecDeque<String>, algo: &str) -> VecDeque<String> {
     let n = image[0].len();
     let outer_row: String = (0..n).into_iter().map(|_| outer_space).collect();
     new_image.push_back(outer_row.clone());
-    for i in 1..image.len()-1 {
+    for i in 1..image.len() - 1 {
         let mut row = outer_space.to_string();
-        for j in 1..n-1 {
+        for j in 1..n - 1 {
             let mut num = 0;
             for k in 0..3 {
                 for l in 0..3 {
                     num <<= 1;
-                    num += if &image[i+k-1][j+l-1..j+l] == "#" {
+                    num += if &image[i + k - 1][j + l - 1..j + l] == "#" {
                         1
                     } else {
                         0
@@ -55,7 +52,12 @@ fn enhance_image(image: &VecDeque<String>, algo: &str) -> VecDeque<String> {
 }
 
 pub fn count_lit_pixels(image: &VecDeque<String>) -> usize {
-    image.iter().map(|x| x.chars() ).flatten().filter(|x| *x=='#').count()
+    image
+        .iter()
+        .map(|x| x.chars())
+        .flatten()
+        .filter(|x| *x == '#')
+        .count()
 }
 
 pub fn riddle_20_1(lines: io::Lines<io::BufReader<File>>) {

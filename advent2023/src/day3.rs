@@ -67,10 +67,7 @@ fn read_num(i: usize, j: usize, chart: &[Vec<u8>]) -> NumInfo {
         num = num * 10 + (chart[i][k] - b'0') as usize;
         k += 1;
     }
-    NumInfo {
-        next: k,
-        num,
-    }
+    NumInfo { next: k, num }
 }
 
 fn get_gear(i: usize, j: usize, chart: &[Vec<u8>]) -> usize {

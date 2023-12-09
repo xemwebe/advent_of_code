@@ -1,7 +1,7 @@
 use super::*;
 
 fn get_nums(num_str: &str) -> Vec<i32> {
-    let nums: Vec<i32> = num_str.split(' ').filter_map(|s| s.parse().ok() ).collect();
+    let nums: Vec<i32> = num_str.split(' ').filter_map(|s| s.parse().ok()).collect();
     nums
 }
 
@@ -16,8 +16,8 @@ pub fn riddle_4_1(lines: io::Lines<io::BufReader<File>>) {
         let mut score = 0;
         for got in &got_nums {
             for win in &winning_nums {
-                if got==win {
-                    if score==0 {
+                if got == win {
+                    if score == 0 {
                         score = 1;
                     } else {
                         score *= 2;
@@ -45,24 +45,24 @@ pub fn riddle_4_2(lines: io::Lines<io::BufReader<File>>) {
         let num_halfs: Vec<&str> = nums[1].split(" | ").collect();
         let winning = get_nums(num_halfs[0]);
         let got = get_nums(num_halfs[1]);
-        cards.push(Card{
+        cards.push(Card {
             winning,
             got,
-            count: 1
+            count: 1,
         });
     }
     for i in 0..cards.len() {
         let mut score = 0;
         for got in &cards[i].got {
             for win in &cards[i].winning {
-                if got==win {
+                if got == win {
                     score += 1;
                 }
             }
         }
         sum += cards[i].count;
-        let start = i+1;
-        let end = cards.len().min(start+score);
+        let start = i + 1;
+        let end = cards.len().min(start + score);
         for j in start..end {
             cards[j].count += cards[i].count;
         }

@@ -1,18 +1,10 @@
+use anyhow::{anyhow, Result};
 use std::env;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
-use anyhow::{anyhow, Result};
 
 pub mod day1;
-pub mod day2;
-pub mod day3;
-pub mod day4;
-pub mod day5;
-pub mod day6;
-pub mod day7;
-pub mod day8;
-pub mod day9;
 pub mod day10;
 pub mod day11;
 pub mod day12;
@@ -23,22 +15,22 @@ pub mod day16;
 pub mod day17;
 pub mod day18;
 pub mod day19;
+pub mod day2;
 pub mod day20;
 pub mod day21;
 pub mod day22;
 pub mod day23;
 pub mod day24;
 pub mod day25;
+pub mod day3;
+pub mod day4;
+pub mod day5;
+pub mod day6;
+pub mod day7;
+pub mod day8;
+pub mod day9;
 
 use day1::*;
-use day2::*;
-use day3::*;
-use day4::*;
-use day5::*;
-use day6::*;
-use day7::*;
-use day8::*;
-use day9::*;
 use day10::*;
 use day11::*;
 use day12::*;
@@ -49,12 +41,20 @@ use day16::*;
 use day17::*;
 use day18::*;
 use day19::*;
+use day2::*;
 use day20::*;
 use day21::*;
 use day22::*;
 use day23::*;
 use day24::*;
 use day25::*;
+use day3::*;
+use day4::*;
+use day5::*;
+use day6::*;
+use day7::*;
+use day8::*;
+use day9::*;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -118,11 +118,12 @@ fn main() {
             _ => println!("Invalid riddle"),
         }
     }
-    
 }
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where P: AsRef<Path>, {
+where
+    P: AsRef<Path>,
+{
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
 }

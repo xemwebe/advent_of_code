@@ -1,21 +1,23 @@
 use super::*;
 
 fn read_map(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<u8>> {
-    lines.into_iter()
+    lines
+        .into_iter()
         .filter_map(|x| x.ok())
-        .map(|x| x.bytes().collect::<Vec<u8>>() ).collect()
-    }
+        .map(|x| x.bytes().collect::<Vec<u8>>())
+        .collect()
+}
 
 fn print_map(map: &Vec<Vec<u8>>) {
     for row in map {
-        println!("{}", String::from_utf8((*row).clone()).unwrap() );
+        println!("{}", String::from_utf8((*row).clone()).unwrap());
     }
 }
 
 // 'v' = 118
 // '>' = 62
 // '.' = 46
-fn one_step(map: &Vec<Vec<u8>>) -> (bool,Vec<Vec<u8>>) {
+fn one_step(map: &Vec<Vec<u8>>) -> (bool, Vec<Vec<u8>>) {
     let rows = map.len();
     let cols = map[0].len();
     let mut new_map = map.clone();
@@ -24,7 +26,7 @@ fn one_step(map: &Vec<Vec<u8>>) -> (bool,Vec<Vec<u8>>) {
     for i in 0..rows {
         for j in 0..cols {
             if map[i][j] == 62 {
-                let next_j = if j+1 == cols  { 0 } else { j+1 };
+                let next_j = if j + 1 == cols { 0 } else { j + 1 };
                 if map[i][next_j] == 46 {
                     new_map[i][j] = 46;
                     new_map[i][next_j] = 62;
@@ -32,13 +34,13 @@ fn one_step(map: &Vec<Vec<u8>>) -> (bool,Vec<Vec<u8>>) {
                 }
             }
         }
-    } 
+    }
     // Move '>'
     let mut final_map = new_map.clone();
     for i in 0..rows {
         for j in 0..cols {
             if new_map[i][j] == 118 {
-                let next_i = if i+1 == rows  { 0 } else { i+1 };
+                let next_i = if i + 1 == rows { 0 } else { i + 1 };
                 if new_map[next_i][j] == 46 {
                     final_map[i][j] = 46;
                     final_map[next_i][j] = 118;
@@ -46,7 +48,7 @@ fn one_step(map: &Vec<Vec<u8>>) -> (bool,Vec<Vec<u8>>) {
                 }
             }
         }
-    } 
+    }
     (has_changed, final_map)
 }
 

@@ -83,7 +83,7 @@ fn process_instructions(input: &[i64], z: i64, instructions: &[Instruction]) -> 
             }
             Instruction::Div(a, b) => {
                 if let Arg::Register(a) = a {
-                    if b.get_number(&registers)==0 {
+                    if b.get_number(&registers) == 0 {
                         return i64::MAX;
                     }
                     registers[*a as usize] /= b.get_number(&registers);
@@ -91,7 +91,7 @@ fn process_instructions(input: &[i64], z: i64, instructions: &[Instruction]) -> 
             }
             Instruction::Mod(a, b) => {
                 if let Arg::Register(a) = a {
-                    if registers[*a as usize]<0 || b.get_number(&registers)<=0 {
+                    if registers[*a as usize] < 0 || b.get_number(&registers) <= 0 {
                         return i64::MAX;
                     }
                     registers[*a as usize] %= b.get_number(&registers);
@@ -122,7 +122,7 @@ pub fn riddle_24_1(lines: io::Lines<io::BufReader<File>>) {
     start_indices.push(instructions.len());
     let mut allowed_z = HashMap::new();
     allowed_z.insert(0, vec![]);
-    for i in (0..start_indices.len()-1).rev() {
+    for i in (0..start_indices.len() - 1).rev() {
         let mut new_allowed_z = HashMap::new();
         for z in 0..250000 {
             for w in (1..=9).rev() {
@@ -155,7 +155,7 @@ pub fn riddle_24_2(lines: io::Lines<io::BufReader<File>>) {
     start_indices.push(instructions.len());
     let mut allowed_z = HashMap::new();
     allowed_z.insert(0, vec![]);
-    for i in (0..start_indices.len()-1).rev() {
+    for i in (0..start_indices.len() - 1).rev() {
         let mut new_allowed_z = HashMap::new();
         for z in 0..160000 {
             for w in 1..=9 {
@@ -186,10 +186,12 @@ pub fn riddle_24_2_(lines: io::Lines<io::BufReader<File>>) {
         }
     }
     start_indices.push(instructions.len());
-    let input = vec![6,1,1,9,1,5,1,6,1,1,1,3,2,1];
+    let input = vec![6, 1, 1, 9, 1, 5, 1, 6, 1, 1, 1, 3, 2, 1];
     for i in 0..13 {
-        let result = process_instructions(&input, 0, 
-            &instructions[start_indices[0]..start_indices[i+1]],
+        let result = process_instructions(
+            &input,
+            0,
+            &instructions[start_indices[0]..start_indices[i + 1]],
         );
         println!("{}", result);
     }

@@ -17,42 +17,44 @@ fn main() {
             _ => println!("Invalid riddle"),
         }
     }
-    
 }
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where P: AsRef<Path>, {
+where
+    P: AsRef<Path>,
+{
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
 }
 
 fn riddle_1_1(lines: io::Lines<io::BufReader<File>>) {
-    let numbers: Vec<i32> = lines.into_iter()
-    .map_while(Result::ok)
-    .filter_map(|s| s.parse::<i32>().ok())
-    .collect();
+    let numbers: Vec<i32> = lines
+        .into_iter()
+        .map_while(Result::ok)
+        .filter_map(|s| s.parse::<i32>().ok())
+        .collect();
 
     for (idx, i) in numbers.iter().enumerate() {
-        for j in numbers[idx+1..].iter() {
-            if i+j==2020 {
-                println!("The solution is: {}", i*j);
-            } 
+        for j in numbers[idx + 1..].iter() {
+            if i + j == 2020 {
+                println!("The solution is: {}", i * j);
+            }
         }
     }
 }
 
-
 fn riddle_1_2(lines: io::Lines<io::BufReader<File>>) {
-    let numbers: Vec<i32> = lines.into_iter()
-    .map_while(Result::ok)
-    .filter_map(|s| s.parse::<i32>().ok())
-    .collect();
+    let numbers: Vec<i32> = lines
+        .into_iter()
+        .map_while(Result::ok)
+        .filter_map(|s| s.parse::<i32>().ok())
+        .collect();
 
     for (idx, i) in numbers.iter().enumerate() {
-        for (jdx, j) in numbers[idx+1..].iter().enumerate() {
-            for k in numbers[idx+jdx+1..].iter() {
-                if i+j+k==2020 {
-                    println!("The solution is: {}", i*j*k);
+        for (jdx, j) in numbers[idx + 1..].iter().enumerate() {
+            for k in numbers[idx + jdx + 1..].iter() {
+                if i + j + k == 2020 {
+                    println!("The solution is: {}", i * j * k);
                 }
             }
         }

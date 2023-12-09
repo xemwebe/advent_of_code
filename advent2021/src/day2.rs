@@ -27,12 +27,12 @@ impl Move {
             Some("forward") => Ok(Direction::Forward),
             Some("up") => Ok(Direction::Up),
             Some("down") => Ok(Direction::Down),
-            _ => Err(anyhow!("Unknown direction"))
+            _ => Err(anyhow!("Unknown direction")),
         }?;
         if let Some(v) = parts.next() {
-            Ok(Move{
+            Ok(Move {
                 direction,
-                value: v.parse::<i32>()? 
+                value: v.parse::<i32>()?,
             })
         } else {
             Err(anyhow!("Invalid direction value"))
@@ -41,12 +41,17 @@ impl Move {
 }
 
 pub fn riddle_2_1(lines: io::Lines<io::BufReader<File>>) {
-    let moves: Vec<Move> = lines.into_iter()
-    .filter_map(|s| s.ok())
-    .filter_map(|s| Move::parse(&s).ok() )
-    .collect();
+    let moves: Vec<Move> = lines
+        .into_iter()
+        .filter_map(|s| s.ok())
+        .filter_map(|s| Move::parse(&s).ok())
+        .collect();
 
-    let mut pos = Position{horizontal: 0, depth: 0, aim: 0};
+    let mut pos = Position {
+        horizontal: 0,
+        depth: 0,
+        aim: 0,
+    };
     for m in moves {
         match m.direction {
             Direction::Forward => pos.horizontal += m.value,
@@ -54,25 +59,30 @@ pub fn riddle_2_1(lines: io::Lines<io::BufReader<File>>) {
             Direction::Down => pos.depth += m.value,
         }
     }
-    println!("{:?}", pos);    
+    println!("{:?}", pos);
 }
 
 pub fn riddle_2_2(lines: io::Lines<io::BufReader<File>>) {
-    let moves: Vec<Move> = lines.into_iter()
-    .filter_map(|s| s.ok())
-    .filter_map(|s| Move::parse(&s).ok() )
-    .collect();
+    let moves: Vec<Move> = lines
+        .into_iter()
+        .filter_map(|s| s.ok())
+        .filter_map(|s| Move::parse(&s).ok())
+        .collect();
 
-    let mut pos = Position{horizontal: 0, depth: 0, aim: 0};
+    let mut pos = Position {
+        horizontal: 0,
+        depth: 0,
+        aim: 0,
+    };
     for m in moves {
         match m.direction {
-            Direction::Forward => { 
+            Direction::Forward => {
                 pos.horizontal += m.value;
-                pos.depth += pos.aim*m.value;
+                pos.depth += pos.aim * m.value;
             }
             Direction::Up => pos.aim -= m.value,
             Direction::Down => pos.aim += m.value,
         }
     }
-    println!("{:?}", pos);    
+    println!("{:?}", pos);
 }

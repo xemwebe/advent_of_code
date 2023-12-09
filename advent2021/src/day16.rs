@@ -1,15 +1,12 @@
 use super::*;
 use bit_range::BitRange;
 
-fn read_message(lines: io::Lines<io::BufReader<File>>) ->Vec<u8> {
-    let message = lines.into_iter()
-        .filter_map(|x| x.ok())
-        .next()
-        .unwrap();
+fn read_message(lines: io::Lines<io::BufReader<File>>) -> Vec<u8> {
+    let message = lines.into_iter().filter_map(|x| x.ok()).next().unwrap();
     let message: Vec<char> = message.chars().collect();
     message
         .chunks(2)
-        .map(|x| u8::from_str_radix(&x.iter().collect::<String>(), 16).unwrap() )
+        .map(|x| u8::from_str_radix(&x.iter().collect::<String>(), 16).unwrap())
         .collect()
 }
 
@@ -27,7 +24,7 @@ struct Package {
 }
 
 fn read_bits(msg: &[u8], p: &mut u32, bits: u32) -> u32 {
-    let val = msg.get_bit_range(*p..*p+bits);
+    let val = msg.get_bit_range(*p..*p + bits);
     *p += bits;
     val
 }
@@ -59,7 +56,9 @@ fn read_package_list(msg: &[u8], p: &mut u32) -> Vec<Package> {
     let start_pointer = *p;
     loop {
         packages.push(parse_package(msg, p));
-        if (is_bit_size && *p-start_pointer == bit_size) || (!is_bit_size && packages.len() == num_packages) {
+        if (is_bit_size && *p - start_pointer == bit_size)
+            || (!is_bit_size && packages.len() == num_packages)
+        {
             break;
         }
     }
@@ -71,7 +70,7 @@ fn parse_package(msg: &[u8], p: &mut u32) -> Package {
     let operation = read_bits(msg, p, 3) as u8;
     if operation == 4 {
         let value = PackageValue::Number(read_literal(msg, p));
-        Package{
+        Package {
             version,
             operation,
             value,
@@ -111,7 +110,7 @@ fn calc_value(package: &Package) -> usize {
     match package.operation {
         4 => match package.value {
             PackageValue::Number(x) => x,
-            _ => panic!("Value expected!")
+            _ => panic!("Value expected!"),
         },
         0 => match &package.value {
             PackageValue::Number(_) => panic!("Package list expected!"),
@@ -183,7 +182,7 @@ fn calc_value(package: &Package) -> usize {
                 }
             }
         },
-        _ => panic!("Invalid opeation")
+        _ => panic!("Invalid opeation"),
     }
 }
 

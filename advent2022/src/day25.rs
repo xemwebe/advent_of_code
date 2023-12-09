@@ -1,7 +1,7 @@
 use super::*;
 use std::{fmt, str::FromStr};
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 enum Digit {
     Two,
     One,
@@ -24,7 +24,7 @@ impl FromStr for Digit {
             "0" => Ok(Digit::Zero),
             "-" => Ok(Digit::Minus),
             "=" => Ok(Digit::Minus2),
-            _ => Err(DigitError::InvalidDigit)
+            _ => Err(DigitError::InvalidDigit),
         }
     }
 }
@@ -41,7 +41,7 @@ impl fmt::Display for Digit {
     }
 }
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 struct Snafu {
     num: Vec<Digit>,
 }
@@ -84,17 +84,57 @@ impl From<&Snafu> for i64 {
 }
 
 impl From<i64> for Snafu {
-    fn from (mut x: i64) -> Snafu {
+    fn from(mut x: i64) -> Snafu {
         let mut s = Vec::new();
         let mut r = false;
         while x > 0 {
-            let digit = match x%5 {
-                2 => if r { r=true; Digit::Minus2 } else { r=false; Digit::Two },
-                1 => if r { r=false; Digit::Two } else { r=false; Digit::One },
-                0 => if r { r=false; Digit::One } else { r=false; Digit::Zero},
-                4 => if r { r=true; Digit::Zero } else { r=true; Digit::Minus },
-                3 => if r { r=true; Digit::Minus } else { r=true; Digit::Minus2 },
-                _ => panic!("invalid branch")
+            let digit = match x % 5 {
+                2 => {
+                    if r {
+                        r = true;
+                        Digit::Minus2
+                    } else {
+                        r = false;
+                        Digit::Two
+                    }
+                }
+                1 => {
+                    if r {
+                        r = false;
+                        Digit::Two
+                    } else {
+                        r = false;
+                        Digit::One
+                    }
+                }
+                0 => {
+                    if r {
+                        r = false;
+                        Digit::One
+                    } else {
+                        r = false;
+                        Digit::Zero
+                    }
+                }
+                4 => {
+                    if r {
+                        r = true;
+                        Digit::Zero
+                    } else {
+                        r = true;
+                        Digit::Minus
+                    }
+                }
+                3 => {
+                    if r {
+                        r = true;
+                        Digit::Minus
+                    } else {
+                        r = true;
+                        Digit::Minus2
+                    }
+                }
+                _ => panic!("invalid branch"),
             };
             x /= 5;
             s.push(digit);

@@ -197,7 +197,7 @@ fn move_in(i: usize, game: &Game) -> Option<(Game, i32)> {
         }
     }
     let mut new_y = 0;
-    while new_y<n && who_is_at(target, new_y+1, game).is_none() {
+    while new_y < n && who_is_at(target, new_y + 1, game).is_none() {
         new_y += 1;
     }
     if new_y == 0 {
@@ -242,7 +242,7 @@ fn get_list_of_moves(game: &Game) -> Vec<(Game, i32)> {
         }
         if let Some(m) = move_in(i, game) {
             moves.push(m);
-        } else if ay>0 {
+        } else if ay > 0 {
             moves.append(&mut move_out(i, game));
         }
     }

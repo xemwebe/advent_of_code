@@ -61,18 +61,18 @@ fn map_phase2(map: &mut HashMap<String, i32>, x: &str) {
         }
         if !found {
             new_map.insert(x.to_owned(), 6);
-        } 
+        }
     }
     if x.len() == 5 {
         let mut found = false;
         if rev_map.contains_key(&1) {
-            if contains_x(&rev_map[&1], x)==2 {
+            if contains_x(&rev_map[&1], x) == 2 {
                 new_map.insert(x.to_owned(), 3);
                 found = true;
             }
         }
         if rev_map.contains_key(&4) {
-            if contains_x(&rev_map[&4], x)==2 {
+            if contains_x(&rev_map[&4], x) == 2 {
                 new_map.insert(x.to_owned(), 2);
                 found = true;
             }

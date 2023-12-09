@@ -21,6 +21,8 @@ pub mod day20;
 pub mod day21;
 pub mod day22;
 pub mod day23;
+pub mod day24;
+pub mod day25;
 pub mod day3;
 pub mod day4;
 pub mod day5;
@@ -29,8 +31,6 @@ pub mod day7;
 pub mod day8;
 pub mod day9;
 pub mod list;
-pub mod day24;
-pub mod day25;
 
 use day1::*;
 use day10::*;
@@ -48,6 +48,8 @@ use day20::*;
 use day21::*;
 use day22::*;
 use day23::*;
+use day24::*;
+use day25::*;
 use day3::*;
 use day4::*;
 use day5::*;
@@ -55,8 +57,6 @@ use day6::*;
 use day7::*;
 use day8::*;
 use day9::*;
-use day24::*;
-use day25::*;
 
 fn main() {
     let args: Vec<String> = env::args().collect();

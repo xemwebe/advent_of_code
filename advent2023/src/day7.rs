@@ -12,7 +12,7 @@ fn calc_frequencies(cards: &[u8; 5]) -> u64 {
         frequencies[*c as usize] += 1;
     }
     frequencies.sort();
-    (frequencies[14]*10 +frequencies[13]) as u64
+    (frequencies[14] * 10 + frequencies[13]) as u64
 }
 
 fn calc_frequencies_with_joker(cards: &[u8; 5]) -> u64 {
@@ -25,9 +25,9 @@ fn calc_frequencies_with_joker(cards: &[u8; 5]) -> u64 {
     frequencies.sort();
     let top = frequencies[14];
     let second = frequencies[13];
-    let joker_top = (top+joker).min(5);
-    let joker_second = (second+joker-(joker_top-top)).min(2);
-    (joker_top*10 +joker_second) as u64
+    let joker_top = (top + joker).min(5);
+    let joker_second = (second + joker - (joker_top - top)).min(2);
+    (joker_top * 10 + joker_second) as u64
 }
 
 impl Hand {
@@ -46,13 +46,10 @@ impl Hand {
         }
         let mut score = calc_frequencies(&cards);
         for c in cards {
-            score = score*100 + c as u64;
+            score = score * 100 + c as u64;
         }
         let bet = vals[1].parse().unwrap();
-        Self {
-            score,
-            bet,
-        }
+        Self { score, bet }
     }
 
     fn with_joker(vals: &[&str]) -> Self {
@@ -70,13 +67,10 @@ impl Hand {
         }
         let mut score = calc_frequencies_with_joker(&cards);
         for c in cards {
-            score = score*100 + c as u64;
+            score = score * 100 + c as u64;
         }
         let bet = vals[1].parse().unwrap();
-        Self {
-            score,
-            bet,
-        }
+        Self { score, bet }
     }
 }
 
@@ -87,10 +81,10 @@ pub fn riddle_7_1(lines: io::Lines<io::BufReader<File>>) {
         let vals: Vec<&str> = l.split(' ').collect();
         hands.push(Hand::new(&vals));
     }
-    hands.sort_by(|a,b| a.score.cmp(&b.score));
+    hands.sort_by(|a, b| a.score.cmp(&b.score));
     let mut solution = 0;
     for (i, hand) in hands.iter().enumerate() {
-        solution += (i as u32+1)*hand.bet;
+        solution += (i as u32 + 1) * hand.bet;
     }
     println!("The solution is: {}", solution);
 }
@@ -102,10 +96,10 @@ pub fn riddle_7_2(lines: io::Lines<io::BufReader<File>>) {
         let vals: Vec<&str> = l.split(' ').collect();
         hands.push(Hand::with_joker(&vals));
     }
-    hands.sort_by(|a,b| a.score.cmp(&b.score));
+    hands.sort_by(|a, b| a.score.cmp(&b.score));
     let mut solution = 0;
     for (i, hand) in hands.iter().enumerate() {
-        solution += (i as u32+1)*hand.bet;
+        solution += (i as u32 + 1) * hand.bet;
     }
     println!("The solution is: {}", solution);
 }
