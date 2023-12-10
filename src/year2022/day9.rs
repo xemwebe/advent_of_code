@@ -1,5 +1,5 @@
-use std::{fs::File, io};
 use std::collections::HashSet;
+use std::{fs::File, io};
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match part {
@@ -8,7 +8,6 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
         _ => format!("Error: part {part} not found!"),
     }
 }
-
 
 fn parse_move(s: String) -> (String, i32) {
     let mut parts = s.split(" ");

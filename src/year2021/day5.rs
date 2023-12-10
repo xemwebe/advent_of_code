@@ -91,7 +91,7 @@ fn print_grid(grid: &Vec<i32>, max_x: usize) {
     }
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let vent_lines = read_data(lines);
     let (max_x, max_y) = calc_max_xy(&vent_lines);
     let mut grid = vec![0; max_x * max_y];
@@ -109,7 +109,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("{sum}")
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let vent_lines = read_data(lines);
     let (max_x, max_y) = calc_max_xy(&vent_lines);
     let mut grid = vec![0; max_x * max_y];

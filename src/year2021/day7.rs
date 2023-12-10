@@ -17,7 +17,7 @@ fn read_numbers(lines: io::Lines<io::BufReader<File>>) -> Vec<i32> {
         .collect()
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let numbers = read_numbers(lines);
     let min = *numbers.iter().min().unwrap();
     let max = *numbers.iter().max().unwrap();
@@ -33,7 +33,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("x: {}, fuel: {}", min_x, min_fuel)
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let numbers = read_numbers(lines);
     let min = *numbers.iter().min().unwrap();
     let max = *numbers.iter().max().unwrap();

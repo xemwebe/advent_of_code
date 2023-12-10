@@ -1,6 +1,6 @@
-use std::{fs::File, io};
 use crate::year2022::list::List;
 use std::cmp::Ordering;
+use std::{fs::File, io};
 
 use lrlex::lrlex_mod;
 use lrpar::lrpar_mod;

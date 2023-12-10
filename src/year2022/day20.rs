@@ -8,7 +8,6 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     }
 }
 
-
 fn read_values(lines: io::Lines<io::BufReader<File>>) -> Vec<(i64, i64)> {
     let mut idx = 0;
     lines

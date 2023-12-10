@@ -1,5 +1,5 @@
-use std::{fs::File, io};
 use anyhow::{anyhow, Result};
+use std::{fs::File, io};
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match part {
@@ -49,7 +49,7 @@ impl Move {
     }
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let moves: Vec<Move> = lines
         .into_iter()
         .filter_map(|s| s.ok())
@@ -71,7 +71,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("{:?}", pos)
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let moves: Vec<Move> = lines
         .into_iter()
         .filter_map(|s| s.ok())

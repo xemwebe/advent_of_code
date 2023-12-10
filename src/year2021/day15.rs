@@ -76,7 +76,7 @@ fn low_risk_path(grid: &mut Vec<Vec<Node>>) {
     }
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut grid = read_grid(lines);
     low_risk_path(&mut grid);
     format!("{}", grid.last().unwrap().last().unwrap().dist)
@@ -115,7 +115,7 @@ fn enlarge_grid(grid: &mut Vec<Vec<Node>>) {
     }
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut grid = read_grid(lines);
     enlarge_grid(&mut grid);
     low_risk_path(&mut grid);

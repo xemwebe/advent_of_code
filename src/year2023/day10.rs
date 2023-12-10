@@ -22,7 +22,7 @@ fn find_start(map: &[Vec<u8>]) -> (usize, usize) {
     for i in 0..map.len() {
         for j in 0..map[i].len() {
             if map[i][j] == b'S' {
-                return (i,j);
+                return (i, j);
             }
         }
     }
@@ -91,7 +91,9 @@ impl Position {
                 self.dir = Down;
                 self.x += 1;
             }
-            _ => { panic!("I am stuck")}
+            _ => {
+                panic!("I am stuck")
+            }
         }
     }
 }
@@ -112,19 +114,18 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
         map.push(line.as_bytes().to_vec());
     }
     let start = find_start(&map);
-    let pos = if [b'-', b'F', b'L'].contains(&map[start.0][start.1-1]) {
-        Position::new(start.0, start.1-1, Left)
-    } else if [b'|',b'F',b'7'].contains(&map[start.0-1][start.1]) {
-        Position::new(start.0-1, start.1, Up)
-    } else if [b'-',b'7',b'J'].contains(&map[start.0][start.1+1]) {
-        Position::new(start.0, start.1+1, Right)
+    let pos = if [b'-', b'F', b'L'].contains(&map[start.0][start.1 - 1]) {
+        Position::new(start.0, start.1 - 1, Left)
+    } else if [b'|', b'F', b'7'].contains(&map[start.0 - 1][start.1]) {
+        Position::new(start.0 - 1, start.1, Up)
+    } else if [b'-', b'7', b'J'].contains(&map[start.0][start.1 + 1]) {
+        Position::new(start.0, start.1 + 1, Right)
     } else {
-        Position::new(start.0+1, start.1, Down)
+        Position::new(start.0 + 1, start.1, Down)
     };
     let loop_length = walk_loop(pos, &map);
-    format!("{}", loop_length/2)
+    format!("{}", loop_length / 2)
 }
-
 
 fn find_loop(mut pos: Position, map: &[Vec<u8>]) -> Vec<Vec<u8>> {
     let mut loop_map = Vec::new();
@@ -149,71 +150,71 @@ fn set_marks(pos: &Position, map: &mut [Vec<u8>]) {
     let x = pos.x;
     let y = pos.y;
     match (map[x][y], &pos.dir) {
-        (b'7',Right) => {
-            mark(x-1, y, b'O', map);
-            mark(x-1, y+1, b'O', map);
-            mark(x, y+1, b'O', map);
-            mark(x+1, y-1, b'#', map);
+        (b'7', Right) => {
+            mark(x - 1, y, b'O', map);
+            mark(x - 1, y + 1, b'O', map);
+            mark(x, y + 1, b'O', map);
+            mark(x + 1, y - 1, b'#', map);
         }
-        (b'7',Up) => {
-            mark(x-1, y, b'#', map);
-            mark(x-1, y+1, b'#', map);
-            mark(x, y+1, b'#', map);
-            mark(x+1, y+1, b'O', map);
+        (b'7', Up) => {
+            mark(x - 1, y, b'#', map);
+            mark(x - 1, y + 1, b'#', map);
+            mark(x, y + 1, b'#', map);
+            mark(x + 1, y + 1, b'O', map);
         }
-        (b'L',Left) => {
-            mark(x+1, y, b'O', map);
-            mark(x+1, y-1, b'O', map);
-            mark(x, y-1, b'O', map);
-            mark(x-1, y+1, b'#', map);
+        (b'L', Left) => {
+            mark(x + 1, y, b'O', map);
+            mark(x + 1, y - 1, b'O', map);
+            mark(x, y - 1, b'O', map);
+            mark(x - 1, y + 1, b'#', map);
         }
-        (b'L',Down) => {
-            mark(x+1, y, b'#', map);
-            mark(x+1, y-1, b'#', map);
-            mark(x, y-1, b'#', map);
-            mark(x-1, y+1, b'O', map);
+        (b'L', Down) => {
+            mark(x + 1, y, b'#', map);
+            mark(x + 1, y - 1, b'#', map);
+            mark(x, y - 1, b'#', map);
+            mark(x - 1, y + 1, b'O', map);
         }
-        (b'J',Down) => {
-            mark(x, y+1, b'O', map);
-            mark(x+1, y+1, b'O', map);
-            mark(x, y+1, b'O', map);
-            mark(x-1, y-1, b'#', map);
+        (b'J', Down) => {
+            mark(x, y + 1, b'O', map);
+            mark(x + 1, y + 1, b'O', map);
+            mark(x, y + 1, b'O', map);
+            mark(x - 1, y - 1, b'#', map);
         }
-        (b'J',Right) => {
-            mark(x, y+1, b'#', map);
-            mark(x+1, y+1, b'#', map);
-            mark(x, y+1, b'#', map);
-            mark(x-1, y-1, b'O', map);
+        (b'J', Right) => {
+            mark(x, y + 1, b'#', map);
+            mark(x + 1, y + 1, b'#', map);
+            mark(x, y + 1, b'#', map);
+            mark(x - 1, y - 1, b'O', map);
         }
-        (b'F',Up) => {
-            mark(x, y-1, b'O', map);
-            mark(x-1, y-1, b'O', map);
-            mark(x-1, y, b'O', map);
-            mark(x+1, y+1, b'#', map);
+        (b'F', Up) => {
+            mark(x, y - 1, b'O', map);
+            mark(x - 1, y - 1, b'O', map);
+            mark(x - 1, y, b'O', map);
+            mark(x + 1, y + 1, b'#', map);
         }
-        (b'F',Left) => {
-            mark(x, y-1, b'#', map);
-            mark(x-1, y-1, b'#', map);
-            mark(x-1, y, b'#', map);
-            mark(x+1, y+1, b'O', map);
+        (b'F', Left) => {
+            mark(x, y - 1, b'#', map);
+            mark(x - 1, y - 1, b'#', map);
+            mark(x - 1, y, b'#', map);
+            mark(x + 1, y + 1, b'O', map);
         }
-        (b'|',Up) => {
-            mark(x, y-1, b'O', map);
-            mark(x, y+1, b'#', map);
+        (b'|', Up) => {
+            mark(x, y - 1, b'O', map);
+            mark(x, y + 1, b'#', map);
         }
-        (b'|',Down) => {
-            mark(x, y-1, b'#', map);
-            mark(x, y+1, b'O', map);
+        (b'|', Down) => {
+            mark(x, y - 1, b'#', map);
+            mark(x, y + 1, b'O', map);
         }
-        (b'-',Right) => {
-            mark(x-1, y, b'O', map);
-            mark(x+1, y, b'#', map);
+        (b'-', Right) => {
+            mark(x - 1, y, b'O', map);
+            mark(x + 1, y, b'#', map);
         }
-        (b'-',Left) => {
-            mark(x-1, y, b'#', map);
-            mark(x+1, y, b'O', map);
+        (b'-', Left) => {
+            mark(x - 1, y, b'#', map);
+            mark(x + 1, y, b'O', map);
         }
-        _ => panic!("I am stuck")
+        _ => panic!("I am stuck"),
     }
 }
 
@@ -227,7 +228,7 @@ fn mark_left_right(mut pos: Position, map: &mut [Vec<u8>]) {
 fn fill_gaps(map: &mut [Vec<u8>], mark: u8) {
     for i in 0..map.len() {
         for j in 1..map[i].len() {
-            if map[i][j] == b'.' && map[i][j-1] == mark {
+            if map[i][j] == b'.' && map[i][j - 1] == mark {
                 map[i][j] = mark;
             }
         }
@@ -252,20 +253,20 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         map.push(line.as_bytes().to_vec());
     }
     let start = find_start(&map);
-    let start_pos = if [b'-', b'F', b'L'].contains(&map[start.0][start.1-1]) {
-        Position::new(start.0, start.1-1, Left)
-    } else if [b'|',b'F',b'7'].contains(&map[start.0-1][start.1]) {
-        Position::new(start.0-1, start.1, Up)
-    } else if [b'-',b'7',b'J'].contains(&map[start.0][start.1+1]) {
-        Position::new(start.0, start.1+1, Right)
+    let start_pos = if [b'-', b'F', b'L'].contains(&map[start.0][start.1 - 1]) {
+        Position::new(start.0, start.1 - 1, Left)
+    } else if [b'|', b'F', b'7'].contains(&map[start.0 - 1][start.1]) {
+        Position::new(start.0 - 1, start.1, Up)
+    } else if [b'-', b'7', b'J'].contains(&map[start.0][start.1 + 1]) {
+        Position::new(start.0, start.1 + 1, Right)
     } else {
-        Position::new(start.0+1, start.1, Down)
+        Position::new(start.0 + 1, start.1, Down)
     };
     let mut loop_map = find_loop(start_pos.clone(), &map);
     mark_left_right(start_pos, &mut loop_map);
     // check wich marker is inside
     let mut inside_marker = b'.';
-    let half = loop_map.len()/2;
+    let half = loop_map.len() / 2;
     for i in 0..loop_map[half].len() {
         if loop_map[half][i] != b'.' {
             if loop_map[half][i] == b'O' {

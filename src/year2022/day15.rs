@@ -8,7 +8,6 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     }
 }
 
-
 use regex::Regex;
 use std::collections::HashSet;
 

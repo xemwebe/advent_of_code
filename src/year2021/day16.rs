@@ -106,7 +106,7 @@ fn sum_versions(package: &Package) -> usize {
     }
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let message = read_message(lines);
     let mut p = 0;
     let package = parse_package(&message, &mut p);
@@ -194,7 +194,7 @@ fn calc_value(package: &Package) -> usize {
     }
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let message = read_message(lines);
     let mut p = 0;
     let package = parse_package(&message, &mut p);

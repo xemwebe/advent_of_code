@@ -44,7 +44,7 @@ fn score_board(board: &[(i32, bool)]) -> i32 {
     board.iter().map(|x| if !x.1 { x.0 } else { 0 }).sum()
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut lines_iter = lines.into_iter();
     let draws_string = lines_iter.next().unwrap().unwrap();
     let draws: Vec<i32> = split_in_numbers(draws_string, ",");
@@ -79,7 +79,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("{:?}", solutions)
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut lines_iter = lines.into_iter();
     let draws_string = lines_iter.next().unwrap().unwrap();
     let draws: Vec<i32> = split_in_numbers(draws_string, ",");

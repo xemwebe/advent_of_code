@@ -8,7 +8,6 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     }
 }
 
-
 pub fn read_map(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<u8>> {
     lines
         .into_iter()

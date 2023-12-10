@@ -8,7 +8,6 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     }
 }
 
-
 #[derive(Debug)]
 struct Monkey {
     items: Vec<usize>,

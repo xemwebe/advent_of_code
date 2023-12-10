@@ -8,7 +8,6 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     }
 }
 
-
 use bitfield::{bitfield_bitrange, Bit, BitMut};
 use regex::Regex;
 use std::collections::{BTreeMap, HashMap};

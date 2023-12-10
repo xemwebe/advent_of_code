@@ -44,7 +44,7 @@ struct Card {
     count: usize,
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String{
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut sum = 0;
     let mut cards = Vec::new();
     for line in lines {

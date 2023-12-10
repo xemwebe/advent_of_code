@@ -53,7 +53,7 @@ fn score_incorrect(s: &str) -> (usize, Vec<char>) {
     (0, stack)
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let score: usize = lines
         .into_iter()
         .filter_map(|l| l.ok())
@@ -78,7 +78,7 @@ pub fn score_stack(s: &[char]) -> usize {
     score
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut scores: Vec<usize> = lines
         .into_iter()
         .filter_map(|l| l.ok())

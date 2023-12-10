@@ -331,7 +331,7 @@ fn calc_trafo(
     trafo
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let scanners = read_scanner_data(lines);
     let distances = calc_distances(&scanners);
     let mut all_beacons = BTreeSet::new();
@@ -371,7 +371,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("{}", all_beacons.len())
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let scanners = read_scanner_data(lines);
     let distances = calc_distances(&scanners);
     let mut all_beacons = BTreeSet::new();

@@ -265,7 +265,7 @@ fn parse_sfnumber(s: &[char], idx: usize, num: &mut Vec<SFNumber>) -> (usize, us
     (idx + 1, sf_idx)
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let nums = read_sfnumbers(lines);
     let mut num = nums[0].clone();
     for n in nums.into_iter().skip(1) {
@@ -275,7 +275,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("{}", num.magnitude(num.idx))
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let nums = read_sfnumbers(lines);
     let mut max_magnitude = 0;
     let n = nums.len();

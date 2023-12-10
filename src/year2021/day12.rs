@@ -114,7 +114,7 @@ fn find_all_paths(
     }
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let pairs = read_pairs(lines);
     let (start, nodes) = prepare_nodes(pairs);
 
@@ -126,7 +126,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("{:?}", paths.len())
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let pairs = read_pairs(lines);
     let (start, nodes) = prepare_nodes(pairs);
 

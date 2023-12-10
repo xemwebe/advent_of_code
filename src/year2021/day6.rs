@@ -23,7 +23,7 @@ fn collect_in_histo(numbers: &[i32]) -> Vec<usize> {
     histo
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let numbers = read_numbers(lines);
     let mut hist = collect_in_histo(&numbers);
     for _ in 0..80 {
@@ -38,7 +38,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("{total_sum}")
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let numbers = read_numbers(lines);
     let mut hist = collect_in_histo(&numbers);
     for _ in 0..256 {

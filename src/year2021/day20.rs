@@ -68,7 +68,7 @@ pub fn count_lit_pixels(image: &VecDeque<String>) -> usize {
         .count()
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let (algo, mut image) = read_algo_and_image(lines);
     extend_image(&mut image, '.');
     extend_image(&mut image, '.');
@@ -78,7 +78,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("{}", count_lit_pixels(&image))
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let (algo, mut image) = read_algo_and_image(lines);
     let mut outer = '.';
     extend_image(&mut image, outer);

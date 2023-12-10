@@ -21,7 +21,7 @@ fn read_map(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<u8>> {
         .collect()
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let map = read_map(lines);
     let nx = map.len();
     let ny = map[0].len();
@@ -68,7 +68,7 @@ fn calc_bassin(map: &mut Vec<Vec<u8>>, x: usize, y: usize) -> usize {
     count
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut map = read_map(lines);
     let nx = map.len();
     let ny = map[0].len();

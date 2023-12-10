@@ -35,7 +35,7 @@ fn read_notes(lines: io::Lines<io::BufReader<File>>) -> Vec<(Vec<String>, Vec<St
         .collect()
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let notes = read_notes(lines);
     let count = notes
         .into_iter()
@@ -143,7 +143,7 @@ fn analyze_note(note: (Vec<String>, Vec<String>)) -> i32 {
     num
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let notes = read_notes(lines);
     let sum: i32 = notes.into_iter().map(|x| analyze_note(x)).sum();
     format!("{sum}")

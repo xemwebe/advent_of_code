@@ -1,6 +1,7 @@
 use std::{fs::File, io};
 
 mod day1;
+mod day10;
 mod day2;
 mod day3;
 mod day4;
@@ -9,7 +10,6 @@ mod day6;
 mod day7;
 mod day8;
 mod day9;
-mod day10;
 
 pub fn execute(day: u32, part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match day {

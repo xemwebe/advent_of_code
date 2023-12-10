@@ -310,7 +310,7 @@ fn print_moves(moves: &Vec<(Game, i32)>) {
     }
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let game = Game {
         positions: read_game(lines, 2),
     };
@@ -318,7 +318,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("{}", solve(&game, 0, &mut solutions))
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let game = Game {
         positions: read_game(lines, 4),
     };

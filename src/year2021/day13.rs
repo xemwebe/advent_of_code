@@ -74,7 +74,7 @@ fn read_instructions(lines: io::Lines<io::BufReader<File>>) -> Instructions {
     instructions
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let instructions = read_instructions(lines);
     let points = fold(&instructions.points, &instructions.folds[0]);
     format!("{}", points.len())
@@ -101,7 +101,7 @@ fn print_points(points: &Vec<(i32, i32)>) {
     println!();
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let instructions = read_instructions(lines);
     let mut points = instructions.points.clone();
     for f in instructions.folds {

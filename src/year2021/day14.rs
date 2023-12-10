@@ -49,7 +49,7 @@ fn diff_most_least(polymere: &str) -> usize {
     histo.values().max().unwrap() - histo.values().min().unwrap()
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let (mut polymere, rules) = read_input(lines);
     for _ in 0..10 {
         polymere = calc_new_polymere(polymere, &rules);
@@ -130,7 +130,7 @@ fn score_polymere(polymere: &[u8], score: &HashMap<(u8, u8), usize>) -> usize {
     (counts.values().max().unwrap() - counts.values().min().unwrap()) / 2
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let (polymere, rules) = read_as_vec(lines);
     let mut score = init_score(&polymere);
     for _ in 0..40 {

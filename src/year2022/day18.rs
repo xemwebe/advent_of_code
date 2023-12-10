@@ -8,7 +8,6 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     }
 }
 
-
 pub fn read_map(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<Vec<u8>>> {
     let mut dim = (0, 0, 0);
     let points: Vec<(usize, usize, usize)> = lines

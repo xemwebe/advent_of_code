@@ -59,7 +59,7 @@ fn one_step(map: &Vec<Vec<u8>>) -> (bool, Vec<Vec<u8>>) {
     (has_changed, final_map)
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut map = read_map(lines);
     let mut count = 1;
     loop {

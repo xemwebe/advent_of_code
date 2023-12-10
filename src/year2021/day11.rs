@@ -57,7 +57,7 @@ fn one_step(grid: &mut Vec<Vec<u8>>) -> i32 {
     total_flashes
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut grid = read_grid(lines);
     let mut total_flashes = 0;
     for _ in 0..100 {
@@ -67,7 +67,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("{total_flashes}")
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut grid = read_grid(lines);
     let mut i = 0;
     loop {

@@ -33,7 +33,7 @@ fn calc_counts(numbers: &[i32]) -> Vec<usize> {
     counts
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let numbers = read_numbers(lines);
 
     let counts = calc_counts(&numbers);
@@ -87,7 +87,7 @@ fn filter_nums(numbers: &Vec<i32>, bit_criteria: bool) -> Option<i32> {
     None
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let numbers = read_numbers(lines);
 
     let oxygen = filter_nums(&numbers, true).unwrap();

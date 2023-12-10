@@ -119,7 +119,7 @@ fn process_instructions(input: &[i64], z: i64, instructions: &[Instruction]) -> 
     return registers[3];
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let instructions = read_instructions(lines);
     let mut start_indices = Vec::new();
     for (idx, ins) in instructions.iter().enumerate() {
@@ -152,7 +152,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("{:?}", allowed_z[&0])
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let instructions = read_instructions(lines);
     let mut start_indices = Vec::new();
     for (idx, ins) in instructions.iter().enumerate() {

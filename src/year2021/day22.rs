@@ -35,7 +35,7 @@ fn read_parameter(
         })
         .collect()
 }
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let commands = read_parameter(lines);
     let mut on = HashSet::new();
     for c in commands {
@@ -222,7 +222,7 @@ impl Reactor {
     }
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let commands = read_parameter(lines);
     let mut r = Reactor::new();
     for c in commands {

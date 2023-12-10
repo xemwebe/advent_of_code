@@ -44,7 +44,7 @@ fn simulate(start_vx: i32, start_vy: i32, target: ((i32, i32), (i32, i32))) -> i
     target.1 .0 - 1
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let target = read_parameter(lines);
     let min_vx = (-0.5 + (2.0 * (target.0 .0 as f64) + 0.25)).sqrt().floor() as i32;
     let max_vx = target.0 .1;
@@ -57,7 +57,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     format!("{height}")
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let target = read_parameter(lines);
     let min_vx = (-0.5 + (2.0 * (target.0 .0 as f64) + 0.25)).sqrt().floor() as i32;
     let max_vx = target.0 .1;

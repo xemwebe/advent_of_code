@@ -8,7 +8,6 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     }
 }
 
-
 use std::collections::{HashMap, HashSet};
 
 fn read_map(mut lines: io::Lines<io::BufReader<File>>) -> HashSet<(i64, i64)> {

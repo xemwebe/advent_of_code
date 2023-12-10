@@ -49,7 +49,7 @@ fn three_dices(dice_value: &mut i32) -> i32 {
     total
 }
 
-pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let (mut pos1, mut pos2) = read_parameter(lines);
     let mut dice_count = 0;
     let mut dice_value = 1;
@@ -109,7 +109,7 @@ pub fn solve(
     oc
 }
 
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let (start_pos1, start_pos2) = read_parameter(lines);
     let mut cache = HashMap::new();
     let (win1, win2) = solve(start_pos1, start_pos2, 0, 0, &mut cache);

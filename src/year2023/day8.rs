@@ -1,6 +1,6 @@
-use std::{fs::File, io};
 use num::Integer;
 use std::collections::HashMap;
+use std::{fs::File, io};
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match part {
