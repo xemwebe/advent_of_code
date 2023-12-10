@@ -3,7 +3,6 @@ use std::{fs::File, io};
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match part {
         1 => riddle_1(lines),
-        2 => riddle_2(lines),
         _ => format!("Error: part {part} not found!"),
     }
 }
@@ -73,9 +72,4 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     }
     print_map(&map);
     format!("{}", count)
-}
-
-pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
-    read_map(lines);
-    "no single solution output".to_string()
 }

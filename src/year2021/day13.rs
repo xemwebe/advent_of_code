@@ -108,5 +108,5 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
         points = fold(&points, &f);
     }
     print_points(&points);
-    "no single solution".to_string()
+    "see output above".to_string()
 }
