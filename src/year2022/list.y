@@ -27,13 +27,13 @@ Num -> Result<List, ()>:
     ;
 %%
 // Any functions here are in scope for all the grammar actions above.
-use crate::list::List;
+use crate::year2022::list::List;
 
 fn parse_int(s: &str) -> Result<u8, ()> {
     match s.parse::<u8>() {
         Ok(val) => Ok(val),
         Err(_) => {
-            eformat!("{} cannot be represented as a u8", s);
+            format!("{} cannot be represented as a u8", s);
             Err(())
         }
     }

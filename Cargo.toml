@@ -9,8 +9,13 @@ edition = "2021"
 anyhow = "1.0.75"
 bit_range = "0.1.0"
 bitfield = "0.14.0"
+cfgrammar = "0.13.3"
 clap = {version = "4.4.11", features = ["derive"] }
 lrlex = "0.13.3"
 lrpar = "0.13.3"
 num = "0.4.1"
 regex = "1.10.2"
+
+[build-dependencies]
+cfgrammar = "0.13.3"
+lrlex = "0.13.3"

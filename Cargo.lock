@@ -9,6 +9,7 @@ dependencies = [
  "anyhow",
  "bit_range",
  "bitfield",
+ "cfgrammar",
  "clap",
  "lrlex",
  "lrpar",

@@ -54,7 +54,7 @@ pub fn execute(day: u32, part: u32, lines: io::Lines<io::BufReader<File>>) -> St
         22 => day22::execute(part, lines),
         23 => day23::execute(part, lines),
         24 => day24::execute(part, lines),
-        25 => day24::execute(part, lines),
+        25 => day25::execute(part, lines),
         _ => format!("Error: day {day} not found"),
     }
 }
