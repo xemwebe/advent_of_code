@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn parse_range(s: &str) -> (u32, u32) {
     let mut parts = s.split("-");
@@ -32,7 +40,7 @@ fn do_overlap((x, y): &((u32, u32), (u32, u32))) -> bool {
     }
 }
 
-pub fn riddle_4_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let total_overlaps: usize = lines
         .into_iter()
         .filter_map(|s| s.ok())
@@ -40,10 +48,10 @@ pub fn riddle_4_1(lines: io::Lines<io::BufReader<File>>) {
         .filter(do_fully_overlap)
         .count();
 
-    println!("{:?}", total_overlaps);
+    format!("{total_overlaps}")
 }
 
-pub fn riddle_4_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let total_overlaps: usize = lines
         .into_iter()
         .filter_map(|s| s.ok())
@@ -51,5 +59,5 @@ pub fn riddle_4_2(lines: io::Lines<io::BufReader<File>>) {
         .filter(do_overlap)
         .count();
 
-    println!("{:?}", total_overlaps);
+    format!("{total_overlaps}")
 }

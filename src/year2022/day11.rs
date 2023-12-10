@@ -1,4 +1,13 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
 
 #[derive(Debug)]
 struct Monkey {
@@ -162,14 +171,14 @@ fn process_monkeys_rule2(m: &mut Vec<Monkey>) -> usize {
     max * max2
 }
 
-pub fn riddle_11_1(_lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(_lines: io::Lines<io::BufReader<File>>) -> String {
     let mut monkeys = init_monkeys();
     let score = process_monkeys(&mut monkeys);
-    println!("{:?}", score);
+    format!("{score}")
 }
 
-pub fn riddle_11_2(_lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(_lines: io::Lines<io::BufReader<File>>) -> String {
     let mut monkeys = init_monkeys();
     let score = process_monkeys_rule2(&mut monkeys);
-    println!("{:?}", score);
+    format!("{score}")
 }

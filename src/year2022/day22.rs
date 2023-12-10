@@ -1,4 +1,14 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+
 use regex::Regex;
 
 #[derive(Debug, Clone)]
@@ -272,18 +282,18 @@ fn find_start(map: &Map) -> State {
     panic!("Found no starting point");
 }
 
-pub fn riddle_22_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let (map, moves) = read_map_and_moves(lines);
     let mut state = find_start(&map);
     state.walk(&map, &moves);
     let password = state.calc_password();
-    println!("Solution: {:?}", password);
+    format!("{password}")
 }
 
-pub fn riddle_22_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let (map, moves) = read_map_and_moves(lines);
     let mut state = find_start(&map);
     state.cubic_walk(&map, &moves);
     let password = state.calc_password();
-    println!("Solution: {:?}", password);
+    format!("{password}")
 }

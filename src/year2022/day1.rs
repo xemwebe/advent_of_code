@@ -1,6 +1,14 @@
-use super::*;
+use std::{fs::File, io};
 
-pub fn riddle_1_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let numbers: Vec<i32> = lines
         .into_iter()
         .filter_map(|s| s.ok())
@@ -17,10 +25,10 @@ pub fn riddle_1_1(lines: io::Lines<io::BufReader<File>>) {
             current += n;
         }
     }
-    println!("The solution is: {}", max);
+    format!("{max}")
 }
 
-pub fn riddle_1_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let numbers: Vec<i32> = lines
         .into_iter()
         .filter_map(|s| s.ok())
@@ -50,5 +58,5 @@ pub fn riddle_1_2(lines: io::Lines<io::BufReader<File>>) {
             current += n;
         }
     }
-    println!("The solution is: {}", first + second + third);
+    format!("{}", first + second + third)
 }

@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use std::collections::HashSet;
 
 #[derive(Debug)]
@@ -66,10 +74,10 @@ fn read_instructions(lines: io::Lines<io::BufReader<File>>) -> Instructions {
     instructions
 }
 
-pub fn riddle_13_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let instructions = read_instructions(lines);
     let points = fold(&instructions.points, &instructions.folds[0]);
-    println!("points left after first fold:  {}", points.len());
+    format!("{}", points.len())
 }
 
 fn print_points(points: &Vec<(i32, i32)>) {
@@ -93,11 +101,12 @@ fn print_points(points: &Vec<(i32, i32)>) {
     println!();
 }
 
-pub fn riddle_13_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let instructions = read_instructions(lines);
     let mut points = instructions.points.clone();
     for f in instructions.folds {
         points = fold(&points, &f);
     }
     print_points(&points);
+    "no single solution".to_string()
 }

@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 const DIGITS: usize = 12;
 
@@ -22,17 +30,15 @@ fn calc_counts(numbers: &[i32]) -> Vec<usize> {
             num >>= 1;
         }
     }
-    println!("counts: {:?}", counts);
     counts
 }
 
-pub fn riddle_3_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let numbers = read_numbers(lines);
 
     let counts = calc_counts(&numbers);
 
     let total = numbers.len();
-    println!("Totals: {}", total);
 
     let half = total / 2;
     let mut gamma = 0;
@@ -41,21 +47,19 @@ pub fn riddle_3_1(lines: io::Lines<io::BufReader<File>>) {
         gamma <<= 1;
         epsilon <<= 1;
         if counts[DIGITS - b - 1] > half {
-            println!("bit gamma {}", b);
             gamma += 1;
         } else if counts[DIGITS - b - 1] < half {
-            println!("bit epsilon {}", b);
             epsilon += 1;
         } else {
-            println!("Warning: undetermined!");
+            panic!("Warning: undetermined!");
         }
     }
-    println!(
+    format!(
         "gamma: {}, epsilon: {}, power: {}",
         gamma,
         epsilon,
         gamma * epsilon
-    );
+    )
 }
 
 fn filter_nums(numbers: &Vec<i32>, bit_criteria: bool) -> Option<i32> {
@@ -71,10 +75,6 @@ fn filter_nums(numbers: &Vec<i32>, bit_criteria: bool) -> Option<i32> {
         } else {
             0
         }) as i32;
-        println!(
-            "bit = {}, valid_bit = {}, numbers: {:?}, half={}",
-            bit, valid_bit, numbers, half
-        );
         let new_numbers: Vec<i32> = numbers
             .into_iter()
             .filter(|x| x & bit == valid_bit)
@@ -87,15 +87,15 @@ fn filter_nums(numbers: &Vec<i32>, bit_criteria: bool) -> Option<i32> {
     None
 }
 
-pub fn riddle_3_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let numbers = read_numbers(lines);
 
     let oxygen = filter_nums(&numbers, true).unwrap();
     let carbon = filter_nums(&numbers, false).unwrap();
-    println!(
+    format!(
         "oxygen: {}, carbon: {}, life: {}",
         oxygen,
         carbon,
         oxygen * carbon
-    );
+    )
 }

@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn read_grid(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<u8>> {
     lines
@@ -118,14 +126,14 @@ fn calc_max_scenic_score(grid: &Vec<Vec<u8>>) -> usize {
     score
 }
 
-pub fn riddle_8_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let grid = read_grid(lines);
     let count = find_invisible(&grid);
-    println!("{:?}", count);
+    format!("{count}")
 }
 
-pub fn riddle_8_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let grid = read_grid(lines);
     let score = calc_max_scenic_score(&grid);
-    println!("{:?}", score);
+    format!("{score}")
 }

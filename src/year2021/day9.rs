@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn read_map(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<u8>> {
     lines
@@ -13,7 +21,7 @@ fn read_map(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<u8>> {
         .collect()
 }
 
-pub fn riddle_9_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let map = read_map(lines);
     let nx = map.len();
     let ny = map[0].len();
@@ -36,7 +44,7 @@ pub fn riddle_9_1(lines: io::Lines<io::BufReader<File>>) {
             sum += height as i32 + 1;
         }
     }
-    println!("solution: {}", sum);
+    format!("{sum}")
 }
 
 fn calc_bassin(map: &mut Vec<Vec<u8>>, x: usize, y: usize) -> usize {
@@ -60,7 +68,7 @@ fn calc_bassin(map: &mut Vec<Vec<u8>>, x: usize, y: usize) -> usize {
     count
 }
 
-pub fn riddle_9_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let mut map = read_map(lines);
     let nx = map.len();
     let ny = map[0].len();
@@ -75,5 +83,5 @@ pub fn riddle_9_2(lines: io::Lines<io::BufReader<File>>) {
     }
 
     bassins.sort_by(|a, b| b.cmp(a));
-    println!("solution: {}", bassins[0] * bassins[1] * bassins[2]);
+    format!("{}", bassins[0] * bassins[1] * bassins[2])
 }

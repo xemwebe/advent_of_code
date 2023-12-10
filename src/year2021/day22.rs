@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use regex::Regex;
 use std::cmp::Ordering;
 use std::collections::HashSet;
@@ -27,7 +35,7 @@ fn read_parameter(
         })
         .collect()
 }
-pub fn riddle_22_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let commands = read_parameter(lines);
     let mut on = HashSet::new();
     for c in commands {
@@ -44,7 +52,7 @@ pub fn riddle_22_1(lines: io::Lines<io::BufReader<File>>) {
             }
         }
     }
-    println!("{:?}", on.len());
+    format!("{}", on.len())
 }
 
 #[derive(Debug, Hash, Clone, Eq)]
@@ -214,7 +222,7 @@ impl Reactor {
     }
 }
 
-pub fn riddle_22_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let commands = read_parameter(lines);
     let mut r = Reactor::new();
     for c in commands {
@@ -225,5 +233,5 @@ pub fn riddle_22_2(lines: io::Lines<io::BufReader<File>>) {
             r.remove(&cube);
         }
     }
-    println!("{:?}", r.volume());
+    format!("{}", r.volume())
 }

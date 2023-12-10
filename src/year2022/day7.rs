@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 #[derive(Debug, Clone)]
 enum Entity {
@@ -124,10 +132,10 @@ fn parse_file_structure(lines: io::Lines<io::BufReader<File>>) -> Vec<Node> {
     files
 }
 
-pub fn riddle_7_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut files = parse_file_structure(lines);
     let (_size, total_sum) = calc_dir_sizes(0, &mut files, 0);
-    println!("The solution is: {}", total_sum);
+    format!("{total_sum}")
 }
 
 fn find_smallest_dir_size(files: &Vec<Node>, required_space: usize) -> usize {
@@ -146,7 +154,7 @@ fn find_smallest_dir_size(files: &Vec<Node>, required_space: usize) -> usize {
     smallest_dir_size
 }
 
-pub fn riddle_7_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let total_size = 70000000;
     let required_space = 30000000;
     let mut files = parse_file_structure(lines);
@@ -154,5 +162,5 @@ pub fn riddle_7_2(lines: io::Lines<io::BufReader<File>>) {
     let to_be_removed = required_space - (total_size - size);
 
     let smallest_dir_size = find_smallest_dir_size(&files, to_be_removed);
-    println!("The solution is: {}", smallest_dir_size);
+    format!("{smallest_dir_size}")
 }

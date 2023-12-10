@@ -1,4 +1,14 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+
 use num::traits::Zero;
 use std::fmt;
 use std::{
@@ -68,23 +78,18 @@ impl Map {
         let dimx = self.up.len() as i32;
         let dimy = self.up[0].len() as i32;
         if p.x == 0 || p.y == 0 || p.y > dimy || p.x > dimx {
-            // println!("{p} is out of bounds");
             return *p == self.start || *p == self.end;
         }
         if self.up[((p.x - 1 + time) % dimx) as usize][(p.y - 1) as usize] {
-            // println!("{p} up blocked");
             return false;
         }
         if self.down[((p.x - 1 + dimx - time % dimx) % dimx) as usize][(p.y - 1) as usize] {
-            // println!("{p} down blocked");
             return false;
         }
         if self.left[(p.x - 1) as usize][((p.y - 1 + time) % dimy) as usize] {
-            // println!("{p} left blocked");
             return false;
         }
         if self.right[(p.x - 1) as usize][((p.y - 1 + dimy - time % dimy) % dimy) as usize] {
-            // println!("{p} right blocked");
             return false;
         }
         true
@@ -156,7 +161,6 @@ impl State {
             self.time += 1;
             let mut free = HashSet::new();
             for p in &self.free {
-                // println!("checking {p}");
                 self.add_to_free(&p, &mut free, map);
                 self.add_to_free(&p.plus(1, 0), &mut free, map);
                 if p.x != 0 {
@@ -165,8 +169,6 @@ impl State {
                     self.add_to_free(&p.plus(0, 1), &mut free, map);
                 }
             }
-            // println!("time:  {time}, free: {free:?}");
-            //println!("free: {}", free.len());
             if free.is_empty() {
                 println!("Sorry, no solution found!");
                 break;
@@ -185,17 +187,15 @@ impl State {
     }
 }
 
-pub fn riddle_24_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let map = read_map(lines);
-    // println!("map : {map:?}");
     let mut state = State::new(map.start.clone());
     state.time_to_get_to(map.end.clone(), &map);
-    println!("Solution: {:?}", state.time);
+    format!("{}", state.time)
 }
 
-pub fn riddle_24_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut map = read_map(lines);
-    // println!("map : {map:?}");
     let mut state = State::new(map.start.clone());
     state.time_to_get_to(map.end.clone(), &map);
     let start = map.start;
@@ -210,5 +210,5 @@ pub fn riddle_24_2(lines: io::Lines<io::BufReader<File>>) {
     state.free = HashSet::new();
     state.free.insert(map.start.clone());
     state.time_to_get_to(map.end.clone(), &map);
-    println!("Solution: {:?}", state.time);
+    format!("{}", state.time)
 }

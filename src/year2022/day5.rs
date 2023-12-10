@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn parse_init_stack(lines: Vec<String>) -> Vec<Vec<u8>> {
     let mut stacks = Vec::new();
@@ -59,7 +67,7 @@ fn get_tops(stacks: &mut Vec<Vec<u8>>) -> String {
     String::from_utf8(tops).unwrap()
 }
 
-pub fn riddle_5_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut lines_iter = lines.into_iter();
 
     let mut init_stack_lines = Vec::new();
@@ -74,10 +82,10 @@ pub fn riddle_5_1(lines: io::Lines<io::BufReader<File>>) {
         .fold(stacks, make_move);
 
     let top_crates = get_tops(&mut stacks);
-    println!("{}", top_crates);
+    format!("{top_crates}")
 }
 
-pub fn riddle_5_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut lines_iter = lines.into_iter();
 
     let mut init_stack_lines = Vec::new();
@@ -92,5 +100,5 @@ pub fn riddle_5_2(lines: io::Lines<io::BufReader<File>>) {
         .fold(stacks, make_move_9001);
 
     let top_crates = get_tops(&mut stacks);
-    println!("{}", top_crates);
+    format!("{top_crates}")
 }

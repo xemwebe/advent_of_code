@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn read_map(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<u8>> {
     lines
@@ -52,7 +60,7 @@ fn one_step(map: &Vec<Vec<u8>>) -> (bool, Vec<Vec<u8>>) {
     (has_changed, final_map)
 }
 
-pub fn riddle_25_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let mut map = read_map(lines);
     let mut count = 1;
     loop {
@@ -64,9 +72,10 @@ pub fn riddle_25_1(lines: io::Lines<io::BufReader<File>>) {
         map = new_map;
     }
     print_map(&map);
-    println!("No more changes after {} moves", count);
+    format!("{}", count)
 }
 
-pub fn riddle_25_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     read_map(lines);
+    "no single solution output".to_string()
 }

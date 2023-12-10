@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use regex::Regex;
 use std::collections::HashMap;
 
@@ -41,7 +49,7 @@ fn three_dices(dice_value: &mut i32) -> i32 {
     total
 }
 
-pub fn riddle_21_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let (mut pos1, mut pos2) = read_parameter(lines);
     let mut dice_count = 0;
     let mut dice_value = 1;
@@ -67,13 +75,7 @@ pub fn riddle_21_1(lines: io::Lines<io::BufReader<File>>) {
             break;
         }
     }
-    println!(
-        "score1: {}, score2: {}, dice_count: {}, solution: {}",
-        score1,
-        score2,
-        dice_count,
-        dice_count * score1.min(score2)
-    );
+    format!("{}", dice_count * score1.min(score2))
 }
 
 fn index(pos1: i32, pos2: i32, score1: i32, score2: i32) -> usize {
@@ -167,11 +169,9 @@ pub fn solve_21_3(
     oc
 }
 
-pub fn riddle_21_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let (start_pos1, start_pos2) = read_parameter(lines);
-    //let (win1, win2) = solve_21_2(start_pos1, start_pos2);
-    //println!("win1: {}, win2: {}, max {}", win1, win2, win1.max(win2));
     let mut cache = HashMap::new();
     let (win1, win2) = solve_21_3(start_pos1, start_pos2, 0, 0, &mut cache);
-    println!("win1: {}, win2: {}, max {}", win1, win2, win1.max(win2));
+    format!("win1: {}, win2: {}, max {}", win1, win2, win1.max(win2))
 }

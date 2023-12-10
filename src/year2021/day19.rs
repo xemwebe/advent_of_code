@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use std::cmp::Ordering;
 use std::collections::{BTreeSet, HashMap};
 
@@ -323,7 +331,7 @@ fn calc_trafo(
     trafo
 }
 
-pub fn riddle_19_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let scanners = read_scanner_data(lines);
     let distances = calc_distances(&scanners);
     let mut all_beacons = BTreeSet::new();
@@ -360,10 +368,10 @@ pub fn riddle_19_1(lines: io::Lines<io::BufReader<File>>) {
             all_beacons.insert(b.transform(&trafos[&j]));
         }
     }
-    println!("Number of beacons: {}", all_beacons.len());
+    format!("{}", all_beacons.len())
 }
 
-pub fn riddle_19_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let scanners = read_scanner_data(lines);
     let distances = calc_distances(&scanners);
     let mut all_beacons = BTreeSet::new();
@@ -406,5 +414,5 @@ pub fn riddle_19_2(lines: io::Lines<io::BufReader<File>>) {
             max_dist = max_dist.max(distance);
         }
     }
-    println!("Largest Manhattan distance: {}", max_dist);
+    format!("{max_dist}")
 }

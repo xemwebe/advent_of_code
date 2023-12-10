@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use bit_range::BitRange;
 
 fn read_message(lines: io::Lines<io::BufReader<File>>) -> Vec<u8> {
@@ -98,12 +106,12 @@ fn sum_versions(package: &Package) -> usize {
     }
 }
 
-pub fn riddle_16_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let message = read_message(lines);
     let mut p = 0;
     let package = parse_package(&message, &mut p);
     let version_sum = sum_versions(&package);
-    println!("Sum of versions: {}", version_sum);
+    format!("{version_sum}")
 }
 
 fn calc_value(package: &Package) -> usize {
@@ -186,10 +194,10 @@ fn calc_value(package: &Package) -> usize {
     }
 }
 
-pub fn riddle_16_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let message = read_message(lines);
     let mut p = 0;
     let package = parse_package(&message, &mut p);
     let value = calc_value(&package);
-    println!("Result value: {}", value);
+    format!("{value}")
 }

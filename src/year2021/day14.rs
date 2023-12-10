@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use std::collections::HashMap;
 
 fn read_input(lines: io::Lines<io::BufReader<File>>) -> (String, HashMap<String, String>) {
@@ -41,13 +49,13 @@ fn diff_most_least(polymere: &str) -> usize {
     histo.values().max().unwrap() - histo.values().min().unwrap()
 }
 
-pub fn riddle_14_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let (mut polymere, rules) = read_input(lines);
     for _ in 0..10 {
         polymere = calc_new_polymere(polymere, &rules);
     }
     let solution = diff_most_least(&polymere);
-    println!("{:?}", solution);
+    format!("{solution}")
 }
 
 fn read_as_vec(lines: io::Lines<io::BufReader<File>>) -> (Vec<u8>, HashMap<(u8, u8), u8>) {
@@ -122,12 +130,12 @@ fn score_polymere(polymere: &[u8], score: &HashMap<(u8, u8), usize>) -> usize {
     (counts.values().max().unwrap() - counts.values().min().unwrap()) / 2
 }
 
-pub fn riddle_14_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let (polymere, rules) = read_as_vec(lines);
     let mut score = init_score(&polymere);
     for _ in 0..40 {
         score = update_score(&score, &rules);
     }
     let solution = score_polymere(&polymere, &score);
-    println!("Solution {:?}", solution);
+    format!("{solution}")
 }

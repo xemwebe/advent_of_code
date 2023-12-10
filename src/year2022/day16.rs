@@ -1,4 +1,14 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+
 use bitfield::{bitfield_bitrange, Bit, BitMut};
 use regex::Regex;
 use std::collections::{BTreeMap, HashMap};
@@ -115,7 +125,7 @@ fn max_pressure(valves: &HashMap<String, Valve>, state: State) -> i32 {
     max_released
 }
 
-pub fn riddle_16_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let valves = read_valves(lines);
     let valves = calc_distances(&valves);
     let state = State {
@@ -124,7 +134,7 @@ pub fn riddle_16_1(lines: io::Lines<io::BufReader<File>>) {
         node: "AA".to_owned(),
     };
     let max_released = max_pressure(&valves, state);
-    println!("The solution is: {:?}", max_released);
+    format!("{max_released}")
 }
 
 #[derive(Debug, Clone)]
@@ -214,7 +224,7 @@ fn max_pressure2(valves: &HashMap<String, Valve>, state: State2) -> i32 {
     max_released
 }
 
-pub fn riddle_16_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let valves = read_valves(lines);
     let valves = calc_distances(&valves);
     let state = State2 {
@@ -223,5 +233,5 @@ pub fn riddle_16_2(lines: io::Lines<io::BufReader<File>>) {
         node: (Some("AA".to_owned()), Some("AA".to_owned())),
     };
     let max_released = max_pressure2(&valves, state);
-    println!("The solution is: {:?}", max_released);
+    format!("{max_released}")
 }

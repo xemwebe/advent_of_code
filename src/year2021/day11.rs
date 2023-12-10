@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn read_grid(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<u8>> {
     lines
@@ -49,17 +57,17 @@ fn one_step(grid: &mut Vec<Vec<u8>>) -> i32 {
     total_flashes
 }
 
-pub fn riddle_11_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let mut grid = read_grid(lines);
     let mut total_flashes = 0;
     for _ in 0..100 {
         total_flashes += one_step(&mut grid);
     }
 
-    println!("Solution: {:?}", total_flashes);
+    format!("{total_flashes}")
 }
 
-pub fn riddle_11_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let mut grid = read_grid(lines);
     let mut i = 0;
     loop {
@@ -69,5 +77,5 @@ pub fn riddle_11_2(lines: io::Lines<io::BufReader<File>>) {
         }
     }
 
-    println!("Solution: {:?}", i);
+    format!("{i}")
 }

@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn is_valid(i: usize, v: &[u8], count: usize) -> bool {
     for j in 0..count {
@@ -21,14 +29,14 @@ fn find_start(s: &str, count: usize) -> usize {
     return 0;
 }
 
-pub fn riddle_6_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let input = lines.into_iter().next().unwrap().unwrap();
     let start = find_start(&input, 4);
-    println!("The solution is: {}", start);
+    format!("{start}")
 }
 
-pub fn riddle_6_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let input = lines.into_iter().next().unwrap().unwrap();
     let start = find_start(&input, 14);
-    println!("The solution is: {}", start);
+    format!("{start}")
 }

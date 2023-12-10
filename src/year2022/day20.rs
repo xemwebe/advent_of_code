@@ -1,4 +1,13 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
 
 fn read_values(lines: io::Lines<io::BufReader<File>>) -> Vec<(i64, i64)> {
     let mut idx = 0;
@@ -66,10 +75,10 @@ fn get_coordinate(vals: &Vec<(i64, i64)>) -> i64 {
     vals[first].0 + vals[second].0 + vals[third].0
 }
 
-pub fn riddle_20_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut values = read_values(lines);
     scramble(&mut values);
-    println!("The solution is: {:?}", get_coordinate(&values));
+    format!("{:?}", get_coordinate(&values))
 }
 
 pub fn multiply_with_key(vals: &mut Vec<(i64, i64)>, key: i64) {
@@ -78,12 +87,12 @@ pub fn multiply_with_key(vals: &mut Vec<(i64, i64)>, key: i64) {
     }
 }
 
-pub fn riddle_20_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut values = read_values(lines);
     let key = 811589153_i64;
     multiply_with_key(&mut values, key);
     for _ in 0..10 {
         scramble(&mut values);
     }
-    println!("The solution is: {:?}", get_coordinate(&values));
+    format!("{:?}", get_coordinate(&values))
 }

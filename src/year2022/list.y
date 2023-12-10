@@ -33,7 +33,7 @@ fn parse_int(s: &str) -> Result<u8, ()> {
     match s.parse::<u8>() {
         Ok(val) => Ok(val),
         Err(_) => {
-            eprintln!("{} cannot be represented as a u8", s);
+            eformat!("{} cannot be represented as a u8", s);
             Err(())
         }
     }

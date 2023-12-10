@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use std::collections::HashMap;
 
 fn read_instructions(lines: io::Lines<io::BufReader<File>>) -> Vec<Instruction> {
@@ -111,7 +119,7 @@ fn process_instructions(input: &[i64], z: i64, instructions: &[Instruction]) -> 
     return registers[3];
 }
 
-pub fn riddle_24_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let instructions = read_instructions(lines);
     let mut start_indices = Vec::new();
     for (idx, ins) in instructions.iter().enumerate() {
@@ -141,10 +149,10 @@ pub fn riddle_24_1(lines: io::Lines<io::BufReader<File>>) {
         }
         allowed_z = new_allowed_z;
     }
-    println!("Solution (reverse order): {:?}", allowed_z[&0]);
+    format!("{:?}", allowed_z[&0])
 }
 
-pub fn riddle_24_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let instructions = read_instructions(lines);
     let mut start_indices = Vec::new();
     for (idx, ins) in instructions.iter().enumerate() {
@@ -174,25 +182,5 @@ pub fn riddle_24_2(lines: io::Lines<io::BufReader<File>>) {
         }
         allowed_z = new_allowed_z;
     }
-    println!("Solution (reverse order): {:?}", allowed_z[&0]);
-}
-
-pub fn riddle_24_2_(lines: io::Lines<io::BufReader<File>>) {
-    let instructions = read_instructions(lines);
-    let mut start_indices = Vec::new();
-    for (idx, ins) in instructions.iter().enumerate() {
-        if let Instruction::Inp(_) = ins {
-            start_indices.push(idx);
-        }
-    }
-    start_indices.push(instructions.len());
-    let input = vec![6, 1, 1, 9, 1, 5, 1, 6, 1, 1, 1, 3, 2, 1];
-    for i in 0..13 {
-        let result = process_instructions(
-            &input,
-            0,
-            &instructions[start_indices[0]..start_indices[i + 1]],
-        );
-        println!("{}", result);
-    }
+    format!("{:?}", allowed_z[&0])
 }

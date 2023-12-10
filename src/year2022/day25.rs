@@ -1,4 +1,13 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+
 use std::{fmt, str::FromStr};
 
 #[derive(Debug, Clone)]
@@ -158,9 +167,9 @@ fn read_numbers(lines: io::Lines<io::BufReader<File>>) -> Vec<i64> {
         .collect()
 }
 
-pub fn riddle_25_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let numbers = read_numbers(lines);
     let sum: i64 = numbers.iter().sum();
     let snafu_sum: Snafu = sum.into();
-    println!("Solution: {}", snafu_sum);
+    format!("{snafu_sum}")
 }

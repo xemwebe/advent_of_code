@@ -1,4 +1,14 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+
 use std::collections::{HashMap, HashSet};
 
 fn read_map(mut lines: io::Lines<io::BufReader<File>>) -> HashSet<(i64, i64)> {
@@ -143,7 +153,7 @@ impl State {
     }
 }
 
-pub fn riddle_23_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut state = State {
         elves: read_map(lines),
         direction: Direction::North,
@@ -154,10 +164,10 @@ pub fn riddle_23_1(lines: io::Lines<io::BufReader<File>>) {
         state.move_elves(&moves);
     }
     let result = state.count_space();
-    println!("Solution: {:?}", result);
+    format!("{result}")
 }
 
-pub fn riddle_23_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut state = State {
         elves: read_map(lines),
         direction: Direction::North,
@@ -172,5 +182,5 @@ pub fn riddle_23_2(lines: io::Lines<io::BufReader<File>>) {
         state.move_elves(&moves);
         round += 1;
     }
-    println!("Solution: {:?}", round);
+    format!("{round}")
 }

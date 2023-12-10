@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use std::collections::{HashMap, HashSet};
 
 fn read_pairs(lines: io::Lines<io::BufReader<File>>) -> Vec<(String, String)> {
@@ -106,7 +114,7 @@ fn find_all_paths(
     }
 }
 
-pub fn riddle_12_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let pairs = read_pairs(lines);
     let (start, nodes) = prepare_nodes(pairs);
 
@@ -115,10 +123,10 @@ pub fn riddle_12_1(lines: io::Lines<io::BufReader<File>>) {
     let start_path = vec![start];
     find_all_paths(start_path, false, &nodes, visited, &mut paths);
 
-    println!("{:?}", paths.len());
+    format!("{:?}", paths.len())
 }
 
-pub fn riddle_12_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let pairs = read_pairs(lines);
     let (start, nodes) = prepare_nodes(pairs);
 
@@ -127,5 +135,5 @@ pub fn riddle_12_2(lines: io::Lines<io::BufReader<File>>) {
     let start_path = vec![start];
     find_all_paths(start_path, true, &nodes, visited, &mut paths);
 
-    println!("{:?}", paths.len());
+    format!("{}", paths.len())
 }

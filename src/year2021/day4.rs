@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use std::collections::HashSet;
 
 fn split_in_numbers(s: String, delim: &str) -> Vec<i32> {
@@ -36,7 +44,7 @@ fn score_board(board: &[(i32, bool)]) -> i32 {
     board.iter().map(|x| if !x.1 { x.0 } else { 0 }).sum()
 }
 
-pub fn riddle_4_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let mut lines_iter = lines.into_iter();
     let draws_string = lines_iter.next().unwrap().unwrap();
     let draws: Vec<i32> = split_in_numbers(draws_string, ",");
@@ -68,10 +76,10 @@ pub fn riddle_4_1(lines: io::Lines<io::BufReader<File>>) {
         }
     }
 
-    println!("Result: {:?}", solutions);
+    format!("{:?}", solutions)
 }
 
-pub fn riddle_4_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let mut lines_iter = lines.into_iter();
     let draws_string = lines_iter.next().unwrap().unwrap();
     let draws: Vec<i32> = split_in_numbers(draws_string, ",");
@@ -105,5 +113,5 @@ pub fn riddle_4_2(lines: io::Lines<io::BufReader<File>>) {
         }
     }
 
-    println!("Result: {:?}", solutions);
+    format!("{:?}", solutions)
 }

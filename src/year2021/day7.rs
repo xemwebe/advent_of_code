@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn read_numbers(lines: io::Lines<io::BufReader<File>>) -> Vec<i32> {
     let number_str = lines.into_iter().next().unwrap().unwrap();
@@ -9,7 +17,7 @@ fn read_numbers(lines: io::Lines<io::BufReader<File>>) -> Vec<i32> {
         .collect()
 }
 
-pub fn riddle_7_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let numbers = read_numbers(lines);
     let min = *numbers.iter().min().unwrap();
     let max = *numbers.iter().max().unwrap();
@@ -22,10 +30,10 @@ pub fn riddle_7_1(lines: io::Lines<io::BufReader<File>>) {
             min_fuel = fuel;
         }
     }
-    println!("x: {}, fuel: {}", min_x, min_fuel);
+    format!("x: {}, fuel: {}", min_x, min_fuel)
 }
 
-pub fn riddle_7_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let numbers = read_numbers(lines);
     let min = *numbers.iter().min().unwrap();
     let max = *numbers.iter().max().unwrap();
@@ -44,5 +52,5 @@ pub fn riddle_7_2(lines: io::Lines<io::BufReader<File>>) {
             min_fuel = fuel;
         }
     }
-    println!("x: {}, fuel: {}", min_x, min_fuel);
+    format!("x: {}, fuel: {}", min_x, min_fuel)
 }

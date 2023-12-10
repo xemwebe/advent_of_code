@@ -1,10 +1,17 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use regex::Regex;
 
 fn read_parameter(lines: io::Lines<io::BufReader<File>>) -> ((i32, i32), (i32, i32)) {
     let line = lines.into_iter().filter_map(|x| x.ok()).next().unwrap();
     let re = Regex::new(r"target area: x=([-0-9]*)..([-0-9]*), y=([-0-9]*)..([-0-9]*)").unwrap();
-    println!("{}", line);
     let numbers: Vec<i32> = re
         .captures_iter(&line)
         .next()
@@ -37,7 +44,7 @@ fn simulate(start_vx: i32, start_vy: i32, target: ((i32, i32), (i32, i32))) -> i
     target.1 .0 - 1
 }
 
-pub fn riddle_17_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let target = read_parameter(lines);
     let min_vx = (-0.5 + (2.0 * (target.0 .0 as f64) + 0.25)).sqrt().floor() as i32;
     let max_vx = target.0 .1;
@@ -47,10 +54,10 @@ pub fn riddle_17_1(lines: io::Lines<io::BufReader<File>>) {
             height = height.max(simulate(start_vx, start_vy, target));
         }
     }
-    println!("Max y height: {}", height);
+    format!("{height}")
 }
 
-pub fn riddle_17_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let target = read_parameter(lines);
     let min_vx = (-0.5 + (2.0 * (target.0 .0 as f64) + 0.25)).sqrt().floor() as i32;
     let max_vx = target.0 .1;
@@ -62,5 +69,5 @@ pub fn riddle_17_2(lines: io::Lines<io::BufReader<File>>) {
             }
         }
     }
-    println!("Hit count: {}", count);
+    format!("{count}")
 }

@@ -1,4 +1,14 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+
 use regex::Regex;
 
 #[derive(Debug, Clone)]
@@ -217,7 +227,7 @@ fn make_inv_branch(inv: &Inventory, bp: &BluePrint, branch: &mut Vec<Inventory>)
     return max_geode;
 }
 
-pub fn riddle_19_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let blue_prints = read_blueprints(lines);
 
     let mut quality_level = 0;
@@ -225,10 +235,10 @@ pub fn riddle_19_1(lines: io::Lines<io::BufReader<File>>) {
         let ql = bp.id * max_geode(24, bp);
         quality_level += ql;
     }
-    println!("The solution is: {:?}", quality_level);
+    format!("{quality_level}")
 }
 
-pub fn riddle_19_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let blue_prints = read_blueprints(lines);
 
     let mut total_score = 1;
@@ -236,5 +246,5 @@ pub fn riddle_19_2(lines: io::Lines<io::BufReader<File>>) {
         let score = max_geode(32, bp);
         total_score *= score;
     }
-    println!("The solution is: {:?}", total_score);
+    format!("{total_score}")
 }

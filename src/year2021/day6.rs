@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn read_numbers(lines: io::Lines<io::BufReader<File>>) -> Vec<i32> {
     let number_str = lines.into_iter().next().unwrap().unwrap();
@@ -15,7 +23,7 @@ fn collect_in_histo(numbers: &[i32]) -> Vec<usize> {
     histo
 }
 
-pub fn riddle_6_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let numbers = read_numbers(lines);
     let mut hist = collect_in_histo(&numbers);
     for _ in 0..80 {
@@ -27,10 +35,10 @@ pub fn riddle_6_1(lines: io::Lines<io::BufReader<File>>) {
         hist[6] += new_fish;
     }
     let total_sum: usize = hist.into_iter().sum();
-    println!("Count of fish: {:?}", total_sum);
+    format!("{total_sum}")
 }
 
-pub fn riddle_6_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let numbers = read_numbers(lines);
     let mut hist = collect_in_histo(&numbers);
     for _ in 0..256 {
@@ -42,5 +50,5 @@ pub fn riddle_6_2(lines: io::Lines<io::BufReader<File>>) {
         hist[6] += new_fish;
     }
     let total_sum: usize = hist.into_iter().sum();
-    println!("Count of fish: {:?}", total_sum);
+    format!("{total_sum}")
 }

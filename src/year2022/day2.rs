@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn parse_letters(s: String) -> (String, String) {
     let mut parts = s.split(" ");
@@ -44,7 +52,7 @@ fn score_strat2(x: i32, y: i32) -> i32 {
     score(x, z) + z
 }
 
-pub fn riddle_2_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let total_score: i32 = lines
         .into_iter()
         .filter_map(|s| s.ok())
@@ -53,10 +61,10 @@ pub fn riddle_2_1(lines: io::Lines<io::BufReader<File>>) {
         .map(|(x, y)| score(x, y) + y)
         .sum();
 
-    println!("{:?}", total_score);
+    format!("{total_score}")
 }
 
-pub fn riddle_2_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let total_score: i32 = lines
         .into_iter()
         .filter_map(|s| s.ok())
@@ -65,5 +73,5 @@ pub fn riddle_2_2(lines: io::Lines<io::BufReader<File>>) {
         .map(|(x, y)| score_strat2(x, y))
         .sum();
 
-    println!("{:?}", total_score);
+    format!("{total_score}")
 }

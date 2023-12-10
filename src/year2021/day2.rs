@@ -1,4 +1,13 @@
-use super::*;
+use std::{fs::File, io};
+use anyhow::{anyhow, Result};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 #[derive(Debug)]
 struct Position {
@@ -40,7 +49,7 @@ impl Move {
     }
 }
 
-pub fn riddle_2_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let moves: Vec<Move> = lines
         .into_iter()
         .filter_map(|s| s.ok())
@@ -59,10 +68,10 @@ pub fn riddle_2_1(lines: io::Lines<io::BufReader<File>>) {
             Direction::Down => pos.depth += m.value,
         }
     }
-    println!("{:?}", pos);
+    format!("{:?}", pos)
 }
 
-pub fn riddle_2_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let moves: Vec<Move> = lines
         .into_iter()
         .filter_map(|s| s.ok())
@@ -84,5 +93,5 @@ pub fn riddle_2_2(lines: io::Lines<io::BufReader<File>>) {
             Direction::Down => pos.aim += m.value,
         }
     }
-    println!("{:?}", pos);
+    format!("{:?}", pos)
 }

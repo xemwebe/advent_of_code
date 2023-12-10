@@ -1,4 +1,14 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+
 use regex::Regex;
 use std::collections::HashMap;
 
@@ -52,10 +62,10 @@ fn calc(current: String, ops: &mut HashMap<String, Operation>) -> i64 {
     value
 }
 
-pub fn riddle_21_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut ops = read_operations(lines);
     let result = calc("root".to_string(), &mut ops);
-    println!("The solution is: {:?}", result);
+    format!("{result}")
 }
 
 fn check(a: String, b: String, ops: &mut HashMap<String, Operation>) -> Option<(i64, i64)> {
@@ -136,7 +146,7 @@ fn solution_included(r1: (i64, i64), r2: (i64, i64)) -> bool {
     ((r1.1 - r1.0) / (r1.1 - r1.0).abs()) * ((r2.1 - r2.0) / (r2.1 - r2.0).abs()) < 0
 }
 
-pub fn riddle_21_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut ops = read_operations(lines);
     let keys: Vec<String> = ops.keys().into_iter().map(|x| x.clone()).collect();
     for k in keys {
@@ -158,14 +168,12 @@ pub fn riddle_21_2(lines: io::Lines<io::BufReader<File>>) {
         lower *= 10;
         upper *= 10;
     }
-    println!("search intervall: [{lower},{upper}");
     loop {
         let middle = (lower + upper) / 2;
         ops.insert("humn".to_owned(), Operation::Number(middle));
         let mr = roots_judgement(&ops);
         if mr.0 == mr.1 {
-            println!("Solution: {middle}");
-            break;
+            return format!("{middle}");
         }
         if solution_included(lr, mr) {
             upper = middle;

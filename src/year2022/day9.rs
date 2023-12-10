@@ -1,5 +1,14 @@
-use super::*;
+use std::{fs::File, io};
 use std::collections::HashSet;
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
 
 fn parse_move(s: String) -> (String, i32) {
     let mut parts = s.split(" ");
@@ -73,7 +82,7 @@ fn parse_moves(lines: io::Lines<io::BufReader<File>>) -> Vec<(String, i32)> {
         .collect()
 }
 
-pub fn riddle_9_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let moves = parse_moves(lines);
 
     let mut rope = Rope::new(2);
@@ -81,10 +90,10 @@ pub fn riddle_9_1(lines: io::Lines<io::BufReader<File>>) {
         rope.make_move(&m);
     }
 
-    println!("{:?}", rope.count());
+    format!("{}", rope.count())
 }
 
-pub fn riddle_9_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let moves = parse_moves(lines);
 
     let mut rope = Rope::new(10);
@@ -92,5 +101,5 @@ pub fn riddle_9_2(lines: io::Lines<io::BufReader<File>>) {
         rope.make_move(&m);
     }
 
-    println!("{:?}", rope.count());
+    format!("{}", rope.count())
 }

@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use std::fmt;
 
 fn read_sfnumbers(lines: io::Lines<io::BufReader<File>>) -> Vec<SnailFish> {
@@ -251,26 +259,23 @@ fn parse_sfnumber(s: &[char], idx: usize, num: &mut Vec<SFNumber>) -> (usize, us
         '[' => parse_pair(s, idx + 1, num),
         '0'..='9' => parse_number(s, idx, num),
         _ => {
-            println!("num: {:?}", num);
-            println!("idx: {}, s[idx]: {}", idx, s[idx]);
             panic!("Invalid snail fish number!")
         }
     };
     (idx + 1, sf_idx)
 }
 
-pub fn riddle_18_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let nums = read_sfnumbers(lines);
     let mut num = nums[0].clone();
     for n in nums.into_iter().skip(1) {
         num.add(&n);
         num.reduce();
     }
-    println!("{}", num);
-    println!("Results magnitude: {}", num.magnitude(num.idx));
+    format!("{}", num.magnitude(num.idx))
 }
 
-pub fn riddle_18_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let nums = read_sfnumbers(lines);
     let mut max_magnitude = 0;
     let n = nums.len();
@@ -286,5 +291,5 @@ pub fn riddle_18_2(lines: io::Lines<io::BufReader<File>>) {
             max_magnitude = max_magnitude.max(num2.magnitude(num2.idx));
         }
     }
-    println!("Results magnitude: {}", max_magnitude);
+    format!("{max_magnitude}")
 }

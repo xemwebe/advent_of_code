@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use std::cmp::{max, min};
 
 type Point = (i32, i32);
@@ -83,7 +91,7 @@ fn print_grid(grid: &Vec<i32>, max_x: usize) {
     }
 }
 
-pub fn riddle_5_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let vent_lines = read_data(lines);
     let (max_x, max_y) = calc_max_xy(&vent_lines);
     let mut grid = vec![0; max_x * max_y];
@@ -98,10 +106,10 @@ pub fn riddle_5_1(lines: io::Lines<io::BufReader<File>>) {
             sum += 1
         }
     });
-    println!("Found {} overlaps", sum);
+    format!("{sum}")
 }
 
-pub fn riddle_5_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let vent_lines = read_data(lines);
     let (max_x, max_y) = calc_max_xy(&vent_lines);
     let mut grid = vec![0; max_x * max_y];
@@ -116,5 +124,5 @@ pub fn riddle_5_2(lines: io::Lines<io::BufReader<File>>) {
         }
     });
     print_grid(&grid, max_x);
-    println!("Found {} overlaps", sum);
+    format!("{sum}")
 }

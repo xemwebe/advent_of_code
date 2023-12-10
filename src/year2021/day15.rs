@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 #[derive(Debug, Clone, Copy)]
 struct Node {
@@ -68,10 +76,10 @@ fn low_risk_path(grid: &mut Vec<Vec<Node>>) {
     }
 }
 
-pub fn riddle_15_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let mut grid = read_grid(lines);
     low_risk_path(&mut grid);
-    println!("{:?}", grid.last().unwrap().last().unwrap().dist);
+    format!("{}", grid.last().unwrap().last().unwrap().dist)
 }
 
 fn increas_val(grid: &mut Vec<Vec<Node>>) {
@@ -107,9 +115,9 @@ fn enlarge_grid(grid: &mut Vec<Vec<Node>>) {
     }
 }
 
-pub fn riddle_15_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let mut grid = read_grid(lines);
     enlarge_grid(&mut grid);
     low_risk_path(&mut grid);
-    println!("{:?}", grid.last().unwrap().last().unwrap().dist);
+    format!("{}", grid.last().unwrap().last().unwrap().dist)
 }

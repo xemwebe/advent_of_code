@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use std::collections::VecDeque;
 
 fn read_algo_and_image(lines: io::Lines<io::BufReader<File>>) -> (String, VecDeque<String>) {
@@ -60,18 +68,17 @@ pub fn count_lit_pixels(image: &VecDeque<String>) -> usize {
         .count()
 }
 
-pub fn riddle_20_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let (algo, mut image) = read_algo_and_image(lines);
     extend_image(&mut image, '.');
     extend_image(&mut image, '.');
     extend_image(&mut image, '.');
     image = enhance_image(&mut image, &algo);
     image = enhance_image(&mut image, &algo);
-    image.iter().for_each(|x| println!("{}", x));
-    println!("Lit pixels: {}", count_lit_pixels(&image));
+    format!("{}", count_lit_pixels(&image))
 }
 
-pub fn riddle_20_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let (algo, mut image) = read_algo_and_image(lines);
     let mut outer = '.';
     extend_image(&mut image, outer);
@@ -81,6 +88,5 @@ pub fn riddle_20_2(lines: io::Lines<io::BufReader<File>>) {
         image = enhance_image(&mut image, &algo);
         outer = image[0][0..=0].chars().next().unwrap();
     }
-    image.iter().for_each(|x| println!("{}", x));
-    println!("Lit pixels: {}", count_lit_pixels(&image));
+    format!("{}", count_lit_pixels(&image))
 }

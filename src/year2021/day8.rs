@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use std::collections::{HashMap, HashSet};
 
 fn read_notes(lines: io::Lines<io::BufReader<File>>) -> Vec<(Vec<String>, Vec<String>)> {
@@ -27,7 +35,7 @@ fn read_notes(lines: io::Lines<io::BufReader<File>>) -> Vec<(Vec<String>, Vec<St
         .collect()
 }
 
-pub fn riddle_8_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let notes = read_notes(lines);
     let count = notes
         .into_iter()
@@ -35,7 +43,7 @@ pub fn riddle_8_1(lines: io::Lines<io::BufReader<File>>) {
         .flatten()
         .filter(|x| x.len() == 2 || x.len() == 3 || x.len() == 4 || x.len() == 7)
         .count();
-    println!("We have {} uniqe readings", count);
+    format!("{count}")
 }
 
 fn map_phase2(map: &mut HashMap<String, i32>, x: &str) {
@@ -135,8 +143,8 @@ fn analyze_note(note: (Vec<String>, Vec<String>)) -> i32 {
     num
 }
 
-pub fn riddle_8_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let notes = read_notes(lines);
     let sum: i32 = notes.into_iter().map(|x| analyze_note(x)).sum();
-    println!("total sum: {:?}", sum);
+    format!("{sum}")
 }

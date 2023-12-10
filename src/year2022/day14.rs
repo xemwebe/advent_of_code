@@ -1,4 +1,13 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
 
 pub fn read_map(
     mut lines: io::Lines<io::BufReader<File>>,
@@ -67,7 +76,7 @@ fn print_map(m: &Vec<Vec<u8>>) {
                 _ => print!("."),
             }
         }
-        println!("");
+        println!();
     }
 }
 
@@ -99,16 +108,16 @@ fn simulate_sand(map: &mut Vec<Vec<u8>>, sand: usize) -> i32 {
     count
 }
 
-pub fn riddle_14_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let (mut map, sand) = read_map(lines, false);
     let count = simulate_sand(&mut map, sand);
     print_map(&map);
-    println!("The solution is: {:?}", count);
+    format!("{count}")
 }
 
-pub fn riddle_14_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let (mut map, sand) = read_map(lines, true);
     let count = simulate_sand(&mut map, sand);
     print_map(&map);
-    println!("The solution is: {:?}", count);
+    format!("{count}")
 }

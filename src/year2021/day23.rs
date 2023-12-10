@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
@@ -257,12 +265,7 @@ fn solve(game: &Game, total_energy: i32, solutions: &mut HashMap<Game, i32>) -> 
     if solutions.contains_key(game) {
         return solutions[game];
     }
-    // println!("\n====New round=====");
-    // println!("\n====Orig=====");
-    // print_moves(&vec![(game.clone(), total_energy)]);
     let moves = get_list_of_moves(&game);
-    // println!("\n====New=====");
-    // print_moves(&moves);
     let mut min_energy = i32::MAX;
     for m in &moves {
         let curr_energy = solve(&m.0, m.1 + total_energy, solutions);
@@ -275,8 +278,6 @@ fn solve(game: &Game, total_energy: i32, solutions: &mut HashMap<Game, i32>) -> 
 fn print_moves(moves: &Vec<(Game, i32)>) {
     for m in moves {
         let n = m.0.n();
-        println!("Energy: {}", m.1);
-        println!("#############");
         for y in 0..=n {
             for x in 0..13 {
                 if let Some(i) = who_is_at(x, y, &m.0) {
@@ -309,20 +310,19 @@ fn print_moves(moves: &Vec<(Game, i32)>) {
     }
 }
 
-pub fn riddle_23_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>)  -> String {
     let game = Game {
         positions: read_game(lines, 2),
     };
     let mut solutions = HashMap::new();
-    println!("Minimal Energy: {}", solve(&game, 0, &mut solutions));
+    format!("{}", solve(&game, 0, &mut solutions))
 }
 
-pub fn riddle_23_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>)  -> String {
     let game = Game {
         positions: read_game(lines, 4),
     };
-    println!("Starting with ");
     print_moves(&vec![(game.clone(), 0)]);
     let mut solutions = HashMap::new();
-    println!("Minimal Energy: {}", solve(&game, 0, &mut solutions));
+    format!("{}", solve(&game, 0, &mut solutions))
 }

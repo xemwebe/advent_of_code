@@ -4,7 +4,16 @@
 /// However, it took far to long to implement the structs and code the methods.
 /// Still, I was very surprised that my rank wasn't that bad...
 ///
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
 use std::collections::{HashMap, HashSet};
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
@@ -345,7 +354,7 @@ fn print_floor(floor: &Floor) {
     println!("+-------+\n");
 }
 
-pub fn riddle_17_1(mut lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(mut lines: io::Lines<io::BufReader<File>>) -> String {
     let wind: Vec<i32> = lines
         .next()
         .unwrap()
@@ -371,7 +380,7 @@ pub fn riddle_17_1(mut lines: io::Lines<io::BufReader<File>>) {
         }
     }
     print_floor(&floor);
-    println!("The solution is: {:?}", floor.len());
+    format!("{}", floor.len())
 }
 
 struct State {
@@ -416,7 +425,7 @@ fn floor_equal(floor1: &Floor, floor2: &Floor) -> bool {
     true
 }
 
-pub fn riddle_17_2(mut lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(mut lines: io::Lines<io::BufReader<File>>) -> String {
     let wind: Vec<i32> = lines
         .next()
         .unwrap()
@@ -468,5 +477,5 @@ pub fn riddle_17_2(mut lines: io::Lines<io::BufReader<File>>) {
         }
     }
     let total_height = floor.len() + skipped_height;
-    println!("The solution is: {:?}", total_height);
+    format!("{total_height}")
 }

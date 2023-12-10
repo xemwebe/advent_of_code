@@ -1,12 +1,20 @@
-use super::*;
-use crate::list::List;
+use std::{fs::File, io};
+use crate::year2022::list::List;
 use std::cmp::Ordering;
 
 use lrlex::lrlex_mod;
 use lrpar::lrpar_mod;
 
-lrlex_mod!("list.l");
-lrpar_mod!("list.y");
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+lrlex_mod!("year2022/list.l");
+lrpar_mod!("year2022/list.y");
 
 // I know, this is approach is far to complex for this little riddle,
 // but I thought it would be fun to experiment with some advanced
@@ -98,10 +106,10 @@ fn count_orderd(lists: &Vec<List>) -> usize {
     sum
 }
 
-pub fn riddle_13_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let lists = parse_list(lines);
     let sum = count_orderd(&lists);
-    println!("The solution is: {:?}", sum);
+    format!("{sum}")
 }
 
 fn ordering(a: &List, b: &List) -> Ordering {
@@ -132,7 +140,7 @@ fn find_marker(m: u8, lists: &Vec<List>) -> usize {
     0
 }
 
-pub fn riddle_13_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut lists = parse_list(lines);
     let marker2 = List::Array(vec![Box::new(List::Num(2))]);
     lists.push(List::Array(vec![Box::new(marker2)]));
@@ -142,5 +150,5 @@ pub fn riddle_13_2(lines: io::Lines<io::BufReader<File>>) {
     lists.sort_by(|a, b| ordering(a, b));
 
     let decoder_key = find_marker(2, &lists) * find_marker(6, &lists);
-    println!("The solution is: {}", decoder_key);
+    format!("{decoder_key}")
 }

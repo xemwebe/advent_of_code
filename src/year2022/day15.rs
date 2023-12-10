@@ -1,4 +1,14 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
+
 use regex::Regex;
 use std::collections::HashSet;
 
@@ -56,7 +66,7 @@ pub fn read_map(lines: io::Lines<io::BufReader<File>>) -> Vec<Sensor> {
         .collect()
 }
 
-pub fn riddle_15_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let sensors = read_map(lines);
     let mut cols = HashSet::new();
     let row = 2000000;
@@ -66,7 +76,7 @@ pub fn riddle_15_1(lines: io::Lines<io::BufReader<File>>) {
     for sensor in &sensors {
         sensor.remove_beacon(row, &mut cols);
     }
-    println!("The solution is: {:?}", cols.len());
+    format!("{}", cols.len())
 }
 
 struct ColRange {
@@ -88,7 +98,6 @@ impl ColRange {
     }
 
     fn merge_with_ranges(&mut self, range: (i64, i64)) {
-        // println!("insert range {range:?}");
         let mut drop = None;
         for r in &self.ranges {
             if range.0 >= r.0 && range.1 <= r.1 {
@@ -104,7 +113,6 @@ impl ColRange {
         }
         if let Some(drop) = drop {
             self.ranges.remove(&drop);
-            // println!("merge with {drop:?}");
             self.merge_with_ranges((drop.0.min(range.0), drop.1.max(range.1)))
         } else {
             self.ranges.insert(range);
@@ -129,11 +137,10 @@ impl ColRange {
     }
 }
 
-pub fn riddle_15_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let sensors = read_map(lines);
     let max = 4000000;
     for row in 0..=max {
-        // println!("row: {row}");
         let mut cols = ColRange {
             ranges: HashSet::new(),
             min: Some(0),
@@ -141,16 +148,14 @@ pub fn riddle_15_2(lines: io::Lines<io::BufReader<File>>) {
         };
         for sensor in &sensors {
             if let Some(range) = sensor.beacon_distance_to_row_range(row) {
-                // println!("Found {range:?}");
                 cols.insert(range);
             }
         }
-        // println!("all ranges {:?}", cols.ranges);
         if cols.total_size() < max + 1 {
             let y = row;
             let x = cols.get_beacon();
-            println!("Solution: {} (x={x}, y={y})", x * max + y);
-            break;
+            return format!("{}", x * max + y);
         }
     }
+    "no solution found".to_string()
 }

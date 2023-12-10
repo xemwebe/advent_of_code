@@ -1,4 +1,12 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
 
 fn byte_to_priority(byte: u8) -> i32 {
     if byte >= 97 {
@@ -21,7 +29,7 @@ fn find_double(bytes: Vec<u8>) -> u8 {
     0
 }
 
-pub fn riddle_3_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let total_priorities: i32 = lines
         .into_iter()
         .filter_map(|s| s.ok())
@@ -30,7 +38,7 @@ pub fn riddle_3_1(lines: io::Lines<io::BufReader<File>>) {
         .map(byte_to_priority)
         .sum();
 
-    println!("The solution is: {}", total_priorities);
+    format!("{total_priorities}")
 }
 
 fn group_priority(one: &[u8], two: &[u8], three: &[u8]) -> i32 {
@@ -48,7 +56,7 @@ fn group_priority(one: &[u8], two: &[u8], three: &[u8]) -> i32 {
     0
 }
 
-pub fn riddle_3_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let all_rucksacks: Vec<Vec<u8>> = lines
         .into_iter()
         .filter_map(|s| s.ok())
@@ -65,5 +73,5 @@ pub fn riddle_3_2(lines: io::Lines<io::BufReader<File>>) {
         );
     }
 
-    println!("The solution is: {}", sum);
+    format!("{sum}")
 }

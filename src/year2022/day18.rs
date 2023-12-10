@@ -1,4 +1,13 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
 
 pub fn read_map(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<Vec<u8>>> {
     let mut dim = (0, 0, 0);
@@ -39,7 +48,7 @@ fn count_surfaces(x: usize, y: usize, z: usize, map: &Vec<Vec<Vec<u8>>>) -> usiz
         + map[x + 1][y][z]) as usize
 }
 
-pub fn riddle_18_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let map = read_map(lines);
     let mut sum = 0;
     for x in 1..map.len() - 1 {
@@ -52,7 +61,7 @@ pub fn riddle_18_1(lines: io::Lines<io::BufReader<File>>) {
         }
     }
 
-    println!("The solution is: {:?}", sum);
+    format!("{sum}")
 }
 
 fn count_surfaces2(x: i64, y: i64, z: i64, map: &Vec<Vec<Vec<u8>>>) -> usize {
@@ -123,7 +132,7 @@ pub fn mark_outside(map: &mut Vec<Vec<Vec<u8>>>, points: Vec<(i64, i64, i64)>) {
     }
 }
 
-pub fn riddle_18_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut map = read_map(lines);
     let mut sum = 0;
     let next_points = vec![(1, 1, 1)];
@@ -138,5 +147,5 @@ pub fn riddle_18_2(lines: io::Lines<io::BufReader<File>>) {
         }
     }
 
-    println!("The solution is: {:?}", sum);
+    format!("{sum}")
 }

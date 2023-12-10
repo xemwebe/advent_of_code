@@ -1,4 +1,13 @@
-use super::*;
+use std::{fs::File, io};
+
+pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
+    match part {
+        1 => riddle_1(lines),
+        2 => riddle_2(lines),
+        _ => format!("Error: part {part} not found!"),
+    }
+}
+
 
 pub fn read_map(lines: io::Lines<io::BufReader<File>>) -> Vec<Vec<u8>> {
     lines
@@ -66,7 +75,7 @@ fn find_path(map: &mut Vec<Vec<u8>>, start: (usize, usize), end: (usize, usize))
     }
 }
 
-pub fn riddle_12_1(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut map = read_map(lines);
     let start = find_position(83, &map);
     let end = find_position(69, &map);
@@ -74,7 +83,7 @@ pub fn riddle_12_1(lines: io::Lines<io::BufReader<File>>) {
     map[end.1][end.0] = 122;
 
     let path_length = find_path(&mut map, start, end);
-    println!("The solution is: {:#?}", path_length);
+    format!("{path_length}")
 }
 
 fn shortest_path(map: &mut Vec<Vec<u8>>, start: (usize, usize)) -> i32 {
@@ -133,7 +142,7 @@ fn shortest_path(map: &mut Vec<Vec<u8>>, start: (usize, usize)) -> i32 {
     }
 }
 
-pub fn riddle_12_2(lines: io::Lines<io::BufReader<File>>) {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut map = read_map(lines);
     let start = find_position(83, &map);
     let end = find_position(69, &map);
@@ -141,5 +150,5 @@ pub fn riddle_12_2(lines: io::Lines<io::BufReader<File>>) {
     map[end.1][end.0] = 122;
 
     let path_length = shortest_path(&mut map, end);
-    println!("The solution is: {:#?}", path_length);
+    format!("{path_length}")
 }
