@@ -9,6 +9,7 @@ mod day6;
 mod day7;
 mod day8;
 mod day9;
+mod day10;
 
 pub fn execute(day: u32, part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match day {
@@ -21,6 +22,7 @@ pub fn execute(day: u32, part: u32, lines: io::Lines<io::BufReader<File>>) -> St
         7 => day7::execute(part, lines),
         8 => day8::execute(part, lines),
         9 => day9::execute(part, lines),
+        10 => day10::execute(part, lines),
         _ => format!("Error: day {day} not found"),
     }
 }
