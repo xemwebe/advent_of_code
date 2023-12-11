@@ -20,6 +20,7 @@ struct Args {
 }
 
 mod year2015;
+mod year2016;
 mod year2020;
 mod year2021;
 mod year2022;
@@ -36,6 +37,7 @@ fn main() {
     if let Ok(lines) = lines {
         let solution = match args.year {
             2015 => year2015::execute(args.day, args.part, lines),
+            2016 => year2016::execute(args.day, args.part, lines),
             2020 => year2020::execute(args.day, args.part, lines),
             2021 => year2021::execute(args.day, args.part, lines),
             2022 => year2022::execute(args.day, args.part, lines),
