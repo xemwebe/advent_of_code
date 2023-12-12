@@ -19,3 +19,6 @@ regex = "1.10.2"
 [build-dependencies]
 cfgrammar = "0.13.3"
 lrlex = "0.13.3"
+
+[profile.release]
+debug = 1

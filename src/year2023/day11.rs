@@ -18,12 +18,12 @@ fn solve(lines: io::Lines<io::BufReader<File>>, mut expansion_factor: usize) -> 
     for l in lines {
         let line = l.unwrap();
         let line = line.trim();
-        if row==0 {
+        if row == 0 {
             col_marks = vec![true; line.len()];
         }
         let mut found_galaxy = false;
         for (col, c) in line.as_bytes().iter().enumerate() {
-            if *c==b'#' {
+            if *c == b'#' {
                 found_galaxy = true;
                 galaxies.push((row, col));
                 col_marks[col] = false;
@@ -44,13 +44,13 @@ fn solve(lines: io::Lines<io::BufReader<File>>, mut expansion_factor: usize) -> 
         }
     }
     let mut sum = 0;
-    for i in 0..galaxies.len()-1 {
+    for i in 0..galaxies.len() - 1 {
         let xi = galaxies[i].0 + row_offsets[galaxies[i].0];
         let yi = galaxies[i].1 + col_offsets[galaxies[i].1];
-        for j in i+1..galaxies.len() {
+        for j in i + 1..galaxies.len() {
             let xj = galaxies[j].0 + row_offsets[galaxies[j].0];
             let yj = galaxies[j].1 + col_offsets[galaxies[j].1];
-            sum += (xj as i64-xi as i64).abs() + (yj as i64 -yi as i64).abs();
+            sum += (xj as i64 - xi as i64).abs() + (yj as i64 - yi as i64).abs();
         }
     }
     format!("{sum}")
@@ -63,4 +63,3 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
 fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     solve(lines, 1000000)
 }
-

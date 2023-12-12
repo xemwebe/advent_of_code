@@ -3,6 +3,7 @@ use std::{fs::File, io};
 mod day1;
 mod day10;
 mod day11;
+mod day12;
 mod day2;
 mod day3;
 mod day4;
@@ -25,6 +26,7 @@ pub fn execute(day: u32, part: u32, lines: io::Lines<io::BufReader<File>>) -> St
         9 => day9::execute(part, lines),
         10 => day10::execute(part, lines),
         11 => day11::execute(part, lines),
+        12 => day12::execute(part, lines),
         _ => format!("Error: day {day} not found"),
     }
 }
