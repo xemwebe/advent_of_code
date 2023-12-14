@@ -1,8 +1,4 @@
-use std::{
-    fmt::{self, Display},
-    fs::File,
-    io,
-};
+use std::{fs::File, io};
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match part {
@@ -22,8 +18,8 @@ fn row_equal(i: usize, j: usize, grid: &[Vec<u8>]) -> bool {
 }
 
 fn col_equal(i: usize, j: usize, grid: &[Vec<u8>]) -> bool {
-    for k in 0..grid.len() {
-        if grid[k][i] != grid[k][j] {
+    for row in grid {
+        if row[i] != row[j] {
             return false;
         }
     }
@@ -34,12 +30,12 @@ fn calc_score(grid: &[Vec<u8>]) -> usize {
     let rows = grid.len();
     let cols = grid[0].len();
     for i in 0..rows - 1 {
-        if row_equal(i, i + 1, &grid) {
+        if row_equal(i, i + 1, grid) {
             let width = i.min(rows - i - 2);
             println!("width: {width}, i: {i}");
             let mut is_mirror = true;
             for w in 1..=width {
-                if !row_equal(i - w, i + w + 1, &grid) {
+                if !row_equal(i - w, i + w + 1, grid) {
                     is_mirror = false;
                     break;
                 }
@@ -50,11 +46,11 @@ fn calc_score(grid: &[Vec<u8>]) -> usize {
         }
     }
     for i in 0..cols - 1 {
-        if col_equal(i, i + 1, &grid) {
+        if col_equal(i, i + 1, grid) {
             let width = i.min(cols - i - 2);
             let mut is_mirror = true;
             for w in 1..=width {
-                if !col_equal(i - w, i + w + 1, &grid) {
+                if !col_equal(i - w, i + w + 1, grid) {
                     is_mirror = false;
                     break;
                 }
@@ -79,7 +75,7 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
             grid.push(line.trim().as_bytes().to_vec());
         }
     }
-    if grid.len() > 0 {
+    if !grid.is_empty() {
         sum += calc_score(&grid);
     }
     format!("{sum}")
@@ -97,8 +93,8 @@ fn row_equal_with_error(i: usize, j: usize, grid: &[Vec<u8>]) -> u32 {
 
 fn col_equal_with_error(i: usize, j: usize, grid: &[Vec<u8>]) -> u32 {
     let mut errors = 0;
-    for k in 0..grid.len() {
-        if grid[k][i] != grid[k][j] {
+    for row in grid {
+        if row[i] != row[j] {
             errors += 1;
         }
     }
@@ -109,12 +105,11 @@ fn calc_score_with_smudge(grid: &[Vec<u8>]) -> usize {
     let rows = grid.len();
     let cols = grid[0].len();
     for i in 0..rows - 1 {
-        let mut errors = row_equal_with_error(i, i + 1, &grid);
+        let mut errors = row_equal_with_error(i, i + 1, grid);
         if errors <= 1 {
             let width = i.min(rows - i - 2);
-            let mut is_mirror = true;
             for w in 1..=width {
-                errors += row_equal_with_error(i - w, i + w + 1, &grid);
+                errors += row_equal_with_error(i - w, i + w + 1, grid);
                 if errors > 1 {
                     break;
                 }
@@ -125,11 +120,11 @@ fn calc_score_with_smudge(grid: &[Vec<u8>]) -> usize {
         }
     }
     for i in 0..cols - 1 {
-        let mut errors = col_equal_with_error(i, i + 1, &grid);
+        let mut errors = col_equal_with_error(i, i + 1, grid);
         if errors <= 1 {
             let width = i.min(cols - i - 2);
             for w in 1..=width {
-                errors += col_equal_with_error(i - w, i + w + 1, &grid);
+                errors += col_equal_with_error(i - w, i + w + 1, grid);
                 if errors > 1 {
                     break;
                 }

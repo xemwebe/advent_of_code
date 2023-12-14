@@ -9,7 +9,7 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
 }
 
 fn parse_letters(s: String) -> (String, String) {
-    let mut parts = s.split(" ");
+    let mut parts = s.split(' ');
     (
         parts.next().unwrap_or("").to_string(),
         parts.next().unwrap_or("").to_string(),

@@ -153,7 +153,7 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
         }
         let total_damaged: u32 = pattern.iter().map(|p| *p).sum();
         let state = State {
-            map: map,
+            map,
             pos: 0,
             remaining: (total_damaged - count) as i32,
             pattern_pos: 0,
@@ -203,7 +203,7 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
             State {
                 map: nmap,
                 pos: 0,
-                remaining: (total_damaged - count-1) as i32,
+                remaining: (total_damaged - count - 1) as i32,
                 pattern_pos: 0,
             },
             &StaticInfo {
