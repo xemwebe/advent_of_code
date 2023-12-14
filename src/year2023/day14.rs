@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::{fs::File, io};
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
@@ -8,6 +9,7 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     }
 }
 
+#[derive(Hash, PartialEq, Eq, Clone)]
 struct Panel {
     grid: Vec<Vec<u8>>,
 }
@@ -111,7 +113,7 @@ impl Panel {
         }
     }
 
-    fn calc_load(&mut self) -> u64 {
+    fn calc_load(&self) -> u64 {
         let mut sum = 0;
         for i in 0..self.grid.len() {
             let mut count = 0;
@@ -160,10 +162,20 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         grid.push(line.trim().as_bytes().to_vec());
     }
     let mut panel = Panel { grid };
+    let mut hashes: HashMap<Panel, usize> = HashMap::new();
     for i in 0..1000000000 {
         panel.cycle();
-        println!("{i}:\n{panel}");
+        if hashes.contains_key(&panel) {
+            let first = hashes[&panel];
+            let idx = (1000000000 - first) % (i - first) + first - 1;
+            for (p, k) in &hashes {
+                if *k == idx {
+                    let solution = p.calc_load();
+                    return format!("{solution}");
+                }
+            }
+        }
+        hashes.insert(panel.clone(), i);
     }
-    let solution = panel.calc_load();
-    format!("{solution}")
+    "no solution found".to_string()
 }
