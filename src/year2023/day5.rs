@@ -158,3 +158,24 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let solution = values.iter().map(|r| r.start).min().unwrap();
     format!("{solution}")
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2023_5_1() {
+        let lines = read_lines("data/2023/5.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "388071289");
+    }
+
+    #[test]
+    fn test_2023_5_2() {
+        let lines = read_lines("data/2023/5.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "84206669");
+    }
+}
+

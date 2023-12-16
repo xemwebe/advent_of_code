@@ -130,6 +130,7 @@ impl Solver {
         self.beams = vec![vec![0u8; self.map[0].len()]; self.map.len()];
     }
 
+    #[allow(dead_code)]
     fn print(&self) {
         for row in &self.beams {
             for b in row {

@@ -63,3 +63,24 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
 fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     solve(lines, 1000000)
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2023_11_1() {
+        let lines = read_lines("data/2023/11.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "9274989");
+    }
+
+    #[test]
+    fn test_2023_11_2() {
+        let lines = read_lines("data/2023/11.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "357134560737");
+    }
+}
+
