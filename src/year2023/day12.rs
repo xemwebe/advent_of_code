@@ -2,6 +2,8 @@ use std::{
     fmt::{self, Display},
     fs::File,
     io,
+    collections::HashMap,
+    hash::Hash,
 };
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
@@ -13,7 +15,8 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
 }
 
 struct StaticInfo {
-    damaged_pattern: Vec<u32>,
+    map: Vec<u8>,
+    damaged_pattern: Vec<usize>,
 }
 
 impl Display for StaticInfo {
@@ -22,17 +25,15 @@ impl Display for StaticInfo {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 struct State {
-    map: Vec<u8>,
     pos: usize,
-    remaining: i32,
+    remaining: usize,
     pattern_pos: usize,
 }
 
 impl Display for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "map: {:?}, ", String::from_utf8_lossy(&self.map))?;
         write!(
             f,
             "pos: {}, remaining: {}, pattern_pos: {}",
@@ -41,101 +42,90 @@ impl Display for State {
     }
 }
 
-fn match_damage_block(pos: usize, map: &[u8], d_len: usize) -> bool {
-    if pos + d_len > map.len() {
-        return false;
-    }
-    for i in pos..pos + d_len {
-        if map[i] == b'.' {
-            return false;
-        }
-    }
-    if pos + d_len < map.len() && map[pos + d_len] == b'#' {
-        return false;
-    }
-    true
+struct Solver {
+    cache: HashMap<State, usize>,
+    info: StaticInfo,
 }
 
-fn is_valid(map: &[u8], pattern: &[u32]) -> bool {
-    let mut count = 0;
-    let mut idx = 0;
-    for m in map {
-        if count > 0 && *m != b'#' {
-            if count != pattern[idx] {
-                return false;
-            }
-            count = 0;
-            idx += 1;
-        }
-        if *m == b'#' {
-            count += 1;
-        }
+impl Solver {
+    fn new(info: StaticInfo ) -> Self {
+        Self  { cache: HashMap::new(), info }
     }
-    if count > 0 {
-        pattern[idx] == count
-    } else {
-        true
-    }
-}
 
-fn solve(mut state: State, info: &StaticInfo) -> usize {
-    if state.remaining < 0 {
-        return 0;
-    }
-    if state.remaining == 0 {
-        if state.pattern_pos != info.damaged_pattern.len() {
-            if !is_valid(&state.map, &info.damaged_pattern) {
-                return 0;
+    fn solve(&mut self, state: State,) -> usize {
+        //println!("state: {state}");
+        if state.pattern_pos == self.info.damaged_pattern.len() {
+            return 1;
+        }
+        if state.pos >= self.info.map.len() {
+            return 0;
+        }
+        if let Some(score) = self.cache.get(&state) {
+            return *score;
+        }
+
+        let mut pos = state.pos;
+        let mut total_score = 0;
+        let pattern_pos = state.pattern_pos;
+        let pattern_len = self.info.damaged_pattern[pattern_pos];
+        let remaining = state.remaining;
+        while pos <= self.info.map.len()-state.remaining as usize {
+            if let Some((new_pos, used)) = self.find_next_pattern(pos, pattern_len, remaining) {
+                let score = self.solve(State{pos: new_pos+pattern_len+1, pattern_pos: pattern_pos+1, remaining: remaining-used});
+                if score == 0 {
+                    pos += 1;
+                    continue;
+                }
+                total_score += score;
+                if self.info.map[new_pos] == b'#' {
+                    break;
+                }
+                pos = new_pos + 1;
+            } else {
+                break;
             }
         }
-        return 1;
+        self.cache.insert(state, total_score);
+        
+        total_score
     }
-    let mut pos = state.pos;
-    let map = &state.map;
-    while pos < map.len() && map[pos] == b'.' {
-        pos += 1;
-    }
-    if pos >= map.len() {
-        return 0;
-    }
-    let mut sum = if match_damage_block(
-        pos,
-        &state.map,
-        info.damaged_pattern[state.pattern_pos] as usize,
-    ) {
-        let d_len = info.damaged_pattern[state.pattern_pos] as usize;
-        let mut new_map = map.clone();
-        let mut remaining = state.remaining;
-        for i in 0..d_len {
-            if new_map[pos + i] == b'?' {
-                remaining -= 1;
+
+    fn find_next_pattern(&self, pos: usize, len: usize, remaining: usize) -> Option<(usize, usize)> {
+        let map = &self.info.map;
+        
+        let mut last_round = false;
+        for i in pos..=(map.len()-len) {
+            // check for match
+            let mut joker = 0;
+            let mut is_match = true;
+            if map[i] == b'#' {
+                last_round = true;
             }
-            new_map[pos + i] = b'#';
+            for j in i..i+len {
+                if map[j] == b'?' {
+                    joker += 1;
+                }
+                if map[j] == b'.' {
+                    is_match = false;
+                }
+            }
+            if is_match {
+                if joker > remaining {
+                    continue;
+                }
+                // check that pattern is not folloed by '#'
+                if i+len < map.len() && map[i+len] == b'#' {
+                    continue;
+                }
+                return Some((i, joker));
+            }
+            if last_round {
+                break;
+            }
         }
-        if new_map.len() > pos + d_len {
-            new_map[pos + d_len] = b'.';
-        }
-        solve(
-            State {
-                map: new_map,
-                pos: pos + d_len + 1,
-                remaining: remaining,
-                pattern_pos: state.pattern_pos + 1,
-            },
-            info,
-        )
-    } else {
-        0
-    };
-    let map = &mut state.map;
-    if map[pos] != b'#' {
-        if map[pos] == b'?' {
-            map[pos] = b'.';
-        }
-        state.pos = pos;
-        sum += solve(state, info);
+        None
     }
-    sum
+
 }
 
 fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
@@ -143,25 +133,26 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     for l in lines {
         let line = l.unwrap();
         let parts: Vec<&str> = line.trim().split(' ').collect();
+        println!("row: {:?}", parts);
         let map = parts[0].as_bytes().to_vec();
-        let pattern: Vec<u32> = parts[1].split(',').map(|s| s.parse().unwrap()).collect();
-        let mut count: u32 = 0;
+        let pattern: Vec<usize> = parts[1].split(',').map(|s| s.parse().unwrap()).collect();
+        let mut count: usize = 0;
         for m in &map {
             if *m == b'#' {
                 count += 1;
             }
         }
-        let total_damaged: u32 = pattern.iter().map(|p| *p).sum();
-        let state = State {
+        let total_damaged: usize = pattern.iter().map(|p| *p).sum();
+        let mut solver = Solver::new(StaticInfo {
             map,
+            damaged_pattern: pattern,
+        });
+        let state = State {
             pos: 0,
-            remaining: (total_damaged - count) as i32,
+            remaining: total_damaged - count,
             pattern_pos: 0,
         };
-        let info = &StaticInfo {
-            damaged_pattern: pattern,
-        };
-        let combinations = solve(state, info);
+        let combinations = solver.solve(state);
         println!("combinations: {combinations}");
         if combinations == 0 {
             panic!("no solution for pattern {:?}", parts);
@@ -177,44 +168,36 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         let line = l.unwrap();
         let parts: Vec<&str> = line.trim().split(' ').collect();
         let map = parts[0].as_bytes().to_vec();
-        let pattern: Vec<u32> = parts[1].split(',').map(|s| s.parse().unwrap()).collect();
+        let pattern: Vec<usize> = parts[1].split(',').map(|s| s.parse().unwrap()).collect();
 
-        let mut count: u32 = 0;
-        for m in &map {
+        let mut full_map = map.clone();
+        let mut full_pattern = pattern.clone();
+        for _ in 0..4 {
+            full_map.push(b'?');
+            full_map.extend(&map);
+            full_pattern.extend(&pattern);
+        }
+        let total_damaged: usize = full_pattern.iter().map(|p| *p).sum();
+        let mut count: usize = 0;
+        for m in &full_map {
             if *m == b'#' {
                 count += 1;
             }
         }
-        let total_damaged: u32 = pattern.iter().map(|p| *p).sum();
-        let combinations = solve(
-            State {
-                map: map.clone(),
-                pos: 0,
-                remaining: (total_damaged - count) as i32,
-                pattern_pos: 0,
-            },
-            &StaticInfo {
-                damaged_pattern: pattern.clone(),
-            },
-        );
-        let mut nmap = map.clone();
-        nmap.push(b'#');
-        let combinations2 = solve(
-            State {
-                map: nmap,
-                pos: 0,
-                remaining: (total_damaged - count - 1) as i32,
-                pattern_pos: 0,
-            },
-            &StaticInfo {
-                damaged_pattern: pattern,
-            },
-        );
-        println!("combinations: {combinations}, combinations2: {combinations2}");
+        let mut solver = Solver::new(StaticInfo {
+            map: full_map,
+            damaged_pattern: full_pattern,
+        });
+        let state = State {
+            pos: 0,
+            remaining: total_damaged - count,
+            pattern_pos: 0,
+        };
+        let combinations = solver.solve(state);
         if combinations == 0 {
             panic!("no solution for pattern {:?}", parts);
         }
-        sum += combinations * combinations * combinations * combinations * combinations;
+        sum += combinations;
     }
     format!("{sum}")
 }
