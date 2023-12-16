@@ -121,8 +121,8 @@ fn ordering(a: &List, b: &List) -> Ordering {
 }
 
 fn find_marker(m: u8, lists: &Vec<List>) -> usize {
-    for i in 0..lists.len() {
-        match &lists[i] {
+    for (i, item) in lists.iter().enumerate() {
+        match &item {
             List::Array(va) => match &(*(va[0])) {
                 List::Array(vaa) => match *(vaa[0]) {
                     List::Num(x) => {

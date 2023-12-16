@@ -75,12 +75,12 @@ impl Solver {
         // proceed beam
         if tile == b'-' && (dir == Up || dir == Down) {
             self.make_beams(Right, x, y+1);
-            self.make_beams(Left, x, y-1);
+            if y>0 { self.make_beams(Left, x, y-1) };
             return;
         }
         if tile == b'|' && (dir == Right || dir == Left) {
             self.make_beams(Down, x+1, y);
-            self.make_beams(Up, x-1, y);
+            if x>0 { self.make_beams(Up, x-1, y) };
             return;
         }
         if tile == b'/' {
@@ -144,7 +144,7 @@ impl Solver {
     }
 }
 
-fn riddle_1(mut lines: io::Lines<io::BufReader<File>>) -> String {
+fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut map = Vec::new();
     for l in lines {
         map.push(l.unwrap().as_bytes().to_vec());
@@ -155,7 +155,7 @@ fn riddle_1(mut lines: io::Lines<io::BufReader<File>>) -> String {
     format!("{solution}")
 }
 
-fn riddle_2(mut lines: io::Lines<io::BufReader<File>>) -> String {
+fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut map = Vec::new();
     for l in lines {
         map.push(l.unwrap().as_bytes().to_vec());
@@ -181,4 +181,24 @@ fn riddle_2(mut lines: io::Lines<io::BufReader<File>>) -> String {
         solution = solution.max(solver.energized());
     }
     format!("{solution}")
+}
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2023_16_1() {
+        let lines = read_lines("data/2023/16.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "7951");
+    }
+
+    #[test]
+    fn test_2023_16_2() {
+        let lines = read_lines("data/2023/16.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "8148");
+    }
 }
