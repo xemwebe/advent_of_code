@@ -68,7 +68,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
             Direction::Down => pos.depth += m.value,
         }
     }
-    format!("{:?}", pos)
+    format!("{}", pos.horizontal * pos.depth)
 }
 
 pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
@@ -93,5 +93,26 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
             Direction::Down => pos.aim += m.value,
         }
     }
-    format!("{:?}", pos)
+    format!("{}", pos.horizontal * pos.depth)
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2021_2_1() {
+        let lines = read_lines("data/2021/2.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "1855814");
+    }
+
+    #[test]
+    fn test_2021_2_2() {
+        let lines = read_lines("data/2021/2.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "1845455714");
+    }
+}
+

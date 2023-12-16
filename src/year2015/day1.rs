@@ -38,3 +38,24 @@ pub fn riddle_2(mut lines: io::Lines<io::BufReader<File>>) -> String {
     }
     format!("{count}")
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2015_1_1() {
+        let lines = read_lines("data/2015/1.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "232");
+    }
+
+    #[test]
+    fn test_2015_1_2() {
+        let lines = read_lines("data/2015/1.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "1783");
+    }
+}
+

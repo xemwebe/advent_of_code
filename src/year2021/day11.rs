@@ -79,3 +79,24 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
 
     format!("{i}")
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2021_11_1() {
+        let lines = read_lines("data/2021/11.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "1649");
+    }
+
+    #[test]
+    fn test_2021_11_2() {
+        let lines = read_lines("data/2021/11.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "256");
+    }
+}
+

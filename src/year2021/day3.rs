@@ -54,12 +54,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
             panic!("Warning: undetermined!");
         }
     }
-    format!(
-        "gamma: {}, epsilon: {}, power: {}",
-        gamma,
-        epsilon,
-        gamma * epsilon
-    )
+    format!("{}", gamma * epsilon)
 }
 
 fn filter_nums(numbers: &Vec<i32>, bit_criteria: bool) -> Option<i32> {
@@ -92,10 +87,26 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
 
     let oxygen = filter_nums(&numbers, true).unwrap();
     let carbon = filter_nums(&numbers, false).unwrap();
-    format!(
-        "oxygen: {}, carbon: {}, life: {}",
-        oxygen,
-        carbon,
-        oxygen * carbon
-    )
+    format!("{}", oxygen * carbon)
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2021_3_1() {
+        let lines = read_lines("data/2021/3.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "852500");
+    }
+
+    #[test]
+    fn test_2021_3_2() {
+        let lines = read_lines("data/2021/3.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "1007985");
+    }
+}
+

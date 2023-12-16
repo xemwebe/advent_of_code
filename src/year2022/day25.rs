@@ -172,3 +172,24 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let snafu_sum: Snafu = sum.into();
     format!("{snafu_sum}")
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2022_25_1() {
+        let lines = read_lines("data/2022/25.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "7195");
+    }
+
+    #[test]
+    fn test_2022_25_2() {
+        let lines = read_lines("data/2022/25.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "33992866292225");
+    }
+}
+

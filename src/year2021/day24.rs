@@ -149,7 +149,11 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
         }
         allowed_z = new_allowed_z;
     }
-    format!("{:?}", allowed_z[&0])
+    let mut solution =  0;
+    for d in allowed_z[&0].iter().rev() {
+        solution = solution * 10 + *d;
+    }
+    format!("{}", solution)
 }
 
 pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
@@ -182,5 +186,30 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         }
         allowed_z = new_allowed_z;
     }
-    format!("{:?}", allowed_z[&0])
+    let mut solution =  0;
+    for d in allowed_z[&0].iter().rev() {
+        solution = solution * 10 + *d;
+    }
+    format!("{}", solution)
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2021_24_1() {
+        let lines = read_lines("data/2021/24.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "98491959997994");
+    }
+
+    #[test]
+    fn test_2021_24_2() {
+        let lines = read_lines("data/2021/24.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "61191516111321");
+    }
+}
+

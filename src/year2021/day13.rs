@@ -80,7 +80,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     format!("{}", points.len())
 }
 
-fn print_points(points: &Vec<(i32, i32)>) {
+fn print_points(points: &Vec<(i32, i32)>) -> String {
     let mut xmax = 0;
     let mut ymax = 0;
     points.iter().for_each(|xy| {
@@ -92,13 +92,15 @@ fn print_points(points: &Vec<(i32, i32)>) {
     points
         .iter()
         .for_each(|xy| paper[xy.0 as usize][xy.1 as usize] = '#');
-    for i in 0..=xmax {
+    
+    let mut result = String::new();
+    for i in 0..6 {
         for j in 0..=ymax {
-            print!("{}", paper[j as usize][i as usize]);
+            result = format!("{result}{}", paper[j as usize][i as usize]);
         }
-        println!();
+        result = format!("{result}\n");
     }
-    println!();
+    result
 }
 
 pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
@@ -107,6 +109,32 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     for f in instructions.folds {
         points = fold(&points, &f);
     }
-    print_points(&points);
-    "see output above".to_string()
+    print_points(&points)
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2021_13_1() {
+        let lines = read_lines("data/2021/13.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "695");
+    }
+
+    #[test]
+    fn test_2021_13_2() {
+        let lines = read_lines("data/2021/13.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, r" ##    ## ####  ##  #    #  # ###    ##
+#  #    #    # #  # #    #  # #  #    #
+#       #   #  #    #    #  # #  #    #
+# ##    #  #   # ## #    #  # ###     #
+#  # #  # #    #  # #    #  # #    #  #
+ ###  ##  ####  ### ####  ##  #     ## 
+");
+    }
+}
+

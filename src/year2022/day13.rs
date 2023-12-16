@@ -152,3 +152,24 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let decoder_key = find_marker(2, &lists) * find_marker(6, &lists);
     format!("{decoder_key}")
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2022_13_1() {
+        let lines = read_lines("data/2022/13.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "7195");
+    }
+
+    #[test]
+    fn test_2022_13_2() {
+        let lines = read_lines("data/2022/13.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "33992866292225");
+    }
+}
+

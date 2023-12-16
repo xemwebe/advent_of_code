@@ -164,3 +164,24 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let smallest_dir_size = find_smallest_dir_size(&files, to_be_removed);
     format!("{smallest_dir_size}")
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2022_7_1() {
+        let lines = read_lines("data/2022/7.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "7195");
+    }
+
+    #[test]
+    fn test_2022_7_2() {
+        let lines = read_lines("data/2022/7.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "33992866292225");
+    }
+}
+

@@ -52,3 +52,24 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let total_sum: usize = hist.into_iter().sum();
     format!("{total_sum}")
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2021_6_1() {
+        let lines = read_lines("data/2021/6.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "362639");
+    }
+
+    #[test]
+    fn test_2021_6_2() {
+        let lines = read_lines("data/2021/6.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "1639854996917");
+    }
+}
+

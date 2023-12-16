@@ -30,7 +30,7 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
             min_fuel = fuel;
         }
     }
-    format!("x: {}, fuel: {}", min_x, min_fuel)
+    format!("{}", min_fuel)
 }
 
 pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
@@ -52,5 +52,26 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
             min_fuel = fuel;
         }
     }
-    format!("x: {}, fuel: {}", min_x, min_fuel)
+    format!("{}", min_fuel)
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2021_7_1() {
+        let lines = read_lines("data/2021/7.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "343468");
+    }
+
+    #[test]
+    fn test_2021_7_2() {
+        let lines = read_lines("data/2021/7.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "96086265");
+    }
+}
+

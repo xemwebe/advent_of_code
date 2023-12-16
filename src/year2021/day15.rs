@@ -121,3 +121,24 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     low_risk_path(&mut grid);
     format!("{}", grid.last().unwrap().last().unwrap().dist)
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2021_15_1() {
+        let lines = read_lines("data/2021/15.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "441");
+    }
+
+    #[test]
+    fn test_2021_15_2() {
+        let lines = read_lines("data/2021/15.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "2849");
+    }
+}
+

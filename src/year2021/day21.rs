@@ -113,5 +113,26 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let (start_pos1, start_pos2) = read_parameter(lines);
     let mut cache = HashMap::new();
     let (win1, win2) = solve(start_pos1, start_pos2, 0, 0, &mut cache);
-    format!("win1: {}, win2: {}, max {}", win1, win2, win1.max(win2))
+    format!("{}", win1.max(win2))
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2021_21_1() {
+        let lines = read_lines("data/2021/21.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "1002474");
+    }
+
+    #[test]
+    fn test_2021_21_2() {
+        let lines = read_lines("data/2021/21.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "919758187195363");
+    }
+}
+

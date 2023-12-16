@@ -85,3 +85,24 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     bassins.sort_by(|a, b| b.cmp(a));
     format!("{}", bassins[0] * bassins[1] * bassins[2])
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2021_9_1() {
+        let lines = read_lines("data/2021/9.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "591");
+    }
+
+    #[test]
+    fn test_2021_9_2() {
+        let lines = read_lines("data/2021/9.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "1113424");
+    }
+}
+

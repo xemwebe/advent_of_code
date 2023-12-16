@@ -181,3 +181,24 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         }
     }
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2022_21_1() {
+        let lines = read_lines("data/2022/21.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "7195");
+    }
+
+    #[test]
+    fn test_2022_21_2() {
+        let lines = read_lines("data/2022/21.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "33992866292225");
+    }
+}
+

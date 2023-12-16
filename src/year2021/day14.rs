@@ -139,3 +139,24 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let solution = score_polymere(&polymere, &score);
     format!("{solution}")
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2021_14_1() {
+        let lines = read_lines("data/2021/14.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "5656");
+    }
+
+    #[test]
+    fn test_2021_14_2() {
+        let lines = read_lines("data/2021/14.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "12271437788530");
+    }
+}
+

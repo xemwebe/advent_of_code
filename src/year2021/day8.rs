@@ -148,3 +148,24 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let sum: i32 = notes.into_iter().map(|x| analyze_note(x)).sum();
     format!("{sum}")
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2021_8_1() {
+        let lines = read_lines("data/2021/8.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "532");
+    }
+
+    #[test]
+    fn test_2021_8_2() {
+        let lines = read_lines("data/2021/8.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "1011284");
+    }
+}
+

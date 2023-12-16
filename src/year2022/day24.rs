@@ -211,3 +211,24 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     state.time_to_get_to(map.end.clone(), &map);
     format!("{}", state.time)
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2022_24_1() {
+        let lines = read_lines("data/2022/24.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "7195");
+    }
+
+    #[test]
+    fn test_2022_24_2() {
+        let lines = read_lines("data/2022/24.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "33992866292225");
+    }
+}
+

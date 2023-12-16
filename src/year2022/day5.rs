@@ -102,3 +102,24 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let top_crates = get_tops(&mut stacks);
     format!("{top_crates}")
 }
+
+#[cfg(test)]
+mod test {
+    use crate::read_lines;
+    use super::execute;
+
+    #[test]
+    fn test_2022_5_1() {
+        let lines = read_lines("data/2022/5.txt").unwrap();
+        let result = execute(1, lines);
+        assert_eq!(result, "7195");
+    }
+
+    #[test]
+    fn test_2022_5_2() {
+        let lines = read_lines("data/2022/5.txt").unwrap();
+        let result = execute(2, lines);
+        assert_eq!(result, "33992866292225");
+    }
+}
+
