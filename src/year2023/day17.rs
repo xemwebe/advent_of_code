@@ -1,7 +1,8 @@
 use std::{
     fs::File, io,
-    collections::{HashSet, HashMap},
-    hash::Hash
+    collections::BinaryHeap,
+    hash::Hash,
+    cmp::Ordering
 };
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
@@ -28,6 +29,15 @@ impl Direction {
             2 => Left,
             3 => Up,
             _ => panic!("invalid direction")
+        }
+    }
+
+    fn as_idx(&self) -> usize {
+        match self {
+            Right => 0,
+            Down => 1,
+            Left => 2,
+            Up => 3
         }
     }
 
@@ -62,14 +72,19 @@ impl Direction {
 
 use Direction::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 struct NodeInfo {
     visited: bool,
     cost: u64,
 }
 
+impl NodeInfo {
+    fn new() -> Self {
+        Self{ visited: false, cost: 0 }
+    }
+}
 
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 struct Node {
     dir: Direction,
     count: i32,
@@ -77,14 +92,56 @@ struct Node {
     y: usize
 }
 
+impl PartialOrd for Node {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Node {
+    fn cmp(&self, other: &Self) -> Ordering {
+        if self.x != other.x {
+            self.x.cmp(&other.x)
+        } else if self.y != other.y {
+            self.y.cmp(&other.y)
+        } else if self.count != other.count {
+            self.count.cmp(&other.count)
+        } else {
+            self.dir.as_idx().cmp(&other.dir.as_idx())
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct CostlyNode {
+    node: Node,
+    cost: u64,
+}
+
+impl PartialOrd for CostlyNode {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for CostlyNode {
+    fn cmp(&self, other: &Self) -> Ordering {
+        if self.cost != other.cost {
+            other.cost.cmp(&self.cost)
+        } else {
+            self.node.cmp(&other.node)
+        }
+    }
+}
+
 #[derive(Debug)]
 struct Solver {
-    nodes: HashMap<Node, NodeInfo>,
+    nodes: Vec<Vec<Vec<[NodeInfo; 4]>>>,
     map: Vec<Vec<u8>>,
     x_len: usize,
     y_len: usize,
     current: Node,
-    queue: HashSet<Node>,
+    queue: BinaryHeap<CostlyNode>,
     min_turn: i32,
     max_straight: i32,
 }
@@ -94,15 +151,14 @@ impl Solver {
         let x = map.len();
         let y = map[0].len();
         let current =  Node{ dir: Right, count: 0, x: 0, y: 0};
-        let mut nodes = HashMap::new();
-        nodes.insert(current.clone(), NodeInfo{ visited: false, cost: 0 });
+        let mut nodes = vec![vec![vec![[NodeInfo::new(); 4]; max_straight as usize]; y]; x];
         Self {
             nodes,
             map,
             x_len: x,
             y_len: y,
             current,
-            queue: HashSet::new(),
+            queue: BinaryHeap::new(),
             max_straight,
             min_turn,
         }
@@ -127,9 +183,9 @@ impl Solver {
         let mut min_cost = u64::MAX;
         for i in self.min_turn..=self.max_straight {
             for j in 0..4 {
-                if let Some(info) = self.nodes.get(&Node { dir: Direction::from_num(j), count: i, x: self.x_len-1, y: self.y_len-1 }) {
-                    min_cost = min_cost.min(info.cost);
-                }    
+                min_cost = min_cost.min(
+                    self.nodes[self.x_len-1][self.y_len-1][(i-1) as usize][j].cost
+                );
             }
         }
         min_cost
@@ -138,13 +194,8 @@ impl Solver {
     fn all_final_nodes_visited(&self) -> bool {
         for i in self.min_turn..=self.max_straight {
             for j in 0..4 {
-                if let Some(info) = self.nodes.get(&Node { dir: Direction::from_num(j), count: i, x: self.x_len-1, y: self.y_len-1 }) {
-                    if !info.visited {
-                        return false;
-                    }
-                } else {
+                if !self.nodes[self.x_len-1][self.y_len-1][(i-1) as usize][j].visited {
                     return false;
-                }
             }
         }
         true
@@ -152,19 +203,16 @@ impl Solver {
 
     fn update_node(&mut self, node: &Node, dir: Direction) {
         if let Some(new_node) = self.get_next_state(&node, dir) {
-            if let Some(node_info) = self.nodes.get(&new_node) {
-                if !node_info.visited {
-                    let new_cost = self.nodes[node].cost + self.map[new_node.x][new_node.y] as u64;
+            let node_info = &self.nodes[new_node.x][new_node.y][new_node.count-1][new_node.dir.as_idx()];
+            if !node_info.visited {
+                    let new_cost = self.nodes[node.x][node.y][node.count-1][node.dir.as_idx()].cost
+                        + self.map[new_node.x][new_node.y] as u64;
                     if node_info.cost > new_cost {
                         let node_info = self.nodes.get_mut(&new_node).unwrap();
                         node_info.cost = new_cost;
                     }  
+                    self.queue.insert(CostlyNode new_node);
                 }
-            } else {
-                let new_cost = self.nodes[node].cost + self.map[new_node.x][new_node.y] as u64;
-                let info = NodeInfo { visited: false, cost: new_cost };
-                self.nodes.insert(new_node.clone(), info);
-                self.queue.insert(new_node);
             }
         }
     }
