@@ -1,7 +1,8 @@
 use std::{
     fs::File, 
     io,
-    str::FromStr
+    str::FromStr,
+    collections::BTreeSet,
 };
 
 #[derive(Debug, PartialEq, Eq)]
@@ -15,7 +16,7 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 enum Direction {
     Up,
     Down,
@@ -133,24 +134,131 @@ fn fill_map(map: &mut Vec<Vec<u8>>, directions: &[(Direction, u8)]) -> u32 {
     area
 }
 
-fn fill_map2(map: &mut [Vec<u8>], directions: &[(Direction, u32)]) -> i64 {
-    let mut min_x = 0i64;
-    let mut min_y = 0i64;
-    let mut max_x = 0i64;
-    let mut max_y = 0i64;
-    let mut x = 0i64;
-    let mut y = 0i64;
-    let mut first = true;
-    for dir in directions {
-        let n = if first { first = false; dir.1 as i64 + 1} else { dir.1 as i64};
-        let (x,y) = dir.0.next_n_pos(x, y, n);
-        min_x = min_x.min(x);
-        max_x = max_x.max(x);
-        min_y = min_y.min(y);
-        max_y = max_y.max(y);
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+struct Point  {
+    x: i64,
+    y: i64,
+}
+
+impl PartialOrd for Point {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
     }
-    println!("x range: {min_x}…{max_x} y range: {min_y}…{max_y}");
-    (max_x-min_x)*(max_y-min_y)
+}
+
+impl Ord for Point {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.x == other.x {
+            self.y.cmp(&other.y)
+        } else {
+            self.x.cmp(&other.x)
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+struct HorizontalLine {
+    x: i64,
+    y_start: i64,
+    y_end: i64,
+}
+
+impl PartialOrd for HorizontalLine {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for HorizontalLine {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.x == other.x {
+            if self.y_start == other.y_start {
+                self.y_end.cmp(&other.y_end)
+            } else {
+                self.y_start.cmp(&other.y_start)
+            }
+        } else {
+            self.x.cmp(&other.x)
+        }
+    }
+}
+
+fn fill_map2(directions: &[(Direction, u32)]) -> i64 {
+    let mut x = 0;
+    let mut y = 0;
+    let mut lines = Vec::new();
+    for dir in directions {
+        let (x_new, y_new) = dir.0.next_n_pos(x, y, dir.1 as i64);
+        if dir.0 == Right || dir.0 == Left  {
+            lines.push(HorizontalLine{x, y_start: y.min(y_new), y_end: y.max(y_new)});
+        }
+        x = x_new;
+        y = y_new;
+    }
+    lines.sort();
+    // for l in lines.iter() {
+    //     println!("{:?}", l);
+    // }
+    
+    let mut line_area = 0;
+    x = lines[0].x;
+    let mut current_lines = BTreeSet::new();
+    let mut i = 0;
+    while lines[i].x == x {
+        let line = Point{x: lines[i].y_start, y: lines[i].y_end };
+        line_area += line.y - line.x + 1;
+        current_lines.insert(line);
+        i += 1;
+    }
+
+    let mut area = 0;
+    for line in lines[i..].iter() {
+        if line.x != x {
+            area += (line.x-x) * line_area;
+            x = line.x;
+        }
+        let mut line_replacement = None;
+        for l in &current_lines {
+            if l.x == line.y_end || l.y == line.y_start {
+                line_area += line.y_end - line.y_start;
+                let l_x = l.x.min(line.y_start);
+                let l_y = l.y.max(line.y_end);
+                line_replacement = Some((l.clone(), Some(Point{x: l_x, y: l_y}), None));
+                break;
+            } else if l.x == line.y_start || l.y == line.y_end {
+                line_area -= line.y_end - line.y_start;
+                area += line.y_end - line.y_start;
+                if l.x == line.y_start && l.y == line.y_end {
+                    line_replacement = Some((l.clone(), None, None));
+                } else if l.x == line.y_start {
+                    line_replacement = Some((l.clone(), Some(Point{x: line.y_end, y: l.y}), None));
+                } else {
+                    line_replacement = Some((l.clone(), Some(Point{ x: l.x, y: line.y_start}), None));
+                }
+            } else if l.x < line.y_start && l.y > line.y_end {
+                line_area -= line.y_end - line.y_start - 1;
+                area += line.y_end - line.y_start - 1;
+                line_replacement = Some((l.clone(), Some(Point{x: l.x, y: line.y_start}), Some(Point{x: line.y_end, y: l.y})))
+            }
+        }
+        //println!("x: {x:?}, line: {line:?}, replacement: {line_replacement:?}, area: {area}, line_area: {line_area}");
+        if let Some(line_replacement) = line_replacement {
+            current_lines.remove(&line_replacement.0);
+            if let Some(l) = line_replacement.1 {
+                current_lines.insert(l);
+            }
+            if let Some(l) = line_replacement.2 {
+                current_lines.insert(l);
+            }
+        } else {
+            line_area += line.y_end - line.y_start +1;
+            current_lines.insert( Point{ x: line.y_start, y: line.y_end });
+        }
+    }
+    println!("current_lines {current_lines:?}");
+    area += line_area;
+
+    area
 }
 
 fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
@@ -173,8 +281,7 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         let num = u32::from_str_radix(&parts[2][2..7], 16).unwrap();
         directions.push((Direction::from_num(parts[2].as_bytes()[7]-b'0'), num));
     }
-    let mut map = vec![vec![b'.'; 100000]; 100000];
-    let area = fill_map2(&mut map, &directions);
+    let area = fill_map2(&directions);
     format!("{area}")
 }
 
