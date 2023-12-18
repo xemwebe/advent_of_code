@@ -1,9 +1,9 @@
 use std::{
     fs::File, io,
-    collections::BinaryHeap,
     hash::Hash,
     cmp::Ordering
 };
+use priority_queue::PriorityQueue;
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match part {
@@ -22,16 +22,6 @@ enum Direction {
 }
 
 impl Direction {
-    fn from_num(n: u8) -> Self {
-        match n {
-            0 => Right,
-            1 => Down,
-            2 => Left,
-            3 => Up,
-            _ => panic!("invalid direction")
-        }
-    }
-
     fn as_idx(&self) -> usize {
         match self {
             Right => 0,
@@ -80,57 +70,31 @@ struct NodeInfo {
 
 impl NodeInfo {
     fn new() -> Self {
-        Self{ visited: false, cost: 0 }
+        Self{ visited: false, cost: u64::MAX }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 struct Node {
     dir: Direction,
     count: i32,
     x: usize,
     y: usize
 }
-
-impl PartialOrd for Node {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl Ord for Node {
-    fn cmp(&self, other: &Self) -> Ordering {
-        if self.x != other.x {
-            self.x.cmp(&other.x)
-        } else if self.y != other.y {
-            self.y.cmp(&other.y)
-        } else if self.count != other.count {
-            self.count.cmp(&other.count)
-        } else {
-            self.dir.as_idx().cmp(&other.dir.as_idx())
-        }
-    }
-}
-
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct CostlyNode {
-    node: Node,
-    cost: u64,
+struct Priority {
+    cost: u64
 }
 
-impl PartialOrd for CostlyNode {
+impl PartialOrd for Priority {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl Ord for CostlyNode {
+impl Ord for Priority {
     fn cmp(&self, other: &Self) -> Ordering {
-        if self.cost != other.cost {
-            other.cost.cmp(&self.cost)
-        } else {
-            self.node.cmp(&other.node)
-        }
+        other.cost.cmp(&self.cost)
     }
 }
 
@@ -140,8 +104,7 @@ struct Solver {
     map: Vec<Vec<u8>>,
     x_len: usize,
     y_len: usize,
-    current: Node,
-    queue: BinaryHeap<CostlyNode>,
+    queue: PriorityQueue<Node, Priority>,
     min_turn: i32,
     max_straight: i32,
 }
@@ -150,15 +113,13 @@ impl Solver {
     fn new(map: Vec<Vec<u8>>, max_straight: i32, min_turn: i32) -> Self {
         let x = map.len();
         let y = map[0].len();
-        let current =  Node{ dir: Right, count: 0, x: 0, y: 0};
-        let mut nodes = vec![vec![vec![[NodeInfo::new(); 4]; max_straight as usize]; y]; x];
+        let nodes = vec![vec![vec![[NodeInfo::new(); 4]; max_straight as usize]; y]; x];
         Self {
             nodes,
             map,
             x_len: x,
             y_len: y,
-            current,
-            queue: BinaryHeap::new(),
+            queue: PriorityQueue::new(),
             max_straight,
             min_turn,
         }
@@ -196,51 +157,43 @@ impl Solver {
             for j in 0..4 {
                 if !self.nodes[self.x_len-1][self.y_len-1][(i-1) as usize][j].visited {
                     return false;
+                }
             }
         }
         true
     }
 
-    fn update_node(&mut self, node: &Node, dir: Direction) {
+    fn update_node(&mut self, node: &Node, dir: Direction, cost: u64) {
         if let Some(new_node) = self.get_next_state(&node, dir) {
-            let node_info = &self.nodes[new_node.x][new_node.y][new_node.count-1][new_node.dir.as_idx()];
+            let node_info = &self.nodes[new_node.x][new_node.y][(new_node.count-1) as usize][new_node.dir.as_idx()];
             if !node_info.visited {
-                    let new_cost = self.nodes[node.x][node.y][node.count-1][node.dir.as_idx()].cost
-                        + self.map[new_node.x][new_node.y] as u64;
-                    if node_info.cost > new_cost {
-                        let node_info = self.nodes.get_mut(&new_node).unwrap();
-                        node_info.cost = new_cost;
-                    }  
-                    self.queue.insert(CostlyNode new_node);
-                }
+                let new_cost = cost + self.map[new_node.x][new_node.y] as u64;
+                if node_info.cost > new_cost {
+                    self.nodes[new_node.x][new_node.y][(new_node.count-1) as usize][new_node.dir.as_idx()].cost = new_cost;
+                }  
+                self.queue.push_increase(new_node, Priority{cost: new_cost});
             }
         }
     }
 
     fn find_path(&mut self) -> u64 {
+        self.queue.push(Node { dir: Right, count: 1, x: 0, y: 1}, Priority{ cost: self.map[0][1] as u64});
+        if self.min_turn == 1 {
+            self.queue.push(Node { dir: Down, count: 1, x: 1, y: 0}, Priority{ cost: self.map[1][0] as u64});
+        }
         loop {
-            let node = self.current.clone();
+            let (node, prio) = self.queue.pop().unwrap();
+            //println!("node: {:?}, prio {}", node, prio.cost);
             if node.count < self.max_straight {
-                self.update_node(&node, node.dir.clone());
+                self.update_node(&node, node.dir.clone(), prio.cost);
             }
             if node.count >= self.min_turn {
-                self.update_node(&node, node.dir.clone().turn_left());
+                self.update_node(&node, node.dir.clone().turn_left(), prio.cost);
 
-                self.update_node(&node, node.dir.clone().turn_right());
+                self.update_node(&node, node.dir.clone().turn_right(), prio.cost);
             }
 
-            self.queue.remove(&self.current);
-            let node_info = self.nodes.get_mut(&self.current).unwrap();
-            node_info.visited = true;
-
-            // find unvisited node in queue with smallest cost
-            let mut min_cost = u64::MAX;
-            for node in &self.queue {
-                if min_cost > self.nodes[node].cost {
-                    min_cost = self.nodes[node].cost;
-                    self.current = node.clone();
-                }
-            }
+            self.nodes[node.x][node.y][(node.count-1) as usize][node.dir.as_idx()].visited = true;
 
             if self.queue.is_empty() || self.all_final_nodes_visited() {
                 break;
@@ -258,7 +211,7 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     for l in lines {
         map.push(l.unwrap().as_bytes().iter().map(|b| b-b'0').collect());
     }
-    let mut solver = Solver::new(map, 3, 0);
+    let mut solver = Solver::new(map, 3, 1);
     let cost = solver.find_path();
     format!("{cost}")
 }
