@@ -41,15 +41,6 @@ impl FromStr for Direction {
 }
 
 impl Direction {
-    fn next_pos(&self, x: usize, y: usize) -> (usize, usize) {
-        match self {
-            Up => (x-1, y),
-            Down => (x+1, y),
-            Right => (x, y+1),
-            Left => (x, y-1)
-        }
-    }
-
     fn next_n_pos(&self, x: i64, y: i64, n: i64) -> (i64, i64) {
         match self {
             Up => (x-n, y),
@@ -69,70 +60,6 @@ impl Direction {
         }
     }
  }
-
-fn fill_map(map: &mut Vec<Vec<u8>>, directions: &[(Direction, u8)]) -> u32 {
-    let mut x = 250;
-    let mut y = 250;
-    map[x][y] = b'#';
-    let mut min_x = x;
-    let mut min_y = y;
-    let mut max_x = x;
-    let mut max_y = y;
-
-    for dir in directions {
-        for _ in 0..dir.1 {
-            (x, y) = dir.0.next_pos(x,y);
-            min_x = min_x.min(x);
-            max_x = max_x.max(x);
-            min_y = min_y.min(y);
-            max_y = max_y.max(y);
-            map[x][y] = b'#';
-        }
-    }
-
-    let mut inner = false;
-    let mut maximum = false;
-    let mut minimum = false;
-    let mut area = 0;
-    for x in min_x..=max_x {
-        for y in min_y..=max_y {
-            if map[x][y] == b'#' {
-                area += 1;
-                if !maximum && !minimum {
-                    if map[x+1][y] == b'#' && map[x-1][y] != b'#' {
-                        maximum = true;
-                    }
-                    if map[x+1][y] != b'#' && map[x-1][y] == b'#' {
-                        minimum = true;
-                    }
-                    if map[x+1][y] == b'#' && map[x-1][y] == b'#' {
-                        inner = !inner;
-                    }
-                } else if maximum {
-                    if map[x+1][y] == b'#' && map[x-1][y] != b'#' {
-                        maximum = false;
-                    } else if map[x+1][y] != b'#' && map[x-1][y] == b'#' {
-                        inner = !inner;
-                        maximum = false;
-                    }
-                } else if minimum {
-                    if map[x+1][y] != b'#' && map[x-1][y] == b'#' {
-                        minimum = false;
-                    } else if map[x+1][y] == b'#' && map[x-1][y] != b'#' {
-                        inner = !inner;
-                        minimum = false;
-                    }
-                }
-            } else {
-                if inner {
-                    area += 1;
-                    map[x][y] = b'I';
-                }
-            }
-        }
-    }
-    area
-}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct Point  {
@@ -183,7 +110,36 @@ impl Ord for HorizontalLine {
     }
 }
 
-fn fill_map2(directions: &[(Direction, u32)]) -> i64 {
+fn join_lines(lines: &BTreeSet<Point>) -> BTreeSet<Point> {
+    let mut new_lines = BTreeSet::new();
+    let mut last_point = Point{x:1, y:0};
+    for l in lines {
+        if last_point.x>last_point.y {
+            last_point = l.clone();
+        } else {
+            if last_point.y + 1 == l.x {
+                last_point.y = l.y;
+            } else {
+                new_lines.insert(last_point.clone());
+                last_point = l.clone()
+            }
+        }
+    }
+    if last_point.x<last_point.y {
+        new_lines.insert(last_point);
+    }
+    new_lines
+}
+
+fn total_line(lines: &BTreeSet<Point>) -> i64 {
+    let mut sum = 0;
+    for l in lines {
+        sum += l.y-l.x+1;
+    }
+    sum
+}
+
+fn fill_map(directions: &[(Direction, u32)]) -> i64 {
     let mut x = 0;
     let mut y = 0;
     let mut lines = Vec::new();
@@ -196,67 +152,84 @@ fn fill_map2(directions: &[(Direction, u32)]) -> i64 {
         y = y_new;
     }
     lines.sort();
-    // for l in lines.iter() {
-    //     println!("{:?}", l);
-    // }
     
-    let mut line_area = 0;
     x = lines[0].x;
     let mut current_lines = BTreeSet::new();
     let mut i = 0;
     while lines[i].x == x {
         let line = Point{x: lines[i].y_start, y: lines[i].y_end };
-        line_area += line.y - line.x + 1;
         current_lines.insert(line);
         i += 1;
     }
 
-    let mut area = 0;
+    let mut area = total_line(&current_lines);
     for line in lines[i..].iter() {
         if line.x != x {
-            area += (line.x-x) * line_area;
+            area += (line.x-x) * total_line(&current_lines);
             x = line.x;
         }
-        let mut line_replacement = None;
+        let mut ys = line.y_start;
+        let mut ye = line.y_end;
+        let mut replacements = Vec::new();
         for l in &current_lines {
-            if l.x == line.y_end || l.y == line.y_start {
-                line_area += line.y_end - line.y_start;
-                let l_x = l.x.min(line.y_start);
-                let l_y = l.y.max(line.y_end);
-                line_replacement = Some((l.clone(), Some(Point{x: l_x, y: l_y}), None));
+            if ye < l.x {
                 break;
-            } else if l.x == line.y_start || l.y == line.y_end {
-                line_area -= line.y_end - line.y_start;
-                area += line.y_end - line.y_start;
-                if l.x == line.y_start && l.y == line.y_end {
-                    line_replacement = Some((l.clone(), None, None));
-                } else if l.x == line.y_start {
-                    line_replacement = Some((l.clone(), Some(Point{x: line.y_end, y: l.y}), None));
+            }
+            if ye == l.x {
+                ye -= 1;
+                break;
+            }
+            if ys < l.x {
+                // only occurs if horizontal line crosse vertical line
+                area += l.x-ys;
+                replacements.push((Some(l.clone()), Some(Point{x: ys, y: l.x})));
+                if ye>=l.y {
+                    ys = l.y+1;
                 } else {
-                    line_replacement = Some((l.clone(), Some(Point{ x: l.x, y: line.y_start}), None));
+                    replacements.push((None, Some(Point{x: ye, y: l.y})));
+                    ys = ye+1;
+                    break;
                 }
-            } else if l.x < line.y_start && l.y > line.y_end {
-                line_area -= line.y_end - line.y_start - 1;
-                area += line.y_end - line.y_start - 1;
-                line_replacement = Some((l.clone(), Some(Point{x: l.x, y: line.y_start}), Some(Point{x: line.y_end, y: l.y})))
+            }
+            if ys == l.x {
+                if ye >= l.y {
+                    replacements.push((Some(l.clone()), None));
+                    ys = l.y+1;
+                } else {
+                    replacements.push((Some(l.clone()), Some(Point{x: ye, y: l.y})));
+                    ys = ye+1;
+                    break;
+                }
+            } else if ys < l.y {
+                if ye <= l.y {
+                    replacements.push((Some(l.clone()), Some(Point{x: l.x, y: ys})));
+                    if ye < l.y {
+                        replacements.push((None, Some(Point{x: ye, y: l.y})));
+                    }
+                    ys = ye +1;
+                    break;
+                } else if ye > l.y {
+                    replacements.push((Some(l.clone()), Some(Point{x: l.x, y: ys})));
+                    ys = l.y+1;
+                }
+            } else if ys == l.y {
+                ys += 1;
             }
         }
-        //println!("x: {x:?}, line: {line:?}, replacement: {line_replacement:?}, area: {area}, line_area: {line_area}");
-        if let Some(line_replacement) = line_replacement {
-            current_lines.remove(&line_replacement.0);
-            if let Some(l) = line_replacement.1 {
-                current_lines.insert(l);
-            }
-            if let Some(l) = line_replacement.2 {
-                current_lines.insert(l);
-            }
-        } else {
-            line_area += line.y_end - line.y_start +1;
-            current_lines.insert( Point{ x: line.y_start, y: line.y_end });
+        if ye>ys {
+            area += ye-ys+1;
+            replacements.push((None, Some(Point{x:ys, y:ye})));
         }
+        for r in replacements {
+            if let Some(to_remove) = r.0 {
+                current_lines.remove(&to_remove);
+            }
+            if let Some(to_insert) = r.1 {
+                current_lines.insert(to_insert);
+            }
+        }
+        current_lines = join_lines(&current_lines);
     }
-    println!("current_lines {current_lines:?}");
-    area += line_area;
 
     area
 }
@@ -266,10 +239,9 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     for l in lines {
         let line = l.unwrap();
         let parts: Vec<&str> = line.split(' ').collect();
-        directions.push((Direction::from_str(&parts[0]).unwrap(), parts[1].parse::<u8>().unwrap()));
+        directions.push((Direction::from_str(&parts[0]).unwrap(), parts[1].parse::<u32>().unwrap()));
     }
-    let mut map = vec![vec![b'.'; 500]; 500];
-    let area = fill_map(&mut map, &directions);
+    let area = fill_map(&directions);
     format!("{area}")
 }
 
@@ -281,7 +253,7 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         let num = u32::from_str_radix(&parts[2][2..7], 16).unwrap();
         directions.push((Direction::from_num(parts[2].as_bytes()[7]-b'0'), num));
     }
-    let area = fill_map2(&directions);
+    let area = fill_map(&directions);
     format!("{area}")
 }
 
@@ -301,7 +273,6 @@ mod test {
     fn test_2023_18_2() {
         let lines = read_lines("data/2023/18.txt").unwrap();
         let result = execute(2, lines);
-        assert_eq!(result, "353");
+        assert_eq!(result, "134549294799713");
     }
 }
-
