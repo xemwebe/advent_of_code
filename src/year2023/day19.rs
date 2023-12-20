@@ -5,6 +5,9 @@ use std::{
     collections::BTreeSet,
 };
 
+#[derive(Debug, PartialEq, Eq)]
+struct ParseDirectionError;
+
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match part {
         1 => riddle_1(lines),
@@ -12,9 +15,6 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
         _ => format!("Error: part {part} not found!"),
     }
 }
-
-#[derive(Debug, PartialEq, Eq)]
-struct ParseDirectionError;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 enum Direction {
