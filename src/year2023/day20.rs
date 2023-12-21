@@ -19,20 +19,20 @@ enum Pulse {
 }
 
 #[derive(Debug)]
-struct Signal<'a> {
-    from: &'a str,
-    to: &'a str,
+struct Signal {
+    from: usize,
+    to: usize,
     p: Pulse
 }
 
 #[derive(Debug)]
-struct Queue<'a> {
+struct Queue {
     low_count: u64,
     high_count: u64,
-    inner: VecDeque<Signal<'a>>
+    inner: VecDeque<Signal>
 }
 
-impl<'a> Queue<'a> {
+impl Queue {
     fn new() -> Self {
         Self {
             low_count: 0,
@@ -41,7 +41,7 @@ impl<'a> Queue<'a> {
         }
     }
 
-    fn add_signals(&mut self, from: &'a str, to: &[&'a str], p: Pulse) {
+    fn add_signals(&mut self, from: usize, to: &[usize], p: Pulse) {
         match &p {
             Pulse::High => { self.high_count += to.len() as u64 },
             Pulse::Low => { self.low_count += to.len() as u64 },
@@ -56,22 +56,22 @@ impl<'a> Queue<'a> {
     }
 }
 
-trait Machine<'a> {
-    fn process(&mut self, s: &Signal<'a>, q: &mut Queue<'a>);
+trait Machine {
+    fn process(&mut self, s: &Signal, q: &mut Queue);
     fn state(&self, total: &mut Vec<u8>);
-    fn init_inputs(&mut self, _inputs: &[&'a str]) {}
+    fn init_inputs(&mut self, _inputs: &[usize]) {}
 }
 
 
 #[derive(Debug)]
-struct FlipFlop<'a> {
-    name: &'a str,
+struct FlipFlop {
+    name: usize,
     is_on: bool,
-    outputs: Vec<&'a str>,
+    outputs: Vec<usize>,
 }
 
-impl<'a> FlipFlop<'a> {
-    fn new(name: &'a str, outputs: Vec<&'a str>) -> Self {
+impl FlipFlop {
+    fn new(name: usize, outputs: Vec<usize>) -> Self {
         Self {
             name,
             is_on: false,
@@ -80,8 +80,8 @@ impl<'a> FlipFlop<'a> {
     }
 }
 
-impl<'a> Machine<'a> for FlipFlop<'a> {
-    fn process(&mut self, s: &Signal<'a>, q: &mut Queue<'a>) {
+impl Machine for FlipFlop {
+    fn process(&mut self, s: &Signal, q: &mut Queue) {
         match s.p {
             Pulse::High => {},
             Pulse::Low => {
@@ -101,14 +101,14 @@ impl<'a> Machine<'a> for FlipFlop<'a> {
 }
 
 #[derive(Debug)]
-struct Conjunction<'a> {
-    name: &'a str,
-    state: HashMap<&'a str, Pulse>,
-    outputs: Vec<&'a str>,
+struct Conjunction {
+    name: usize,
+    state: HashMap<usize, Pulse>,
+    outputs: Vec<usize>,
 }
 
-impl<'a> Conjunction<'a> {
-    fn new(name: &'a str, outputs: Vec<&'a str>) -> Self {
+impl Conjunction {
+    fn new(name: usize, outputs: Vec<usize>) -> Self {
         Self {
             name,
             state: HashMap::new(),
@@ -117,10 +117,10 @@ impl<'a> Conjunction<'a> {
     }
 }
 
-impl<'a> Machine<'a> for Conjunction<'a> {
-    fn process(&mut self, s: &Signal<'a>, q: &mut Queue<'a>) {
+impl Machine for Conjunction {
+    fn process(&mut self, s: &Signal, q: &mut Queue) {
         //println!("inputs: {:?}", self.state.keys());
-        *self.state.get_mut(s.from).unwrap() = s.p.clone();
+        *self.state.get_mut(&s.from).unwrap() = s.p.clone();
         let mut pulse = Pulse::Low;
         for p in self.state.values() {
             if *p == Pulse::Low {
@@ -142,7 +142,7 @@ impl<'a> Machine<'a> for Conjunction<'a> {
         total.push(bits);
     }
 
-    fn init_inputs(&mut self, inputs: &[&'a str]) {
+    fn init_inputs(&mut self, inputs: &[usize]) {
         for input in inputs {
             self.state.insert(*input, Pulse::Low);
         }
@@ -150,33 +150,32 @@ impl<'a> Machine<'a> for Conjunction<'a> {
 }
 
 #[derive(Debug)]
-struct Broadcaster<'a> {
-    name: &'a str,
-    outputs: Vec<&'a str>,
+struct Broadcaster {
+    name: usize,
+    outputs: Vec<usize>,
 }
 
-impl<'a> Broadcaster<'a> {
-    fn new(name: &'a str, outputs: Vec<&'a str>) -> Self {
+impl Broadcaster {
+    fn new(name: usize, outputs: Vec<usize>) -> Self {
         Self {
             name,
             outputs
         }
     }
 }
-impl<'a> Machine<'a> for Broadcaster<'a> {
-    fn process(&mut self, s: &Signal<'a>, q: &mut Queue<'a>) {
+impl Machine for Broadcaster {
+    fn process(&mut self, s: &Signal, q: &mut Queue) {
         q.add_signals(self.name, &self.outputs, s.p.clone());
     }
 
     fn state(&self, _total: &mut Vec<u8>) {}
 }
 
-fn insert_inputs<'a>(mapping: &mut HashMap<&'a str, Vec<&'a str>>, from: &'a str, outputs: &Vec<&'a str>) {
+fn insert_inputs(mapping: &mut Vec<Vec<usize>>, from: usize, outputs: &[usize]) {
     for o in outputs {
-        if !mapping.contains_key(o) {
-            mapping.insert(o, Vec::new());
+        if *o < mapping.len() {
+            mapping[*o].push(from);
         }
-        (*mapping.get_mut(o).unwrap()).push(from);
     }
 }
 
@@ -185,40 +184,54 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     for l in lines {
         rules.push(l.unwrap());
     }
-    let mut machines: HashMap<&str, Box<dyn Machine>> = HashMap::new();
-    let mut input_map = HashMap::new();
+
+    let mut name_map = HashMap::new();
+    let mut idx = 0usize;
     for line in &rules {
         let parts: Vec<&str> = line.split(" -> ").collect();
-        let outputs: Vec<&str> = parts[1].split(", ").collect();
         if parts[0] == "broadcaster" {
-            insert_inputs(&mut input_map, parts[0], &outputs);
-            machines.insert(parts[0], Box::new(Broadcaster::new(parts[0], outputs)));
+            name_map.insert(parts[0].to_string(), idx);
+        } else {
+            name_map.insert(parts[0][1..].to_string(), idx);
+        }
+        idx += 1;
+    }
+    name_map.insert("rx".to_string(), idx);
+
+    let mut machines: Vec<Box<dyn Machine>> = Vec::with_capacity(idx);
+    let mut input_map = vec![Vec::new(); idx];
+    for line in &rules {
+        let parts: Vec<&str> = line.split(" -> ").collect();
+        let outputs: Vec<usize> = parts[1].split(", ").map(|s| name_map[s]).collect();
+        if parts[0] == "broadcaster" {
+            let idx = name_map[parts[0]];
+            insert_inputs(&mut input_map, idx, &outputs);
+            machines.push(Box::new(Broadcaster::new(idx, outputs)));
         } else if parts[0].starts_with('%') {
-            insert_inputs(&mut input_map, &parts[0][1..], &outputs);
-            machines.insert(&parts[0][1..], Box::new(FlipFlop::new(&parts[0][1..], outputs)));
+            let idx = name_map[&parts[0][1..]];
+            insert_inputs(&mut input_map, idx, &outputs);
+            machines.push(Box::new(FlipFlop::new(idx, outputs)));
         } else if parts[0].starts_with('&') {
-            insert_inputs(&mut input_map, &parts[0][1..], &outputs);
-            machines.insert(&parts[0][1..], Box::new(Conjunction::new(&parts[0][1..], outputs)));
+            let idx = name_map[&parts[0][1..]];
+            insert_inputs(&mut input_map, idx, &outputs);
+            machines.push(Box::new(Conjunction::new(idx, outputs)));
         } else {
             panic!("invalid machine type");
         }
     }
 
-    for (k, value) in input_map {
-        if let Some(m) = machines.get_mut(k) {
-            m.init_inputs(&value);
-        }
+    for from in 0..input_map.len() {
+        machines[from].init_inputs(&input_map[from]);
     }
-
     //println!("machines: {:?}", machines.keys());
     let mut init_state = Vec::new();
-    for m in machines.values() {
+    for m in &machines {
         m.state(&mut init_state);
     }
     //println!("count: 0, state: {init_state:?}");
     let mut queue = Queue::new();
     for _ in 0..1000 {
-        queue.add_signals("button", &["broadcaster"], Pulse::Low);
+        queue.add_signals(usize::MAX, &[name_map["broadcaster"]], Pulse::Low);
         while !queue.inner.is_empty() {
             let signal = queue.inner.pop_front().unwrap();
             //println!("Signal: {signal:?}");
@@ -227,7 +240,7 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
             }
         }
         let mut state = Vec::new();
-        for m in machines.values() {
+        for m in &machines {
             m.state(&mut state);
         }
         //println!("count: {count}, state: {state:?}");
@@ -244,29 +257,45 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     for l in lines {
         rules.push(l.unwrap());
     }
-    let mut machines: HashMap<&str, Box<dyn Machine>> = HashMap::new();
-    let mut input_map = HashMap::new();
+
+    let mut name_map = HashMap::new();
+    let mut idx = 0usize;
     for line in &rules {
         let parts: Vec<&str> = line.split(" -> ").collect();
-        let outputs: Vec<&str> = parts[1].split(", ").collect();
         if parts[0] == "broadcaster" {
-            insert_inputs(&mut input_map, parts[0], &outputs);
-            machines.insert(parts[0], Box::new(Broadcaster::new(parts[0], outputs)));
+            name_map.insert(parts[0].to_string(), idx);
+        } else {
+            name_map.insert(parts[0][1..].to_string(), idx);
+        }
+        idx += 1;
+    }
+    name_map.insert("rx".to_string(), idx);
+    name_map.insert("output".to_string(), idx);
+
+    let mut machines: Vec<Box<dyn Machine>> = Vec::with_capacity(idx);
+    let mut input_map= vec![Vec::new(); idx];
+    for line in &rules {
+        let parts: Vec<&str> = line.split(" -> ").collect();
+        let outputs: Vec<usize> = parts[1].split(", ").map(|s| name_map[s]).collect();
+        if parts[0] == "broadcaster" {
+            let idx = name_map[parts[0]];
+            insert_inputs(&mut input_map, idx, &outputs);
+            machines.push(Box::new(Broadcaster::new(idx, outputs)));
         } else if parts[0].starts_with('%') {
-            insert_inputs(&mut input_map, &parts[0][1..], &outputs);
-            machines.insert(&parts[0][1..], Box::new(FlipFlop::new(&parts[0][1..], outputs)));
+            let idx = name_map[&parts[0][1..]];
+            insert_inputs(&mut input_map, idx, &outputs);
+            machines.push(Box::new(FlipFlop::new(idx, outputs)));
         } else if parts[0].starts_with('&') {
-            insert_inputs(&mut input_map, &parts[0][1..], &outputs);
-            machines.insert(&parts[0][1..], Box::new(Conjunction::new(&parts[0][1..], outputs)));
+            let idx = name_map[&parts[0][1..]];
+            insert_inputs(&mut input_map, idx, &outputs);
+            machines.push(Box::new(Conjunction::new(idx, outputs)));
         } else {
             panic!("invalid machine type");
         }
     }
-
-    for (k, value) in input_map {
-        if let Some(m) = machines.get_mut(k) {
-            m.init_inputs(&value);
-        }
+    
+    for from in 0..input_map.len() {
+        machines[from].init_inputs(&input_map[from]);
     }
 
     //println!("machines: {:?}", machines.keys());
@@ -275,15 +304,16 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut no_rx = true;
     while no_rx {
         count += 1;
-        queue.add_signals("button", &["broadcaster"], Pulse::Low);
+        queue.add_signals(usize::MAX, &[name_map["broadcaster"]], Pulse::Low);
         while !queue.inner.is_empty() {
             let signal = queue.inner.pop_front().unwrap();
-            if signal.to == "rx" && signal.p == Pulse::Low {
-                no_rx = false;
-            }
-            //println!("Signal: {signal:?}");
-            if let Some(m) = machines.get_mut(signal.to) {
-                m.process(&signal, &mut queue);
+            if signal.to == machines.len() {
+                if signal.p == Pulse::Low {
+                    no_rx = false;
+                    break;
+                }
+            } else {
+                machines[signal.to].process(&signal, &mut queue);
             }
         }
     }
