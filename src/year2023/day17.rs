@@ -178,9 +178,7 @@ impl Solver {
 
     fn find_path(&mut self) -> u64 {
         self.queue.push(Node { dir: Right, count: 1, x: 0, y: 1}, Priority{ cost: self.map[0][1] as u64});
-        if self.min_turn == 1 {
-            self.queue.push(Node { dir: Down, count: 1, x: 1, y: 0}, Priority{ cost: self.map[1][0] as u64});
-        }
+        self.queue.push(Node { dir: Down, count: 1, x: 1, y: 0}, Priority{ cost: self.map[1][0] as u64});
         loop {
             let (node, prio) = self.queue.pop().unwrap();
             //println!("node: {:?}, prio {}", node, prio.cost);
@@ -242,6 +240,6 @@ mod test {
     fn test_2023_17_2() {
         let lines = read_lines("data/2023/17.txt").unwrap();
         let result = execute(2, lines);
-        assert_eq!(result, "839"); // my solution, but rejected by AOC
+        assert_eq!(result, "825");
     }
 }
