@@ -80,6 +80,7 @@ impl PartialOrd for Brick {
     }
 }
 
+#[derive(Clone)]
 struct Solver {
     bricks: Vec<Brick>,
     top_layer: Vec<HashSet<usize>>,
@@ -135,7 +136,8 @@ impl Solver {
         }
     }
 
-    fn let_bricks_fall(&mut self) {
+    fn let_bricks_fall(&mut self) -> u64 {
+        let mut fallen = 0;
         self.verify_brick_stack(false);
         let bottom_layer_len = self.bottom_layer.len();
         for i in 2..bottom_layer_len {
@@ -159,6 +161,7 @@ impl Solver {
                     z_new = 1;
                 }
                 if z_new < i {
+                    fallen += 1;
                     falling_bricks.push((*brick, i-z_new));
                 }
             }
@@ -172,6 +175,7 @@ impl Solver {
             }
         }
         self.verify_brick_stack(true);
+        fallen
     }
 
     fn count_desintegratable(&self) -> u64 {
@@ -196,6 +200,58 @@ impl Solver {
         }
         (self.bricks.len() - critical_bricks.len()) as u64
     }
+
+    fn count_chain_reaction(&self) -> u64 {
+        let mut critical_bricks = HashSet::new();
+        for brick in &self.bricks {
+            if brick.start.z == 1 { continue; }
+            let mut supporting = None;
+            for lower_brick in &self.top_layer[brick.start.z-1] 
+            {
+                if brick.xy_overlaps_with(&self.bricks[*lower_brick]) {
+                    if supporting.is_none() {
+                        supporting = Some(*lower_brick);
+                    } else {
+                        supporting = None;
+                        break;
+                    }
+                }
+            }
+            if let Some(supporting) = supporting {
+                critical_bricks.insert(supporting);
+            }
+        }
+        let mut fallen = 0;
+        for i in critical_bricks {
+            let mut bricks = Vec::new();
+            for j in 0..self.bricks.len() {
+                if i==j { continue; }
+                bricks.push(self.bricks[j].clone());
+            }
+            let top_layer = copy_hash_set(&self.top_layer, i);
+            let bottom_layer = copy_hash_set(&self.bottom_layer, i);
+            let mut fallen_solver = Solver::new(bricks, top_layer, bottom_layer);
+            fallen += fallen_solver.let_bricks_fall();
+        }
+        fallen
+    }
+}
+
+fn copy_hash_set(sets: &[HashSet<usize>], exclude: usize) -> Vec<HashSet<usize>> {
+    let mut new_sets = Vec::new();
+    for s in sets {
+        let mut new_set = HashSet::new();
+        for idx in s {
+            if *idx == exclude { continue; }
+            if *idx > exclude {
+                new_set.insert(idx-1);
+            } else {
+                new_set.insert(*idx);
+            }
+        }
+        new_sets.push(new_set);
+    }
+    new_sets
 }
 
 fn parse_input(lines: io::Lines<io::BufReader<File>>) -> Solver {
@@ -240,7 +296,7 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut solver = parse_input(lines);
     solver.let_bricks_fall();
     let sum = solver.count_chain_reaction();
-    format!("none")
+    format!("{sum}")
 }
 
 #[cfg(test)]
@@ -252,13 +308,13 @@ mod test {
     fn test_2023_22_1() {
         let lines = read_lines("data/2023/22.txt").unwrap();
         let result = execute(1, lines);
-        assert_eq!(result, "3724");
+        assert_eq!(result, "439");
     }
 
     #[test]
     fn test_2023_22_2() {
         let lines = read_lines("data/2023/22.txt").unwrap();
         let result = execute(2, lines);
-        assert_eq!(result, "134549294799713");
+        assert_eq!(result, "43056");
     }
 }
