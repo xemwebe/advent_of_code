@@ -15,6 +15,7 @@ mod day2;
 mod day20;
 mod day21;
 mod day22;
+mod day23;
 mod day3;
 mod day4;
 mod day5;
@@ -47,6 +48,7 @@ pub fn execute(day: u32, part: u32, lines: io::Lines<io::BufReader<File>>) -> St
         20 => day20::execute(part, lines),
         21 => day21::execute(part, lines),
         22 => day22::execute(part, lines),
+        23 => day23::execute(part, lines),
         _ => format!("Error: day {day} not found"),
     }
 }
