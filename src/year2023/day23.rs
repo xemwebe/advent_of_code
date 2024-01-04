@@ -170,14 +170,28 @@ impl Solver {
         while !no_dead_ends {
             no_dead_ends = true;
             let mut paths = vec![self.paths[0].clone()];
+            let mut duplicates = HashSet::new();
             for i in 1..self.paths.len() {
-                let last_i_pos = self.paths[i].positions.last().unwrap().clone();
+                if duplicates.contains(&i) {
+                    continue;
+                }
+                let i_len = self.paths[i].positions.len();
+                let last_i_pos = self.paths[i].positions[i_len-1].clone();
                 if last_i_pos == self.end {
                     paths.push(self.paths[i].clone());
                     continue;
                 }
                 let mut following = 0;
                 for j in i+1..self.paths.len() {
+                    // eliminate duplicates
+                    if i_len == self.paths[j].positions.len()
+                    && self.paths[i].positions[0] == self.paths[j].positions[0]
+                    && self.paths[i].positions[1] == self.paths[j].positions[1]
+                    && self.paths[i].positions[i_len-1] == self.paths[j].positions[i_len-1]
+                    && self.paths[i].positions[i_len-2] == self.paths[j].positions[i_len-2]
+                    {
+                        duplicates.insert(j);
+                    }
                     if self.paths[j].positions[0] == last_i_pos {
                         following += 1;
                     }
@@ -185,7 +199,7 @@ impl Solver {
                 if following > 0 {
                     paths.push(self.paths[i].clone());
                 } else {
-                    no_dead_ends = false;
+                    no_dead_ends = true;
                 }
             }
             self.paths = paths;
@@ -227,25 +241,15 @@ fn parse_input(lines: io::Lines<io::BufReader<File>>, avoid_slippery: bool) -> S
 fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut solver = parse_input(lines, true);
     solver.find_all_simple_path();
-    //println!("path count: {}", solver.paths.len());
-    //solver.eliminate_dead_ends();
     let solution = solver.find_longest_path(0, HashSet::new());
-    // for p in &solver.paths {
-    //     println!("{:?}", p.positions);
-    // }
     format!("{solution}")
 }
 
 fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut solver = parse_input(lines, false);
     solver.find_all_simple_path();
-    println!("path count: {}", solver.paths.len());
     solver.eliminate_dead_ends();
-    println!("path count: {}", solver.paths.len());
     let solution = solver.find_longest_path(0, HashSet::new());
-    for p in &solver.paths {
-        println!("{:?}", p.positions);
-    }
     format!("{solution}")
 }
 
@@ -265,6 +269,6 @@ mod test {
     fn test_2023_23_2() {
         let lines = read_lines("data/2023/23.txt").unwrap();
         let result = execute(2, lines);
-        assert_eq!(result, "43056");
+        assert_eq!(result, "6522");
     }
 }
