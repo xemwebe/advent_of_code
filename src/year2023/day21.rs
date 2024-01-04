@@ -1,7 +1,4 @@
-use std::{
-    fs::File, 
-    io,
-};
+use std::{fs::File, io};
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match part {
@@ -17,9 +14,7 @@ struct Solver {
 
 impl Solver {
     fn new(map: Vec<Vec<u8>>) -> Self {
-        Self {
-            map
-        }
+        Self { map }
     }
 
     fn sum(&self, steps: i32) -> i32 {
@@ -37,37 +32,44 @@ impl Solver {
             for x in 0..self.map.len() {
                 for y in 0..self.map[x].len() {
                     if reached[x][y] {
-                        if x>0 && self.map[x-1][y] != b'#' {
-                            new_reached[x-1][y] = true;
+                        if x > 0 && self.map[x - 1][y] != b'#' {
+                            new_reached[x - 1][y] = true;
                         }
-                        if x+1<self.map.len() && self.map[x+1][y] != b'#' {
-                            new_reached[x+1][y] = true;
+                        if x + 1 < self.map.len() && self.map[x + 1][y] != b'#' {
+                            new_reached[x + 1][y] = true;
                         }
-                        if y>0 && self.map[x][y-1] != b'#' {
-                            new_reached[x][y-1] = true;
+                        if y > 0 && self.map[x][y - 1] != b'#' {
+                            new_reached[x][y - 1] = true;
                         }
-                        if y+1<self.map[x].len() && self.map[x][y+1] != b'#' {
-                            new_reached[x][y+1] = true;
+                        if y + 1 < self.map[x].len() && self.map[x][y + 1] != b'#' {
+                            new_reached[x][y + 1] = true;
                         }
                     }
                 }
             }
             reached = new_reached;
         }
-        reached.iter().map(|row|  row.iter().map(|cell| if *cell { 1 } else { 0 }).sum::<i32>() ).sum()
+        reached
+            .iter()
+            .map(|row| {
+                row.iter()
+                    .map(|cell| if *cell { 1 } else { 0 })
+                    .sum::<i32>()
+            })
+            .sum()
     }
 
     fn infinite_sum(&self, steps: i64) -> i64 {
-        let max_sum = if steps%2 == 1 {
+        let max_sum = if steps % 2 == 1 {
             // 4*3 + 4*5 + 4*7+ ... + 4*step
-            // steps = 2n+1  => n = (steps - 1) / 2 
+            // steps = 2n+1  => n = (steps - 1) / 2
             //4 + 4 * ((steps-1)/2+1)*(steps-1)/2
             //4 + (steps-1 + 2)(steps-1)
             //4 + (steps +1) *(steps -1)
             //4+ steps*steps -1
-            3 + steps*steps
+            3 + steps * steps
         } else {
-            1 + 4*2 + 4*4
+            1 + 4 * 2 + 4 * 4
         };
         max_sum
     }
@@ -88,7 +90,12 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     for l in lines {
         map.push(l.unwrap().as_bytes().to_vec());
     }
-    println!("x: {}, y: {}, x*y: {}", map.len(), map[0].len(), map.len()*map[0].len());
+    println!(
+        "x: {}, y: {}, x*y: {}",
+        map.len(),
+        map[0].len(),
+        map.len() * map[0].len()
+    );
     let solver = Solver::new(map);
     let sum = solver.infinite_sum(26501365);
     format!("{sum}")
@@ -96,8 +103,8 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
 
 #[cfg(test)]
 mod test {
-    use crate::read_lines;
     use super::execute;
+    use crate::read_lines;
 
     #[test]
     fn test_2023_21_1() {

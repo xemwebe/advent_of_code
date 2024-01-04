@@ -1,8 +1,4 @@
-use std::{
-    fs::File, 
-    io,
-    collections::HashMap,
-};
+use std::{collections::HashMap, fs::File, io};
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match part {
@@ -12,11 +8,11 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     }
 }
 
-#[derive(Debug,Clone,PartialEq,Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 enum Operation {
     LowerThan(u32),
     GreaterThan(u32),
-    True
+    True,
 }
 
 impl Operation {
@@ -24,7 +20,7 @@ impl Operation {
         match b {
             b'<' => Self::LowerThan(param),
             b'>' => Self::GreaterThan(param),
-            _ => panic!("invalid op")
+            _ => panic!("invalid op"),
         }
     }
     fn test(&self, value: u32) -> bool {
@@ -38,23 +34,41 @@ impl Operation {
         match self {
             Self::LowerThan(param) => {
                 if r.max < *param {
-                    (r, Range{ min: 0, max: 0})
+                    (r, Range { min: 0, max: 0 })
                 } else if r.min >= *param {
-                    (Range{ min: 0, max: 0}, r)
+                    (Range { min: 0, max: 0 }, r)
                 } else {
-                    (Range{ min: r.min, max: r.max.min(param-1) }, Range{ min: r.min.max(*param), max: r.max })
+                    (
+                        Range {
+                            min: r.min,
+                            max: r.max.min(param - 1),
+                        },
+                        Range {
+                            min: r.min.max(*param),
+                            max: r.max,
+                        },
+                    )
                 }
-            },
+            }
             Self::GreaterThan(param) => {
                 if r.min > *param {
-                    (r, Range{ min: 0, max: 0})
+                    (r, Range { min: 0, max: 0 })
                 } else if r.max <= *param {
-                    (Range{ min: 0, max: 0}, r)
+                    (Range { min: 0, max: 0 }, r)
                 } else {
-                    (Range{ min: r.min.max(*param+1), max: r.max }, Range{ min: r.min, max: r.max.min(*param) })
+                    (
+                        Range {
+                            min: r.min.max(*param + 1),
+                            max: r.max,
+                        },
+                        Range {
+                            min: r.min,
+                            max: r.max.min(*param),
+                        },
+                    )
                 }
-            },
-            Self::True => (r, Range{ min: 0, max: 0} ),
+            }
+            Self::True => (r, Range { min: 0, max: 0 }),
         }
     }
 }
@@ -66,13 +80,13 @@ struct Rule {
     target: String,
 }
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 struct RuleSet {
     rules: Vec<Rule>,
 }
 
 impl RuleSet {
-    fn check(&self, item: &[u32;4], rules: &HashMap<String, RuleSet>) -> bool {
+    fn check(&self, item: &[u32; 4], rules: &HashMap<String, RuleSet>) -> bool {
         for i in 0..self.rules.len() {
             let rule = &self.rules[i];
             if rule.op.test(item[rule.var_idx]) {
@@ -88,20 +102,20 @@ impl RuleSet {
         false
     }
 
-    fn passing_items(&self, mut ranges: [Range; 4],  rules: &HashMap<String, RuleSet>) -> u64 {
+    fn passing_items(&self, mut ranges: [Range; 4], rules: &HashMap<String, RuleSet>) -> u64 {
         let mut sum = 0;
         for i in 0..self.rules.len() {
             let rule = &self.rules[i];
-            let (passed_range, rejected_range) =  rule.op.apply_on_range(ranges[rule.var_idx]);
+            let (passed_range, rejected_range) = rule.op.apply_on_range(ranges[rule.var_idx]);
             if &rule.target == "A" {
-                let mut prod = (passed_range.max-passed_range.min+1) as u64;
+                let mut prod = (passed_range.max - passed_range.min + 1) as u64;
                 for j in 0..4 {
                     if j != rule.var_idx {
                         if ranges[j].max > 0 {
-                            prod *= (ranges[j].max - ranges[j].min +1) as u64;
+                            prod *= (ranges[j].max - ranges[j].min + 1) as u64;
                         } else {
                             prod = 0;
-                        } 
+                        }
                     }
                 }
                 sum += prod;
@@ -124,45 +138,52 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
         let line = l.unwrap();
         if line.is_empty() {
             rules_mode = false;
-            continue
+            continue;
         }
         if rules_mode {
             let parts: Vec<&str> = line.split('{').collect();
             let name = parts[0].to_string();
-            let rules_len = parts[1].len()-1;
+            let rules_len = parts[1].len() - 1;
             let rule_infos: Vec<&str> = parts[1][0..rules_len].split(',').collect();
             let mut set_rules = Vec::new();
             for rule_info in rule_infos {
                 let rule_parts: Vec<&str> = rule_info.split(':').collect();
                 let rule = if rule_parts.len() == 1 {
                     let target = rule_parts[0].to_string();
-                    Rule{ var_idx: 0, op: Operation::True, target }
+                    Rule {
+                        var_idx: 0,
+                        op: Operation::True,
+                        target,
+                    }
                 } else {
                     let condition_variable = match rule_parts[0].as_bytes()[0] {
                         b'x' => 0,
                         b'm' => 1,
                         b'a' => 2,
                         b's' => 3,
-                        _ => panic!("invalid variable")
+                        _ => panic!("invalid variable"),
                     };
                     let operator = rule_parts[0].as_bytes()[1];
                     let condition_value: u32 = rule_parts[0][2..].parse().unwrap();
                     let op = Operation::new(operator, condition_value);
                     let target = rule_parts[1].to_string();
-                    Rule{ var_idx: condition_variable, op, target }
+                    Rule {
+                        var_idx: condition_variable,
+                        op,
+                        target,
+                    }
                 };
                 set_rules.push(rule);
             }
-            rules.insert(name, RuleSet{ rules: set_rules });
+            rules.insert(name, RuleSet { rules: set_rules });
         } else {
-            let parts: Vec<&str> = line[1..line.len()-1].split(',').collect();
-            let mut tile = [0u32;4];
+            let parts: Vec<&str> = line[1..line.len() - 1].split(',').collect();
+            let mut tile = [0u32; 4];
             for i in 0..4 {
                 tile[i] = parts[i].split('=').skip(1).next().unwrap().parse().unwrap();
             }
             items.push(tile);
         }
-        
     }
 
     let mut sum = 0;
@@ -177,15 +198,12 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
 #[derive(Clone, Copy, Debug)]
 struct Range {
     min: u32,
-    max: u32
+    max: u32,
 }
 
 impl Range {
     fn new() -> Self {
-        Self {
-            min: 1,
-            max: 4000,
-        }
+        Self { min: 1, max: 4000 }
     }
 }
 
@@ -198,31 +216,39 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         }
         let parts: Vec<&str> = line.split('{').collect();
         let name = parts[0].to_string();
-        let rules_len = parts[1].len()-1;
+        let rules_len = parts[1].len() - 1;
         let rule_infos: Vec<&str> = parts[1][0..rules_len].split(',').collect();
         let mut set_rules = Vec::new();
         for rule_info in rule_infos {
             let rule_parts: Vec<&str> = rule_info.split(':').collect();
             let rule = if rule_parts.len() == 1 {
                 let target = rule_parts[0].to_string();
-                Rule{ var_idx: 0, op: Operation::True, target }
+                Rule {
+                    var_idx: 0,
+                    op: Operation::True,
+                    target,
+                }
             } else {
                 let condition_variable = match rule_parts[0].as_bytes()[0] {
                     b'x' => 0,
                     b'm' => 1,
                     b'a' => 2,
                     b's' => 3,
-                    _ => panic!("invalid variable")
+                    _ => panic!("invalid variable"),
                 };
                 let operator = rule_parts[0].as_bytes()[1];
                 let condition_value: u32 = rule_parts[0][2..].parse().unwrap();
                 let op = Operation::new(operator, condition_value);
                 let target = rule_parts[1].to_string();
-                Rule{ var_idx: condition_variable, op, target }
+                Rule {
+                    var_idx: condition_variable,
+                    op,
+                    target,
+                }
             };
             set_rules.push(rule);
         }
-        rules.insert(name, RuleSet{ rules: set_rules });
+        rules.insert(name, RuleSet { rules: set_rules });
     }
 
     let ranges = [Range::new(); 4];
@@ -232,8 +258,8 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
 
 #[cfg(test)]
 mod test {
-    use crate::read_lines;
     use super::execute;
+    use crate::read_lines;
 
     #[test]
     fn test_2023_19_1() {

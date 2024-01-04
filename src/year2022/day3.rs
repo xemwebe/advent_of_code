@@ -76,11 +76,10 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     format!("{sum}")
 }
 
-
 #[cfg(test)]
 mod test {
-    use crate::read_lines;
     use super::execute;
+    use crate::read_lines;
 
     #[test]
     fn test_2022_3_1() {

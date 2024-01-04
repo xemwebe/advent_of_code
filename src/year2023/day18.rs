@@ -1,9 +1,4 @@
-use std::{
-    fs::File, 
-    io,
-    str::FromStr,
-    collections::BTreeSet,
-};
+use std::{collections::BTreeSet, fs::File, io, str::FromStr};
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match part {
@@ -27,7 +22,7 @@ enum Direction {
 use Direction::*;
 
 impl FromStr for Direction {
-    type Err=ParseDirectionError;
+    type Err = ParseDirectionError;
 
     fn from_str(str: &str) -> Result<Self, Self::Err> {
         match str {
@@ -35,7 +30,7 @@ impl FromStr for Direction {
             "L" => Ok(Left),
             "U" => Ok(Up),
             "D" => Ok(Down),
-            _ => Err(ParseDirectionError)
+            _ => Err(ParseDirectionError),
         }
     }
 }
@@ -43,10 +38,10 @@ impl FromStr for Direction {
 impl Direction {
     fn next_n_pos(&self, x: i64, y: i64, n: i64) -> (i64, i64) {
         match self {
-            Up => (x-n, y),
-            Down => (x+n, y),
-            Right => (x, y+n),
-            Left => (x, y-n)
+            Up => (x - n, y),
+            Down => (x + n, y),
+            Right => (x, y + n),
+            Left => (x, y - n),
         }
     }
 
@@ -56,13 +51,13 @@ impl Direction {
             1 => Down,
             2 => Left,
             3 => Up,
-            _ => panic!("invalid direction")
+            _ => panic!("invalid direction"),
         }
     }
- }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-struct Point  {
+struct Point {
     x: i64,
     y: i64,
 }
@@ -112,9 +107,9 @@ impl Ord for HorizontalLine {
 
 fn join_lines(lines: &BTreeSet<Point>) -> BTreeSet<Point> {
     let mut new_lines = BTreeSet::new();
-    let mut last_point = Point{x:1, y:0};
+    let mut last_point = Point { x: 1, y: 0 };
     for l in lines {
-        if last_point.x>last_point.y {
+        if last_point.x > last_point.y {
             last_point = l.clone();
         } else {
             if last_point.y + 1 == l.x {
@@ -125,7 +120,7 @@ fn join_lines(lines: &BTreeSet<Point>) -> BTreeSet<Point> {
             }
         }
     }
-    if last_point.x<last_point.y {
+    if last_point.x < last_point.y {
         new_lines.insert(last_point);
     }
     new_lines
@@ -134,7 +129,7 @@ fn join_lines(lines: &BTreeSet<Point>) -> BTreeSet<Point> {
 fn total_line(lines: &BTreeSet<Point>) -> i64 {
     let mut sum = 0;
     for l in lines {
-        sum += l.y-l.x+1;
+        sum += l.y - l.x + 1;
     }
     sum
 }
@@ -145,19 +140,26 @@ fn fill_map(directions: &[(Direction, u32)]) -> i64 {
     let mut lines = Vec::new();
     for dir in directions {
         let (x_new, y_new) = dir.0.next_n_pos(x, y, dir.1 as i64);
-        if dir.0 == Right || dir.0 == Left  {
-            lines.push(HorizontalLine{x, y_start: y.min(y_new), y_end: y.max(y_new)});
+        if dir.0 == Right || dir.0 == Left {
+            lines.push(HorizontalLine {
+                x,
+                y_start: y.min(y_new),
+                y_end: y.max(y_new),
+            });
         }
         x = x_new;
         y = y_new;
     }
     lines.sort();
-    
+
     x = lines[0].x;
     let mut current_lines = BTreeSet::new();
     let mut i = 0;
     while lines[i].x == x {
-        let line = Point{x: lines[i].y_start, y: lines[i].y_end };
+        let line = Point {
+            x: lines[i].y_start,
+            y: lines[i].y_end,
+        };
         current_lines.insert(line);
         i += 1;
     }
@@ -165,7 +167,7 @@ fn fill_map(directions: &[(Direction, u32)]) -> i64 {
     let mut area = total_line(&current_lines);
     for line in lines[i..].iter() {
         if line.x != x {
-            area += (line.x-x) * total_line(&current_lines);
+            area += (line.x - x) * total_line(&current_lines);
             x = line.x;
         }
         let mut ys = line.y_start;
@@ -181,44 +183,44 @@ fn fill_map(directions: &[(Direction, u32)]) -> i64 {
             }
             if ys < l.x {
                 // only occurs if horizontal line crosse vertical line
-                area += l.x-ys;
-                replacements.push((Some(l.clone()), Some(Point{x: ys, y: l.x})));
-                if ye>=l.y {
-                    ys = l.y+1;
+                area += l.x - ys;
+                replacements.push((Some(l.clone()), Some(Point { x: ys, y: l.x })));
+                if ye >= l.y {
+                    ys = l.y + 1;
                 } else {
-                    replacements.push((None, Some(Point{x: ye, y: l.y})));
-                    ys = ye+1;
+                    replacements.push((None, Some(Point { x: ye, y: l.y })));
+                    ys = ye + 1;
                     break;
                 }
             }
             if ys == l.x {
                 if ye >= l.y {
                     replacements.push((Some(l.clone()), None));
-                    ys = l.y+1;
+                    ys = l.y + 1;
                 } else {
-                    replacements.push((Some(l.clone()), Some(Point{x: ye, y: l.y})));
-                    ys = ye+1;
+                    replacements.push((Some(l.clone()), Some(Point { x: ye, y: l.y })));
+                    ys = ye + 1;
                     break;
                 }
             } else if ys < l.y {
                 if ye <= l.y {
-                    replacements.push((Some(l.clone()), Some(Point{x: l.x, y: ys})));
+                    replacements.push((Some(l.clone()), Some(Point { x: l.x, y: ys })));
                     if ye < l.y {
-                        replacements.push((None, Some(Point{x: ye, y: l.y})));
+                        replacements.push((None, Some(Point { x: ye, y: l.y })));
                     }
-                    ys = ye +1;
+                    ys = ye + 1;
                     break;
                 } else if ye > l.y {
-                    replacements.push((Some(l.clone()), Some(Point{x: l.x, y: ys})));
-                    ys = l.y+1;
+                    replacements.push((Some(l.clone()), Some(Point { x: l.x, y: ys })));
+                    ys = l.y + 1;
                 }
             } else if ys == l.y {
                 ys += 1;
             }
         }
-        if ye>ys {
-            area += ye-ys+1;
-            replacements.push((None, Some(Point{x:ys, y:ye})));
+        if ye > ys {
+            area += ye - ys + 1;
+            replacements.push((None, Some(Point { x: ys, y: ye })));
         }
         for r in replacements {
             if let Some(to_remove) = r.0 {
@@ -239,7 +241,10 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     for l in lines {
         let line = l.unwrap();
         let parts: Vec<&str> = line.split(' ').collect();
-        directions.push((Direction::from_str(&parts[0]).unwrap(), parts[1].parse::<u32>().unwrap()));
+        directions.push((
+            Direction::from_str(&parts[0]).unwrap(),
+            parts[1].parse::<u32>().unwrap(),
+        ));
     }
     let area = fill_map(&directions);
     format!("{area}")
@@ -251,7 +256,7 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         let line = l.unwrap();
         let parts: Vec<&str> = line.split(' ').collect();
         let num = u32::from_str_radix(&parts[2][2..7], 16).unwrap();
-        directions.push((Direction::from_num(parts[2].as_bytes()[7]-b'0'), num));
+        directions.push((Direction::from_num(parts[2].as_bytes()[7] - b'0'), num));
     }
     let area = fill_map(&directions);
     format!("{area}")
@@ -259,8 +264,8 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
 
 #[cfg(test)]
 mod test {
-    use crate::read_lines;
     use super::execute;
+    use crate::read_lines;
 
     #[test]
     fn test_2023_18_1() {

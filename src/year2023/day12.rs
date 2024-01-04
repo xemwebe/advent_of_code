@@ -1,9 +1,9 @@
 use std::{
+    collections::HashMap,
     fmt::{self, Display},
     fs::File,
-    io,
-    collections::HashMap,
     hash::Hash,
+    io,
 };
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
@@ -48,11 +48,14 @@ struct Solver {
 }
 
 impl Solver {
-    fn new(info: StaticInfo ) -> Self {
-        Self  { cache: HashMap::new(), info }
+    fn new(info: StaticInfo) -> Self {
+        Self {
+            cache: HashMap::new(),
+            info,
+        }
     }
 
-    fn solve(&mut self, state: State,) -> usize {
+    fn solve(&mut self, state: State) -> usize {
         //println!("state: {state}");
         if state.pattern_pos == self.info.damaged_pattern.len() {
             return 1;
@@ -69,9 +72,13 @@ impl Solver {
         let pattern_pos = state.pattern_pos;
         let pattern_len = self.info.damaged_pattern[pattern_pos];
         let remaining = state.remaining;
-        while pos <= self.info.map.len()-state.remaining as usize {
+        while pos <= self.info.map.len() - state.remaining as usize {
             if let Some((new_pos, used)) = self.find_next_pattern(pos, pattern_len, remaining) {
-                let score = self.solve(State{pos: new_pos+pattern_len+1, pattern_pos: pattern_pos+1, remaining: remaining-used});
+                let score = self.solve(State {
+                    pos: new_pos + pattern_len + 1,
+                    pattern_pos: pattern_pos + 1,
+                    remaining: remaining - used,
+                });
                 if score == 0 {
                     pos += 1;
                     continue;
@@ -86,22 +93,27 @@ impl Solver {
             }
         }
         self.cache.insert(state, total_score);
-        
+
         total_score
     }
 
-    fn find_next_pattern(&self, pos: usize, len: usize, remaining: usize) -> Option<(usize, usize)> {
+    fn find_next_pattern(
+        &self,
+        pos: usize,
+        len: usize,
+        remaining: usize,
+    ) -> Option<(usize, usize)> {
         let map = &self.info.map;
-        
+
         let mut last_round = false;
-        for i in pos..=(map.len()-len) {
+        for i in pos..=(map.len() - len) {
             // check for match
             let mut joker = 0;
             let mut is_match = true;
             if map[i] == b'#' {
                 last_round = true;
             }
-            for j in i..i+len {
+            for j in i..i + len {
                 if map[j] == b'?' {
                     joker += 1;
                 }
@@ -114,7 +126,7 @@ impl Solver {
                     continue;
                 }
                 // check that pattern is not folloed by '#'
-                if i+len < map.len() && map[i+len] == b'#' {
+                if i + len < map.len() && map[i + len] == b'#' {
                     continue;
                 }
                 return Some((i, joker));
@@ -125,7 +137,6 @@ impl Solver {
         }
         None
     }
-
 }
 
 fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
@@ -204,8 +215,8 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
 
 #[cfg(test)]
 mod test {
-    use crate::read_lines;
     use super::execute;
+    use crate::read_lines;
 
     #[test]
     fn test_2023_12_1() {

@@ -55,8 +55,8 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
 
 #[cfg(test)]
 mod test {
-    use crate::read_lines;
     use super::execute;
+    use crate::read_lines;
 
     #[test]
     fn test_2021_6_1() {
@@ -72,4 +72,3 @@ mod test {
         assert_eq!(result, "1639854996917");
     }
 }
-

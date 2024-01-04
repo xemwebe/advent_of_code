@@ -1,7 +1,7 @@
 use std::{
-    fs::File, 
+    collections::{HashMap, VecDeque},
+    fs::File,
     io,
-    collections::{VecDeque, HashMap},
 };
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
@@ -22,14 +22,14 @@ enum Pulse {
 struct Signal {
     from: usize,
     to: usize,
-    p: Pulse
+    p: Pulse,
 }
 
 #[derive(Debug)]
 struct Queue {
     low_count: u64,
     high_count: u64,
-    inner: VecDeque<Signal>
+    inner: VecDeque<Signal>,
 }
 
 impl Queue {
@@ -43,16 +43,20 @@ impl Queue {
 
     fn add_signals(&mut self, from: usize, to: &[usize], p: Pulse) {
         match &p {
-            Pulse::High => { self.high_count += to.len() as u64 },
-            Pulse::Low => { self.low_count += to.len() as u64 },
+            Pulse::High => self.high_count += to.len() as u64,
+            Pulse::Low => self.low_count += to.len() as u64,
         }
         for t in to {
-            self.inner.push_back(Signal { from, to: *t, p: p.clone() });
+            self.inner.push_back(Signal {
+                from,
+                to: *t,
+                p: p.clone(),
+            });
         }
     }
 
     fn score(&self) -> u64 {
-        self.low_count*self.high_count
+        self.low_count * self.high_count
     }
 }
 
@@ -61,7 +65,6 @@ trait Machine {
     fn state(&self, total: &mut Vec<u8>);
     fn init_inputs(&mut self, _inputs: &[usize]) {}
 }
-
 
 #[derive(Debug)]
 struct FlipFlop {
@@ -75,7 +78,7 @@ impl FlipFlop {
         Self {
             name,
             is_on: false,
-            outputs
+            outputs,
         }
     }
 }
@@ -83,7 +86,7 @@ impl FlipFlop {
 impl Machine for FlipFlop {
     fn process(&mut self, s: &Signal, q: &mut Queue) {
         match s.p {
-            Pulse::High => {},
+            Pulse::High => {}
             Pulse::Low => {
                 self.is_on = !self.is_on;
                 if self.is_on {
@@ -96,7 +99,7 @@ impl Machine for FlipFlop {
     }
 
     fn state(&self, total: &mut Vec<u8>) {
-        total.push(if self.is_on { 1 } else { 0 } );
+        total.push(if self.is_on { 1 } else { 0 });
     }
 }
 
@@ -112,7 +115,7 @@ impl Conjunction {
         Self {
             name,
             state: HashMap::new(),
-            outputs
+            outputs,
         }
     }
 }
@@ -134,7 +137,7 @@ impl Machine for Conjunction {
     fn state(&self, total: &mut Vec<u8>) {
         let mut bits: u8 = 0;
         for p in self.state.values() {
-            bits <<=1;
+            bits <<= 1;
             if *p == Pulse::High {
                 bits |= 1;
             }
@@ -157,10 +160,7 @@ struct Broadcaster {
 
 impl Broadcaster {
     fn new(name: usize, outputs: Vec<usize>) -> Self {
-        Self {
-            name,
-            outputs
-        }
+        Self { name, outputs }
     }
 }
 impl Machine for Broadcaster {
@@ -273,7 +273,7 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     name_map.insert("output".to_string(), idx);
 
     let mut machines: Vec<Box<dyn Machine>> = Vec::with_capacity(idx);
-    let mut input_map= vec![Vec::new(); idx];
+    let mut input_map = vec![Vec::new(); idx];
     for line in &rules {
         let parts: Vec<&str> = line.split(" -> ").collect();
         let outputs: Vec<usize> = parts[1].split(", ").map(|s| name_map[s]).collect();
@@ -293,7 +293,7 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
             panic!("invalid machine type");
         }
     }
-    
+
     for from in 0..input_map.len() {
         machines[from].init_inputs(&input_map[from]);
     }
@@ -322,8 +322,8 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
 
 #[cfg(test)]
 mod test {
-    use crate::read_lines;
     use super::execute;
+    use crate::read_lines;
 
     #[test]
     fn test_2023_20_1() {

@@ -13,7 +13,7 @@ enum Direction {
     Up,
     Right,
     Down,
-    Left
+    Left,
 }
 
 impl Direction {
@@ -22,16 +22,16 @@ impl Direction {
             Up => 1,
             Right => 2,
             Down => 4,
-            Left => 8, 
+            Left => 8,
         }
     }
     fn next_pos(&self, x: usize, y: usize) -> (usize, usize) {
         match self {
-            Up => (x-1, y),
-            Down => (x+1, y),
-            Right => (x, y+1),
-            Left => (x, y-1)
-        } 
+            Up => (x - 1, y),
+            Down => (x + 1, y),
+            Right => (x, y + 1),
+            Left => (x, y - 1),
+        }
     }
 }
 
@@ -46,13 +46,20 @@ impl Solver {
     fn new(map: Vec<Vec<u8>>) -> Self {
         let x = map.len();
         let y = map[0].len();
-        Self{ map, beams: vec![vec![0u8; y]; x]}
+        Self {
+            map,
+            beams: vec![vec![0u8; y]; x],
+        }
     }
 
     fn make_beams(&mut self, dir: Direction, x: usize, y: usize) {
         // check for map boundary
-        if x>=self.map.len() { return; }
-        if y>=self.map[0].len() { return; }
+        if x >= self.map.len() {
+            return;
+        }
+        if y >= self.map[0].len() {
+            return;
+        }
         // map cell
         if self.check_and_update(dir.clone(), x, y) {
             return;
@@ -61,43 +68,75 @@ impl Solver {
         // Since x and y can not be negative, this is more complicated
         // Using i64 instead of usize for x and y might be the better choice
         let tile = self.map[x][y];
-        if x==0 {
-            if dir == Up && (tile==b'.' || tile==b'|') { return; }
-            if dir == Right && tile == b'/' { return; }
-            if dir == Left && tile == b'\\' { return; }
+        if x == 0 {
+            if dir == Up && (tile == b'.' || tile == b'|') {
+                return;
+            }
+            if dir == Right && tile == b'/' {
+                return;
+            }
+            if dir == Left && tile == b'\\' {
+                return;
+            }
         }
-        if y==0 {
-            if dir == Left && (tile==b'.' || tile==b'-') { return; }
-            if dir == Down && tile == b'/' { return; }
-            if dir == Up && tile == b'\\' { return; }
+        if y == 0 {
+            if dir == Left && (tile == b'.' || tile == b'-') {
+                return;
+            }
+            if dir == Down && tile == b'/' {
+                return;
+            }
+            if dir == Up && tile == b'\\' {
+                return;
+            }
         }
 
         // proceed beam
         if tile == b'-' && (dir == Up || dir == Down) {
-            self.make_beams(Right, x, y+1);
-            if y>0 { self.make_beams(Left, x, y-1) };
+            self.make_beams(Right, x, y + 1);
+            if y > 0 {
+                self.make_beams(Left, x, y - 1)
+            };
             return;
         }
         if tile == b'|' && (dir == Right || dir == Left) {
-            self.make_beams(Down, x+1, y);
-            if x>0 { self.make_beams(Up, x-1, y) };
+            self.make_beams(Down, x + 1, y);
+            if x > 0 {
+                self.make_beams(Up, x - 1, y)
+            };
             return;
         }
         if tile == b'/' {
             match dir {
-                Up => { self.make_beams(Right, x, y+1); },
-                Down => { self.make_beams(Left, x, y-1); },
-                Left => { self.make_beams(Down, x+1, y); },
-                Right => { self.make_beams(Up, x-1, y); },
+                Up => {
+                    self.make_beams(Right, x, y + 1);
+                }
+                Down => {
+                    self.make_beams(Left, x, y - 1);
+                }
+                Left => {
+                    self.make_beams(Down, x + 1, y);
+                }
+                Right => {
+                    self.make_beams(Up, x - 1, y);
+                }
             }
             return;
         }
         if tile == b'\\' {
             match dir {
-                Up => { self.make_beams(Left, x, y-1); },
-                Down => { self.make_beams(Right, x, y+1); },
-                Left => { self.make_beams(Up, x-1, y); },
-                Right => { self.make_beams(Down, x+1, y); },
+                Up => {
+                    self.make_beams(Left, x, y - 1);
+                }
+                Down => {
+                    self.make_beams(Right, x, y + 1);
+                }
+                Left => {
+                    self.make_beams(Up, x - 1, y);
+                }
+                Right => {
+                    self.make_beams(Down, x + 1, y);
+                }
             }
             return;
         }
@@ -170,7 +209,7 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         solver.make_beams(Direction::Right, i, 0);
         solution = solution.max(solver.energized());
         solver.clear();
-        solver.make_beams(Direction::Left, i, y_len-1);
+        solver.make_beams(Direction::Left, i, y_len - 1);
         solution = solution.max(solver.energized());
     }
     for i in 0..y_len {
@@ -178,7 +217,7 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         solver.make_beams(Direction::Down, 0, i);
         solution = solution.max(solver.energized());
         solver.clear();
-        solver.make_beams(Direction::Up, x_len-1, i);
+        solver.make_beams(Direction::Up, x_len - 1, i);
         solution = solution.max(solver.energized());
     }
     format!("{solution}")
@@ -186,8 +225,8 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
 
 #[cfg(test)]
 mod test {
-    use crate::read_lines;
     use super::execute;
+    use crate::read_lines;
 
     #[test]
     fn test_2023_16_1() {
