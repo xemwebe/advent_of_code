@@ -1,14 +1,14 @@
+use mathru::{
+    algebra::linear::{
+        matrix::{General, Solve, Transpose},
+        vector::Vector,
+    },
+    vector,
+};
 use std::{
     fs::File,
     io,
-    ops::{Neg, Add, Sub}
-};
-use mathru::{
-    vector,
-    algebra::linear::{
-        vector::Vector,
-        matrix::{General, Solve, Transpose},
-    }
+    ops::{Add, Neg, Sub},
 };
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
@@ -29,9 +29,9 @@ struct Vec3D {
 impl Vec3D {
     fn cross(&self, other: &Self) -> Self {
         Self {
-            x: self.y*other.z - self.z*other.y,
-            y: self.z*other.x - self.x*other.z,
-            z: self.x*other.y - self.y*other.x,
+            x: self.y * other.z - self.z * other.y,
+            y: self.z * other.x - self.x * other.z,
+            z: self.x * other.y - self.y * other.x,
         }
     }
 }
@@ -43,7 +43,7 @@ impl Neg for Vec3D {
             x: -self.x,
             y: -self.y,
             z: -self.z,
-        }        
+        }
     }
 }
 
@@ -51,7 +51,7 @@ impl Add for Vec3D {
     type Output = Vec3D;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Self::Output{
+        Self::Output {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
             z: self.z + rhs.z,
@@ -63,7 +63,7 @@ impl Sub for Vec3D {
     type Output = Vec3D;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Self::Output{
+        Self::Output {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
             z: self.z - rhs.z,
@@ -86,7 +86,7 @@ struct Solver {
 
 impl Solver {
     fn new(hails: Vec<Hail>) -> Self {
-        Self{
+        Self {
             hails,
             min: 200000000000000.0,
             max: 400000000000000.0,
@@ -107,10 +107,10 @@ impl Solver {
             // parallel movement
             return false;
         }
-        let t1 = if hj.speed.x==0.0 {
-            ca/hi.speed.y
+        let t1 = if hj.speed.x == 0.0 {
+            ca / hi.speed.y
         } else {
-            let fbhd = hi.speed.y - hi.speed.x/hj.speed.x*hj.speed.y;
+            let fbhd = hi.speed.y - hi.speed.x / hj.speed.x * hj.speed.y;
             let geachd = ge - ca / hj.speed.x * hj.speed.y;
             geachd / fbhd
         };
@@ -118,8 +118,8 @@ impl Solver {
         if t1 < 0.0 {
             return false;
         }
-        let t2 = if hj.speed.x==0.0 {
-            (hi.speed.y * t1 - ge) / hj.speed.y 
+        let t2 = if hj.speed.x == 0.0 {
+            (hi.speed.y * t1 - ge) / hj.speed.y
         } else {
             (hi.speed.x * t1 - ca) / hj.speed.x
         };
@@ -130,16 +130,16 @@ impl Solver {
         let x = hi.pos.x + t1 * hi.speed.x;
         let y = hi.pos.y + t1 * hi.speed.y;
         //println!("x: {x}, y: {y}");
-        if x<self.min || x>self.max || y<self.min || y>self.max {
-            return false
+        if x < self.min || x > self.max || y < self.min || y > self.max {
+            return false;
         }
-        true    
+        true
     }
 
     fn solve(&self) -> i32 {
         let mut count = 0;
         for i in 0..self.hails.len() {
-            for j in i+1..self.hails.len() {
+            for j in i + 1..self.hails.len() {
                 if self.xy_crossing(i, j) {
                     count += 1;
                 }
@@ -154,7 +154,7 @@ impl Solver {
     // (r-pi)x(vr-vi) = 0 (this are three bilinear equations). Since r x vr is the same for each i
     // we can use two hails to get three linear equations:
     // r x (v1-v2) - vr x (p1-p2) = p1 x v1 - p2 x v2
-    // Using a third hail, we get six linear equations with six variables, which can be solved 
+    // Using a third hail, we get six linear equations with six variables, which can be solved
     // using standard methods.
     fn solve_p2(&self, first: usize, second: usize, third: usize) -> Hail {
         let p1 = &self.hails[first].pos;
@@ -165,30 +165,36 @@ impl Solver {
         let v3 = &self.hails[third].speed;
         let d1 = p1.cross(v1) - p2.cross(v2);
         let d2 = p2.cross(v2) - p3.cross(v3);
-        let v12 = v1.clone()-v2.clone();
-        let p12 = p1.clone()-p2.clone();
-        let v23 = v2.clone()-v3.clone();
-        let p23 = p2.clone()-p3.clone();
-        let a: General<f64> = General::new(6, 6, vec![
-            0., v12.z, -v12.y, 0., -p12.z, p12.y, 
-            -v12.z, 0., v12.x, p12.z, 0., -p12.x, 
-            v12.y, -v12.x, 0., -p12.y, p12.x, 0., 
-            0., v23.z, -v23.y, 0., -p23.z, p23.y, 
-            -v23.z, 0., v23.x, p23.z, 0., -p23.x, 
-            v23.y, -v23.x, 0., -p23.y, p23.x, 0. 
-        ]);
+        let v12 = v1.clone() - v2.clone();
+        let p12 = p1.clone() - p2.clone();
+        let v23 = v2.clone() - v3.clone();
+        let p23 = p2.clone() - p3.clone();
+        let a: General<f64> = General::new(
+            6,
+            6,
+            vec![
+                0., v12.z, -v12.y, 0., -p12.z, p12.y, -v12.z, 0., v12.x, p12.z, 0., -p12.x, v12.y,
+                -v12.x, 0., -p12.y, p12.x, 0., 0., v23.z, -v23.y, 0., -p23.z, p23.y, -v23.z, 0.,
+                v23.x, p23.z, 0., -p23.x, v23.y, -v23.x, 0., -p23.y, p23.x, 0.,
+            ],
+        );
         let a = a.transpose();
         let b: Vector<f64> = vector![d1.x, d1.y, d1.z, d2.x, d2.y, d2.z];
         let b = b.transpose();
         let x: Vector<f64> = a.solve(&b).unwrap();
 
-        let r = Vec3D{ x: x[0].round(), y: x[1].round(), z: x[2].round() };
-        let vr = Vec3D{ x: x[3].round(), y: x[4].round(), z: x[5].round()};
-
-        let rock = Hail{
-            pos: r,
-            speed: vr,
+        let r = Vec3D {
+            x: x[0].round(),
+            y: x[1].round(),
+            z: x[2].round(),
         };
+        let vr = Vec3D {
+            x: x[3].round(),
+            y: x[4].round(),
+            z: x[5].round(),
+        };
+
+        let rock = Hail { pos: r, speed: vr };
         rock
     }
 }
@@ -198,11 +204,25 @@ fn parse_input(lines: io::Lines<io::BufReader<File>>) -> Solver {
     for l in lines {
         let line = l.unwrap();
         let parts: Vec<&str> = line.split(" @ ").collect();
-        let pos: Vec<f64> = parts[0].split(", ").map(|s| (*s).trim().parse::<f64>().unwrap() ).collect();
-        let speed: Vec<f64> = parts[1].split(", ").map(|s| (*s).trim().parse::<f64>().unwrap() ).collect();
-        let pos = Vec3D{ x: pos[0], y: pos[1], z: pos[2] };
-        let speed = Vec3D{ x: speed[0], y: speed[1], z: speed[2] };
-        hails.push(Hail{pos, speed});
+        let pos: Vec<f64> = parts[0]
+            .split(", ")
+            .map(|s| (*s).trim().parse::<f64>().unwrap())
+            .collect();
+        let speed: Vec<f64> = parts[1]
+            .split(", ")
+            .map(|s| (*s).trim().parse::<f64>().unwrap())
+            .collect();
+        let pos = Vec3D {
+            x: pos[0],
+            y: pos[1],
+            z: pos[2],
+        };
+        let speed = Vec3D {
+            x: speed[0],
+            y: speed[1],
+            z: speed[2],
+        };
+        hails.push(Hail { pos, speed });
     }
     Solver::new(hails)
 }

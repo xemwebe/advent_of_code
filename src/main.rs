@@ -25,6 +25,7 @@ mod year2020;
 mod year2021;
 mod year2022;
 mod year2023;
+mod year2024;
 
 fn main() {
     let args = Args::parse();
@@ -42,6 +43,7 @@ fn main() {
             2021 => year2021::execute(args.day, args.part, lines),
             2022 => year2022::execute(args.day, args.part, lines),
             2023 => year2023::execute(args.day, args.part, lines),
+            2024 => year2024::execute(args.day, args.part, lines),
             _ => format!("Error: solution for year {} not implemented", args.year),
         };
         println!("The solution is: {solution}");

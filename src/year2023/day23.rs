@@ -1,8 +1,4 @@
-use std::{
-    collections::HashSet,
-    fs::File,
-    io,
-};
+use std::{collections::HashSet, fs::File, io};
 
 pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     match part {
@@ -99,7 +95,9 @@ impl Solver {
         optional: u8,
         new_positions: &mut Vec<Position>,
     ) {
-        if (self.map[x][y] == b'.' || self.map[x][y] == optional) || (!self.avoid_slippery && self.map[x][y]!=b'#') {
+        if (self.map[x][y] == b'.' || self.map[x][y] == optional)
+            || (!self.avoid_slippery && self.map[x][y] != b'#')
+        {
             if path.positions.len() > 1 {
                 let prev_pos = &path.positions[path.positions.len() - 2];
                 if prev_pos.x == x && prev_pos.y == y {
@@ -176,19 +174,19 @@ impl Solver {
                     continue;
                 }
                 let i_len = self.paths[i].positions.len();
-                let last_i_pos = self.paths[i].positions[i_len-1].clone();
+                let last_i_pos = self.paths[i].positions[i_len - 1].clone();
                 if last_i_pos == self.end {
                     paths.push(self.paths[i].clone());
                     continue;
                 }
                 let mut following = 0;
-                for j in i+1..self.paths.len() {
+                for j in i + 1..self.paths.len() {
                     // eliminate duplicates
                     if i_len == self.paths[j].positions.len()
-                    && self.paths[i].positions[0] == self.paths[j].positions[0]
-                    && self.paths[i].positions[1] == self.paths[j].positions[1]
-                    && self.paths[i].positions[i_len-1] == self.paths[j].positions[i_len-1]
-                    && self.paths[i].positions[i_len-2] == self.paths[j].positions[i_len-2]
+                        && self.paths[i].positions[0] == self.paths[j].positions[0]
+                        && self.paths[i].positions[1] == self.paths[j].positions[1]
+                        && self.paths[i].positions[i_len - 1] == self.paths[j].positions[i_len - 1]
+                        && self.paths[i].positions[i_len - 2] == self.paths[j].positions[i_len - 2]
                     {
                         duplicates.insert(j);
                     }
@@ -215,18 +213,19 @@ impl Solver {
         let mut visited = visited;
         visited.insert(last_idx_pos.clone());
         if last_idx_pos == self.end {
-            return self.paths[idx].positions.len()-1;
+            return self.paths[idx].positions.len() - 1;
         }
         let mut max_len = 0;
         for j in 1..self.paths.len() {
-            if j!=idx && self.paths[j].positions[0] == last_idx_pos {
+            if j != idx && self.paths[j].positions[0] == last_idx_pos {
                 max_len = max_len.max(self.find_longest_path(j, visited.clone()));
             }
         }
-        if max_len == 0 { return 0; }
-        max_len + self.paths[idx].positions.len() -1
-}
-    
+        if max_len == 0 {
+            return 0;
+        }
+        max_len + self.paths[idx].positions.len() - 1
+    }
 }
 
 fn parse_input(lines: io::Lines<io::BufReader<File>>, avoid_slippery: bool) -> Solver {

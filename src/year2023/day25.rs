@@ -1,5 +1,5 @@
 use std::{
-    collections::{HashMap, HashSet, BTreeSet},
+    collections::{BTreeSet, HashMap, HashSet},
     fs::File,
     io,
 };
@@ -20,13 +20,10 @@ struct Solver {
 
 impl Solver {
     fn new(nodes: HashMap<String, usize>, connections: BTreeSet<Connection>) -> Self {
-        Self{
-            nodes,
-            connections,
-        }
+        Self { nodes, connections }
     }
 
-    fn find_connected_groups(&self, exclusions: &[Connection;3]) -> Vec<usize> {
+    fn find_connected_groups(&self, exclusions: &[Connection; 3]) -> Vec<usize> {
         let mut connections = self.connections.clone();
         for e in exclusions {
             connections.remove(e);
@@ -61,18 +58,18 @@ impl Solver {
         group_sizes
     }
 
-    fn solve(&self) -> usize  {
-        let c = Connection::new(0,0);
-        let mut exclusions = [c.clone(),c.clone(),c];
-        for c1 in &self.connections  {
+    fn solve(&self) -> usize {
+        let c = Connection::new(0, 0);
+        let mut exclusions = [c.clone(), c.clone(), c];
+        for c1 in &self.connections {
             exclusions[0] = c1.clone();
             for c2 in &self.connections {
-                if c1==c2 {
+                if c1 == c2 {
                     continue;
                 }
                 exclusions[1] = c2.clone();
                 for c3 in &self.connections {
-                    if c3==c1 || c3==c2 {
+                    if c3 == c1 || c3 == c2 {
                         continue;
                     }
                     exclusions[2] = c3.clone();
@@ -95,7 +92,10 @@ struct Connection {
 
 impl Connection {
     fn new(a: usize, b: usize) -> Self {
-        Self { a: a.min(b), b: a.max(b) }
+        Self {
+            a: a.min(b),
+            b: a.max(b),
+        }
     }
 }
 impl PartialOrd for Connection {
@@ -106,7 +106,7 @@ impl PartialOrd for Connection {
 
 impl Ord for Connection {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        if self.a==other.a {
+        if self.a == other.a {
             return self.b.cmp(&other.b);
         }
         self.a.cmp(&other.a)
@@ -134,7 +134,6 @@ fn parse_input(lines: io::Lines<io::BufReader<File>>) -> Solver {
             let l_idx = nodes[s];
             connections.insert(Connection::new(n_idx, l_idx));
         }
-
     }
     Solver::new(nodes, connections)
 }
