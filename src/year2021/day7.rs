@@ -22,11 +22,9 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let min = *numbers.iter().min().unwrap();
     let max = *numbers.iter().max().unwrap();
     let mut min_fuel = i32::MAX;
-    let mut min_x = -1;
     for x in min..=max {
         let fuel = numbers.iter().map(|h| (h - x).abs()).sum();
         if fuel < min_fuel {
-            min_x = x;
             min_fuel = fuel;
         }
     }
@@ -38,7 +36,6 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let min = *numbers.iter().min().unwrap();
     let max = *numbers.iter().max().unwrap();
     let mut min_fuel = i32::MAX;
-    let mut min_x = -1;
     for x in min..=max {
         let fuel = numbers
             .iter()
@@ -48,7 +45,6 @@ pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
             })
             .sum();
         if fuel < min_fuel {
-            min_x = x;
             min_fuel = fuel;
         }
     }

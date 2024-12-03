@@ -8,7 +8,7 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     }
 }
 
-pub fn riddle_1(mut lines: io::Lines<io::BufReader<File>>) -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut reports: Vec<Vec<i32>> = Vec::new();
     for line in lines {
         let report = line
@@ -64,7 +64,7 @@ fn check_defect(report: &[i32], ignore: usize) -> bool {
     return true;
 }
 
-pub fn riddle_2(mut lines: io::Lines<io::BufReader<File>>) -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut reports: Vec<Vec<i32>> = Vec::new();
     for line in lines {
         let report = line

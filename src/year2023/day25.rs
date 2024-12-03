@@ -14,13 +14,12 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
 
 #[derive(Debug, Clone)]
 struct Solver {
-    nodes: HashMap<String, usize>,
     connections: BTreeSet<Connection>,
 }
 
 impl Solver {
-    fn new(nodes: HashMap<String, usize>, connections: BTreeSet<Connection>) -> Self {
-        Self { nodes, connections }
+    fn new(connections: BTreeSet<Connection>) -> Self {
+        Self { connections }
     }
 
     fn find_connected_groups(&self, exclusions: &[Connection; 3]) -> Vec<usize> {
@@ -135,7 +134,7 @@ fn parse_input(lines: io::Lines<io::BufReader<File>>) -> Solver {
             connections.insert(Connection::new(n_idx, l_idx));
         }
     }
-    Solver::new(nodes, connections)
+    Solver::new(connections)
 }
 
 fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
@@ -145,8 +144,7 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     format!("{solution}")
 }
 
-fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
-    let solver = parse_input(lines);
+fn riddle_2(_lines: io::Lines<io::BufReader<File>>) -> String {
     format!("not yet implemented")
 }
 

@@ -11,10 +11,10 @@ Item -> Result< Box<List>, ()>:
     ;
 
 Itemlist -> Result< Vec<Box<List>>, ()>:
-        Itemlist ',' Item { 
+        Itemlist ',' Item {
             let mut v = $1?;
             v.push($3?);
-            Ok(v) 
+            Ok(v)
         }
     |   Item { Ok(vec![ $1? ]) }
     ;
@@ -32,9 +32,6 @@ use crate::year2022::list::List;
 fn parse_int(s: &str) -> Result<u8, ()> {
     match s.parse::<u8>() {
         Ok(val) => Ok(val),
-        Err(_) => {
-            format!("{} cannot be represented as a u8", s);
-            Err(())
-        }
+        Err(_) => Err(())
     }
 }

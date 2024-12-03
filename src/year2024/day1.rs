@@ -8,7 +8,7 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
     }
 }
 
-pub fn riddle_1(mut lines: io::Lines<io::BufReader<File>>) -> String {
+pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut left: Vec<i32> = Vec::new();
     let mut right: Vec<i32> = Vec::new();
     for line in lines {
@@ -36,7 +36,7 @@ pub fn count_frequency(l: i32, right: &Vec<i32>) -> i32 {
     count
 }
 
-pub fn riddle_2(mut lines: io::Lines<io::BufReader<File>>) -> String {
+pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let mut left: Vec<i32> = Vec::new();
     let mut right: Vec<i32> = Vec::new();
     for line in lines {
