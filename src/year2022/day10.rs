@@ -59,33 +59,36 @@ fn process(vc: &Vec<Command>, sc: Vec<i32>) -> i32 {
     sum
 }
 
-fn draw_pixel(cycle: i32, x: i32) {
+fn draw_pixel(cycle: i32, x: i32, output: &str) -> String {
     let pos = cycle % 40;
-    if pos - 1 <= x && pos + 1 >= x {
-        print!("#");
+    let mut out = if pos - 1 <= x && pos + 1 >= x {
+        format!("{output}#")
     } else {
-        print!(".");
-    }
+        format!("{output}.")
+    };
     if pos == 39 {
-        println!("");
+        out = format!("{out}\n");
     }
+    out
 }
 
-fn draw_screen(vc: &Vec<Command>) {
+fn draw_output(vc: &Vec<Command>) -> String {
+    let mut output = "\n".to_string();
     let mut x = 1;
     let mut cycle = 0;
     for c in vc {
         match c {
-            Command::Noop => draw_pixel(cycle, x),
+            Command::Noop => output = draw_pixel(cycle, x, &output),
             Command::Addx(y) => {
-                draw_pixel(cycle, x);
+                output = draw_pixel(cycle, x, &output);
                 cycle += 1;
-                draw_pixel(cycle, x);
+                output = draw_pixel(cycle, x, &output);
                 x += y;
             }
         }
         cycle += 1;
     }
+    output
 }
 
 fn parse_commands(lines: io::Lines<io::BufReader<File>>) -> Vec<Command> {
@@ -104,8 +107,8 @@ pub fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
 
 pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
     let commands = parse_commands(lines);
-    draw_screen(&commands);
-    "no single value output".to_string()
+    let output = draw_output(&commands);
+    output
 }
 
 #[cfg(test)]
@@ -117,13 +120,23 @@ mod test {
     fn test_2022_10_1() {
         let lines = read_lines("data/2022/10.txt").unwrap();
         let result = execute(1, lines);
-        assert_eq!(result, "7195");
+        assert_eq!(result, "13440");
     }
 
     #[test]
     fn test_2022_10_2() {
         let lines = read_lines("data/2022/10.txt").unwrap();
         let result = execute(2, lines);
-        assert_eq!(result, "33992866292225");
+        assert_eq!(
+            result,
+            r#"
+###..###..####..##..###...##..####..##..
+#..#.#..#....#.#..#.#..#.#..#....#.#..#.
+#..#.###....#..#....#..#.#..#...#..#..#.
+###..#..#..#...#.##.###..####..#...####.
+#....#..#.#....#..#.#.#..#..#.#....#..#.
+#....###..####..###.#..#.#..#.####.#..#.
+"#
+        );
     }
 }

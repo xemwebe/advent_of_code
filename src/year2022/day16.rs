@@ -244,13 +244,13 @@ mod test {
     fn test_2022_16_1() {
         let lines = read_lines("data/2022/16.txt").unwrap();
         let result = execute(1, lines);
-        assert_eq!(result, "7195");
+        assert_eq!(result, "1617");
     }
 
     #[test]
     fn test_2022_16_2() {
         let lines = read_lines("data/2022/16.txt").unwrap();
         let result = execute(2, lines);
-        assert_eq!(result, "33992866292225");
+        assert_eq!(result, "2171");
     }
 }
