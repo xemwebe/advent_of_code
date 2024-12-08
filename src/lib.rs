@@ -1,4 +1,4 @@
-use std::ops::{Add, Mul};
+use std::ops::{Add, Mul, Sub};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum DirectionType {
@@ -76,7 +76,7 @@ impl Mul<Direction> for i32 {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Position {
     pub x: i32,
     pub y: i32,
@@ -92,11 +92,12 @@ impl Position {
         self.y += dir.y;
     }
 
-    pub fn check_move_by(&mut self, dir: &Direction, n: usize, m: usize) -> bool {
-        !(self.x + dir.x < 0
-            || self.y + dir.y < 0
-            || self.x + dir.x >= n as i32
-            || self.y + dir.y >= m as i32)
+    pub fn check_move_by(&self, dir: &Direction, n: usize, m: usize) -> bool {
+        (self + dir).check_on_grid(n, m)
+    }
+
+    pub fn check_on_grid(&self, n: usize, m: usize) -> bool {
+        !(self.x < 0 || self.y < 0 || self.x >= n as i32 || self.y >= m as i32)
     }
 }
 
@@ -118,6 +119,28 @@ impl Add<&Position> for &Direction {
         Position {
             x: self.x + pos.x,
             y: self.y + pos.y,
+        }
+    }
+}
+
+impl Sub<&Position> for &Position {
+    type Output = Direction;
+
+    fn sub(self, other: &Position) -> Self::Output {
+        Direction {
+            x: self.x - other.x,
+            y: self.y - other.y,
+        }
+    }
+}
+
+impl Sub<&Direction> for &Position {
+    type Output = Position;
+
+    fn sub(self, dir: &Direction) -> Self::Output {
+        Position {
+            x: self.x - dir.x,
+            y: self.y - dir.y,
         }
     }
 }
