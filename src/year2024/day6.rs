@@ -25,10 +25,10 @@ impl Solver {
         let mut pos = Position::new(0, 0);
         for line in lines {
             let mut row = line.unwrap().as_bytes().to_vec();
-            for i in 0..row.len() {
-                if row[i] == b'^' {
+            for (i, item) in row.iter_mut().enumerate() {
+                if *item == b'^' {
                     pos = Position::new(i as i32, grid.len() as i32);
-                    row[i] = b'.';
+                    *item = b'.';
                 }
             }
             grid.push(row);
@@ -134,12 +134,12 @@ impl MetaSolver {
         _ = map_solver.solve();
         let map = map_solver.grid;
         let mut count = 0;
-        for i in 0..map.len() {
-            for j in 0..map[i].len() {
+        for (i, row) in map.iter().enumerate() {
+            for (j, item) in row.iter().enumerate() {
                 if i == self.orig_solver.pos.y as usize && j == self.orig_solver.pos.x as usize {
                     continue;
                 }
-                if map[i][j] == b'X' {
+                if *item == b'X' {
                     let mut test_solver = TestSolver::new(&self.orig_solver);
                     test_solver.set_obstacle(j, i);
                     if test_solver.has_loop() {

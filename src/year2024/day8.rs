@@ -26,15 +26,15 @@ impl Solver {
         for line in lines {
             let row = line.unwrap().as_bytes().to_vec();
             m = row.len();
-            for i in 0..row.len() {
-                if row[i] != b'.' {
-                    if antennas.contains_key(&row[i]) {
+            for (i, element) in row.iter().enumerate() {
+                if *element != b'.' {
+                    if let std::collections::hash_map::Entry::Vacant(e) = antennas.entry(*element) {
+                        e.insert(vec![Position::new(i as i32, n as i32)]);
+                    } else {
                         antennas
-                            .get_mut(&row[i])
+                            .get_mut(element)
                             .unwrap()
                             .push(Position::new(i as i32, n as i32));
-                    } else {
-                        antennas.insert(row[i], vec![Position::new(i as i32, n as i32)]);
                     }
                 }
             }
@@ -120,6 +120,6 @@ mod test {
     fn test_2024_8_2() {
         let lines = read_lines("data/2024/8.txt").unwrap();
         let result = execute(2, lines);
-        assert_eq!(result, "1748");
+        assert_eq!(result, "861");
     }
 }

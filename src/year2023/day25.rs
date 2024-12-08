@@ -49,7 +49,7 @@ impl Solver {
                 for p in &found_pairs {
                     group.insert(p.a);
                     group.insert(p.b);
-                    connections.remove(&p);
+                    connections.remove(p);
                 }
             }
             group_sizes.push(group.len());

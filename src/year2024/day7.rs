@@ -27,13 +27,7 @@ impl Solver {
             let row = line
                 .unwrap()
                 .split(' ')
-                .map(|x| {
-                    if x.ends_with(":") {
-                        x[..x.len() - 1].to_string()
-                    } else {
-                        x.to_string()
-                    }
-                })
+                .map(|x| x.trim_end_matches(":").to_string())
                 .map(|x| x.parse::<u64>().unwrap())
                 .collect::<Vec<u64>>();
             calculations.push(row);
@@ -74,8 +68,8 @@ impl Solver {
     fn solve1(&self) -> u64 {
         let mut sum = 0;
         for row in &self.calculations {
-            if Self::is_valid(Operation::Plus, row[1], 2, &row)
-                || Self::is_valid(Operation::Mult, row[1], 2, &row)
+            if Self::is_valid(Operation::Plus, row[1], 2, row)
+                || Self::is_valid(Operation::Mult, row[1], 2, row)
             {
                 sum += row[0];
             }
@@ -86,9 +80,9 @@ impl Solver {
     fn solve2(&self) -> u64 {
         let mut sum = 0;
         for row in &self.calculations {
-            if Self::is_valid2(Operation::Plus, row[1], 2, &row)
-                || Self::is_valid2(Operation::Mult, row[1], 2, &row)
-                || Self::is_valid2(Operation::Concat, row[1], 2, &row)
+            if Self::is_valid2(Operation::Plus, row[1], 2, row)
+                || Self::is_valid2(Operation::Mult, row[1], 2, row)
+                || Self::is_valid2(Operation::Concat, row[1], 2, row)
             {
                 sum += row[0];
             }

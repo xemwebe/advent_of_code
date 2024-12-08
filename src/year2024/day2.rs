@@ -61,7 +61,7 @@ fn check_defect(report: &[i32], ignore: usize) -> bool {
             return false;
         }
     }
-    return true;
+    true
 }
 
 pub fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {

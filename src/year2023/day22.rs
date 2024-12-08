@@ -102,7 +102,7 @@ impl Solver {
                 for j in i + 1..self.bricks.len() {
                     let brick_b = &self.bricks[j];
                     if z >= brick_b.start.z && z <= brick_b.end.z {
-                        if brick_a.xy_overlaps_with(&brick_b) {
+                        if brick_a.xy_overlaps_with(brick_b) {
                             panic!("overlapping bricks!")
                         }
                     }
@@ -124,7 +124,7 @@ impl Solver {
                     }
                     let brick_b = &self.bricks[j];
                     if brick_b.end.z + 1 == brick_a.start.z {
-                        if brick_a.xy_overlaps_with(&brick_b) {
+                        if brick_a.xy_overlaps_with(brick_b) {
                             has_supporter = true;
                             break;
                         }
@@ -268,16 +268,8 @@ fn parse_input(lines: io::Lines<io::BufReader<File>>) -> Solver {
     for l in lines {
         let line = l.unwrap();
         let parts: Vec<&str> = line.split('~').collect();
-        let start: Vec<usize> = parts[0]
-            .split(',')
-            .into_iter()
-            .map(|s| s.parse().unwrap())
-            .collect();
-        let end: Vec<usize> = parts[1]
-            .split(',')
-            .into_iter()
-            .map(|s| s.parse().unwrap())
-            .collect();
+        let start: Vec<usize> = parts[0].split(',').map(|s| s.parse().unwrap()).collect();
+        let end: Vec<usize> = parts[1].split(',').map(|s| s.parse().unwrap()).collect();
         let start = Point3D::new(&start);
         let end = Point3D::new(&end);
         let idx = bricks.len();

@@ -42,7 +42,7 @@ struct State<'a> {
     solution: usize,
 }
 
-impl<'a> State<'a> {
+impl State<'_> {
     fn check_cycle(&mut self, count: usize) {
         if !self.cycle.contains_key(self.current) {
             self.cycle.insert(self.current, count);

@@ -20,18 +20,18 @@ impl Solver {
         let mut rules: HashMap<u32, HashSet<u32>> = HashMap::new();
         loop {
             let line = lines.next().unwrap().unwrap();
-            if line == "" {
+            if line.is_empty() {
                 break;
             }
             let mut parts = line.split("|");
             let left = parts.next().unwrap().parse::<u32>().unwrap();
             let right = parts.next().unwrap().parse::<u32>().unwrap();
-            if rules.contains_key(&left) {
-                rules.get_mut(&left).unwrap().insert(right);
-            } else {
+            if let std::collections::hash_map::Entry::Vacant(e) = rules.entry(left) {
                 let mut set = HashSet::new();
                 set.insert(right);
-                rules.insert(left, set);
+                e.insert(set);
+            } else {
+                rules.get_mut(&left).unwrap().insert(right);
             }
         }
         let mut updates = Vec::new();
@@ -52,7 +52,7 @@ impl Solver {
             let mut valid = true;
             for i in 1..u.len() {
                 for j in 0..i {
-                    if let Some(&ref followers) = self.rules.get(&u[i]) {
+                    if let Some(followers) = self.rules.get(&u[i]) {
                         if followers.contains(&u[j]) {
                             valid = false;
                             break;
@@ -76,7 +76,7 @@ impl Solver {
             let mut valid = true;
             for i in 1..u.len() {
                 for j in 0..i {
-                    if let Some(&ref followers) = self.rules.get(&u[i]) {
+                    if let Some(followers) = self.rules.get(&u[i]) {
                         if followers.contains(&u[j]) {
                             valid = false;
                             break;
@@ -90,13 +90,13 @@ impl Solver {
             if !valid {
                 let mut sorted_update = u.clone();
                 sorted_update.sort_by(|a, b| {
-                    if let Some(&ref followers_a) = self.rules.get(a) {
-                        if followers_a.contains(&b) {
+                    if let Some(followers_a) = self.rules.get(a) {
+                        if followers_a.contains(b) {
                             return std::cmp::Ordering::Less;
                         }
                     }
-                    if let Some(&ref followers_b) = self.rules.get(b) {
-                        if followers_b.contains(&a) {
+                    if let Some(followers_b) = self.rules.get(b) {
+                        if followers_b.contains(a) {
                             return std::cmp::Ordering::Greater;
                         }
                     }

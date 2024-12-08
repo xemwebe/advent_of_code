@@ -10,7 +10,6 @@ pub fn execute(part: u32, lines: io::Lines<io::BufReader<File>>) -> String {
 
 struct Solver {
     grid: Vec<Vec<u8>>,
-    mask: Vec<Vec<bool>>,
     n: i32,
     m: i32,
 }
@@ -31,10 +30,8 @@ impl Solver {
     fn new(grid: Vec<Vec<u8>>) -> Self {
         let n = grid.len();
         let m = grid[0].len();
-        let mask = vec![vec![false; m]; n];
         Self {
             grid,
-            mask,
             n: n as i32,
             m: m as i32,
         }
@@ -49,11 +46,7 @@ impl Solver {
         }
         let i = i + dir.0;
         let j = j + dir.1;
-        let mut count = if self.mask[i as usize][j as usize] {
-            0 //self.find_xmas(i, j, dir, idx, path.clone())
-        } else {
-            0
-        };
+        let mut count = 0;
         if self.grid[i as usize][j as usize] == Self::XMAS[idx] {
             if idx == Self::XMAS.len() - 1 {
                 count += 1;
@@ -61,7 +54,7 @@ impl Solver {
                 count += self.find_xmas(i, j, dir, idx + 1);
             }
         }
-        return count;
+        count
     }
 
     fn solve1(&self) -> u32 {
