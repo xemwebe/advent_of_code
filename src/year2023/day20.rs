@@ -223,18 +223,15 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
     for from in 0..input_map.len() {
         machines[from].init_inputs(&input_map[from]);
     }
-    //println!("machines: {:?}", machines.keys());
     let mut init_state = Vec::new();
     for m in &machines {
         m.state(&mut init_state);
     }
-    //println!("count: 0, state: {init_state:?}");
     let mut queue = Queue::new();
     for _ in 0..1000 {
         queue.add_signals(usize::MAX, &[name_map["broadcaster"]], Pulse::Low);
         while !queue.inner.is_empty() {
             let signal = queue.inner.pop_front().unwrap();
-            //println!("Signal: {signal:?}");
             if let Some(m) = machines.get_mut(signal.to) {
                 m.process(&signal, &mut queue);
             }
@@ -243,7 +240,6 @@ fn riddle_1(lines: io::Lines<io::BufReader<File>>) -> String {
         for m in &machines {
             m.state(&mut state);
         }
-        //println!("count: {count}, state: {state:?}");
         if state == init_state {
             break;
         }
@@ -270,7 +266,6 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         idx += 1;
     }
     name_map.insert("rx".to_string(), idx);
-    name_map.insert("output".to_string(), idx);
 
     let mut machines: Vec<Box<dyn Machine>> = Vec::with_capacity(idx);
     let mut input_map = vec![Vec::new(); idx];
@@ -298,26 +293,54 @@ fn riddle_2(lines: io::Lines<io::BufReader<File>>) -> String {
         machines[from].init_inputs(&input_map[from]);
     }
 
-    //println!("machines: {:?}", machines.keys());
+    // After analyzing the input, we need to have the following machines send a high pulse
+    // in order to get a low pulse on rx, therefore we record the number of hits when
+    // each of this will be hit first. We could automate this, but than we also
+    // would have to check that these are really conjunctions, ...
+    let trigger_nodes = ["rv", "vp", "dc", "cq"];
+    let mut trigger_events: HashMap<usize, usize> = HashMap::new();
+    for node in trigger_nodes {
+        trigger_events.insert(name_map[node], 0);
+    }
     let mut queue = Queue::new();
     let mut count = 0;
-    let mut no_rx = true;
-    while no_rx {
+    let mut all_set = false;
+    loop {
         count += 1;
         queue.add_signals(usize::MAX, &[name_map["broadcaster"]], Pulse::Low);
         while !queue.inner.is_empty() {
             let signal = queue.inner.pop_front().unwrap();
-            if signal.to == machines.len() {
+            if trigger_events.contains_key(&signal.to) {
                 if signal.p == Pulse::Low {
-                    no_rx = false;
-                    break;
+                    if trigger_events.contains_key(&signal.to) && trigger_events[&signal.to] == 0 {
+                        *trigger_events.get_mut(&signal.to).unwrap() = count;
+                        all_set = true;
+                        for n in trigger_events.values() {
+                            if *n == 0 {
+                                all_set = false;
+                                break;
+                            }
+                        }
+                        if all_set {
+                            break;
+                        }
+                    }
                 }
-            } else {
+            }
+            if signal.to < machines.len() {
                 machines[signal.to].process(&signal, &mut queue);
             }
         }
+        if all_set {
+            break;
+        }
     }
-    format!("{count}")
+    let mut total_count = 1;
+    // Here we trust that the numbers have no common divisors
+    for n in trigger_events.values() {
+        total_count *= *n;
+    }
+    format!("{total_count}")
 }
 
 #[cfg(test)]
@@ -336,6 +359,6 @@ mod test {
     fn test_2023_20_2() {
         let lines = read_lines("data/2023/20.txt").unwrap();
         let result = execute(2, lines);
-        assert_eq!(result, "134549294799713");
+        assert_eq!(result, "229414480926893");
     }
 }
