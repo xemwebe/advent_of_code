@@ -194,8 +194,7 @@ impl Solver {
             z: x[5].round(),
         };
 
-        let rock = Hail { pos: r, speed: vr };
-        rock
+        Hail { pos: r, speed: vr }
     }
 }
 

@@ -154,15 +154,15 @@ mod test {
     use crate::read_lines;
 
     #[test]
-    fn test_2023_24_1() {
-        let lines = read_lines("data/2023/24.txt").unwrap();
+    fn test_2023_25_1() {
+        let lines = read_lines("data/2023/25.txt").unwrap();
         let result = execute(1, lines);
         assert_eq!(result, "21785");
     }
 
     #[test]
-    fn test_2023_24_2() {
-        let lines = read_lines("data/2023/24.txt").unwrap();
+    fn test_2023_25_2() {
+        let lines = read_lines("data/2023/25.txt").unwrap();
         let result = execute(2, lines);
         assert_eq!(result, "6522");
     }

@@ -92,6 +92,15 @@ impl Position {
         self.y += dir.y;
     }
 
+    pub fn try_move_by(&self, dir: &Direction, n: usize, m: usize) -> Option<Position> {
+        let new_pos = self + dir;
+        if new_pos.check_on_grid(n, m) {
+            Some(new_pos)
+        } else {
+            None
+        }
+    }
+
     pub fn check_move_by(&self, dir: &Direction, n: usize, m: usize) -> bool {
         (self + dir).check_on_grid(n, m)
     }
